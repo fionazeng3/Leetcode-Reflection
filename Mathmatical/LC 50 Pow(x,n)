@@ -1,0 +1,58 @@
+/*
+LC 50 Pow(x, n)
+本题要求算出 pow(x,n) 并要求complexity 为 log(n)
+如果 loop n 次， 每次乘一个 x， 那这个complexity应该是 O(n)
+想要达到 log(n) 一个很棘手的问题就是不是每一个n都正好是2的指数次方
+那么我们只能找到一些数字a,b,c ... 使得 2^a + 2 ^b + 2^c ... = n
+这里看起来是不是很眼熟呢？ 这个问题很像一个从十进制转化成二进制的问题
+那我们来想一想十进制到二进制是怎么转换的。用数字20 来举个🌰
+我们一般的操作是这样的
+2 | 20 0
+2 | 10 0
+2 | 5 1
+2 | 2 0
+2 | 1 1
+    0
+这样 20 的二进制就是10100 也就是说20 = 2^2 + 2 ^ 4
+也就是说每次碰到奇数，我们就应该把他的从上到下的乘积记下来，然后最后加到一起
+注意我们这里的20 说的是指数。两个指数的想加就是两个数字相乘
+所以我们的solution 应该是在一个loop 里 i 从 n 开始，每次 /=2
+在每个iteration 里如果碰到 i 是奇数， 那就把当前的乘积记下来
+然后每次必须还要把reult 平方。 最后达到的效果应该是这样的
+result = x^(2^a) * x^(2^b) * x^(2^c) ...
+其中 2^a + 2 ^b + 2^c ... = n
+思路想明白了代码其实跟简单
+*/
+public class Solution {
+    /**
+     * @param x: the base number
+     * @param n: the power number
+     * @return: the result
+     */
+    public double myPow(double x, int n) {
+        // write your code here
+        long N = n;
+        if(N < 0) {
+            x = 1 / x;
+            N = -N;
+        }
+        double ans = 1;
+        double current = x;
+        for (long i = N; i > 0; i/=2 ) {
+            if(i % 2 == 1) {
+                ans = current * ans;
+            }
+            current *= current;
+        }
+        return ans;
+    }
+}
+/*
+corner case：
+数学类问题一般溢出和正负是比较关键的corner case
+溢出我们用到了double 和long 来预防
+我们知道 java integer 的长度是 32 bit
+而 long 和 double 的长度是 64 bit
+我们把int 全 转成 double 和 long 就能多处 2^32 的空间
+正负的话很简单， 在一开始给x 取个倒数就行啦
+*/
