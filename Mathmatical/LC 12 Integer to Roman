@@ -1,0 +1,14 @@
+/*
+LC 12 Integer to Roman
+这道题很简单，把整数转成罗马数字
+首先在array 中列出 个十百千 位所有可能
+再直接用 除法和mod把每一个数量级的数字找出来
+组成一个string 就可以了
+*/
+public static String intToRoman(int num) {
+    String M[] = {"", "M", "MM", "MMM"};
+    String C[] = {"", "C", "CC", "CCC", "CD", "D", "DC", "DCC", "DCCC", "CM"};
+    String X[] = {"", "X", "XX", "XXX", "XL", "L", "LX", "LXX", "LXXX", "XC"};
+    String I[] = {"", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX"};
+    return M[num/1000] + C[(num%1000)/100] + X[(num%100)/10] + I[num%10];
+}
