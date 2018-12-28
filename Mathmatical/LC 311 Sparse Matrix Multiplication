@@ -1,0 +1,32 @@
+/*
+LC 311 Sparse Matrix Multiplication
+比较简单的矩阵相乘问题。注意矩阵横纵坐标不要弄反了
+还有我发现在java 里面是没有2D array的。这里matrix 的储存
+方法是： 一个 array 里面存了每个row 的pointer
+每个 pointer 又指向一个 row array
+这样的话 A.length得到的就是 row number
+A[0].length 得到的是column number
+最后因为是sparse matrix， 检查一下非0 再相乘会节省不少时间
+*/
+class Solution {
+    public int[][] multiply(int[][] A, int[][] B) {
+        int rowA = A.length;
+        int columnA = A[0].length;
+        int rowB = B.length;
+        int columnB = B[0].length;
+        int[][] result = new int[rowA][columnB];
+        // horizontal
+        for(int i = 0; i < columnB; i++) {
+            // vertical
+            for(int j = 0; j < rowA; j++) {
+                result[j][i] = 0;
+                for (int k = 0; k < columnA; k++) {
+                    if( A[j][k]!= 0 && B[k][i] != 0) {
+                        result[j][i] += A[j][k] * B[k][i];
+                    }
+                }
+            }
+        }
+        return result;
+    }
+}
