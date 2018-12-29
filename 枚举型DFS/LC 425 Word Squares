@@ -1,0 +1,126 @@
+/*
+LC 425 Word Squares
+这道题应该算枚举型DFS 比较难的一道题
+个人认为难点主要是在于字符串prefix 的
+处理， 还有在dfs中怎样找下一个单词
+
+首先这种词根词缀型的枚举dfs 最好的处理办法
+就是把单词存进trie 和 hashmap 里
+个人 trie 难implement， traverse麻烦
+还是hashmap 好。具体怎么存的就写在了buildDict里面了
+
+枚举型dfs 一般都会用到recursive backtracking
+这里献上cse143 模版一枚 */
+
+private static void words(int length) {
+  String[] choices = {"a", "b", "c", "d"};
+  // The empty string is the only word of length 0
+  if (length == 0) {
+    print();
+  }
+  else {
+    // Try appending each possible choice to our partial word.
+    for (String choice : choices) {
+      choose(choice); // Add the choice
+      words(length − 1); // Recurse on the rest
+      unchoose(); // Undo the choice
+    }
+  }
+}
+/*
+一句话概括recursive backtracking就是先广撒网
+再把一种可能性推到底。到底以后再去掉最后一个回逆。
+这个算法是怎么回逆到上一级的呢？
+事实证明这一级的for loop 跑完就回到上一级了。。。
+
+好了回到原题。我们来攻破第二个难点就是怎么选下一个单词
+原题里说了word square 要满足 the kth row and column read the exact same string
+就用题目里的例子来想 ["area","lead","wall","lady","ball"]
+如果第一个次选ball
+第二个词的前缀必须是ball 第二个字母 a 选area
+第三个词的前缀必须是ball 的第三个字母 + area 的第三个字母 le 选 lead
+第四个词的前缀必须是ball 的第四个字母 + area 的第四个字母 + lead 的第四个字母
+。。。
+这样就很明了了。 每次先找到需要满足的前缀， 再去hashmap 里面找就好了
+
+除了寻找下一个单词， 还有一个挂你见步骤就是看如果加上了这个词，后面还能不能继续找了
+这个步骤写在了 isValid 里面
+最后一个问题： 那些不合格的组合都是在哪废掉的？
+如果不合格， for loop 里面的if 会直接continue， 不会再有dfs recursion
+然后dfs 这个method 自己就跑完了
+所以说isValid 这一步很关键啊
+*/
+class Solution {
+    public List<List<String>> wordSquares(String[] words) {
+        List<List<String>> allAnswer = new ArrayList<>();
+        int wordLen = 0;
+        if(words.length == 0) {
+            return allAnswer;
+        } else {
+            wordLen = words[0].length();
+        }
+        Map<String, List<String>> dict = new HashMap<>();
+        buildDict(words, dict);
+        List<String> eachAnswer = new ArrayList<>();
+        dfs(words, dict, eachAnswer, allAnswer, wordLen, 0);
+        return allAnswer;
+
+    }
+
+    // build the prefix dictionary
+    public void buildDict(String[] words, Map<String, List<String>> dict) {
+        for (String eachWord : words) {
+            int len = eachWord.length();
+            String prefix = "";
+            dict.putIfAbsent("", new ArrayList<>());
+            dict.get("").add(eachWord);
+            for (int i = 0; i < len; i++) {
+                prefix += eachWord.charAt(i);
+                dict.putIfAbsent(prefix, new ArrayList<>());
+                dict.get(prefix).add(eachWord);
+            }
+        }
+    }
+
+    // check the current word is valid
+    public boolean isValid(int currentWordCount, List<String> eachAnswer, int wordLen,
+                           Map<String, List<String>> dict, String nextWord) {
+        for (int i = 0; i < wordLen; i++) {
+            String prefix = "";
+            for(int j = 0; j < currentWordCount; j++) {
+                prefix += eachAnswer.get(j).charAt(i);
+            }
+            prefix += nextWord.charAt(i);
+            if(!dict.containsKey(prefix)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    // DFS
+    public void dfs(String[] words, Map<String, List<String>> dict,
+                                  List<String> eachAnswer, List<List<String>> allAnswer,
+                                  int wordLen, int currentWordCount) {
+        if (currentWordCount == wordLen) {
+            allAnswer.add(new ArrayList<>(eachAnswer));
+        } else {
+            String prefix = "";
+            // build the next word
+            for (int i = 0; i < currentWordCount; i++) {
+                prefix += eachAnswer.get(i).charAt(currentWordCount);
+                // TODO check word count
+            }
+            for(String candidate : dict.get(prefix)) {
+                if(! isValid(currentWordCount, eachAnswer, wordLen, dict, candidate)) {
+                    continue;
+                }
+                eachAnswer.add(candidate);
+                dfs(words, dict, eachAnswer, allAnswer, wordLen, currentWordCount + 1);
+                eachAnswer.remove(eachAnswer.size() - 1);
+            }
+
+        }
+
+    }
+}
