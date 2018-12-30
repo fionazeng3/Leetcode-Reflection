@@ -1,0 +1,41 @@
+/*
+LC 205 Isomorphic Strings
+题目要求看两个string 是不是isomorphic
+也就是说两个string 里面的所有字母是不是一对一
+的关系。
+思路很简单，无非就是用建立字母的map
+但是这里我用到了九章里面提到的小技巧
+就是用array 来当hash map 用
+array 的index 就是key， array 的content
+就是value。ascii 的话一共有256 位，所以就
+建立一个size 为256 的array
+注意character 可以直接当index 用
+当index 的时候编译器自动把它转化成int
+这种把array 当hashmap 的方法只限于数字或字符
+最后要注意一点就是这种一对一关系
+一定要正着查一遍，反着查一遍才完整
+*/
+class Solution {
+    public boolean isIsomorphic(String s, String t) {
+        if(s.length() != t.length()) {
+            return false;
+        }
+        return compareEachWay(s,t) && compareEachWay(t,s);
+
+    }
+
+    private boolean compareEachWay(String indexString, String contentStriing) {
+        int[] map = new int[256];
+        Arrays.fill(map, -1);
+        char[] is = indexString.toCharArray();
+        char[] cs = contentStriing.toCharArray();
+        for (int i = 0; i < is.length; i++) {
+            if(map[is[i]] == -1) {
+                map[is[i]] = cs[i];
+            } else if(map[is[i]] != cs[i] ) {
+                return false;
+            }
+        }
+        return true;
+    }
+}
