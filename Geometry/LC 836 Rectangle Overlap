@@ -1,0 +1,25 @@
+/*
+LC 836 Rectangle Overlap
+比较简单的集合题
+如果正着想的话有些复杂：每个维度都有好几种情况
+正着想麻烦就反着想：不重叠的情况无非就是上下左右
+这样代码就很好写了
+*/
+class Solution {
+    public boolean isRectangleOverlap(int[] rec1, int[] rec2) {
+        // up
+        if(rec1[1] >= rec2[3]) {
+            return false;
+        // down
+        } else if(rec1[3] <= rec2[1]) {
+            return false;
+        // left
+        } else if (rec1[2] <= rec2[0]) {
+            return false;
+        // right
+        } else if (rec1[0] >= rec2[2]) {
+            return false;
+        }
+        return true;
+    }
+}
