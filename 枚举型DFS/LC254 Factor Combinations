@@ -1,0 +1,38 @@
+/*
+LC254 Factor Combinations
+做到枚举型dfs第二题，已经对这类题有一点思路了
+无非就是：检查base case， 撒网，剪枝，recursion
+这道题有个难点就是factorization 要求是combination
+而不是permutation， 所以要想办法把重复的 combination
+去掉。 这里用到的方法就是每次撒网时候的起始点都要大于等于
+之前已经看过的i。这样就不会回逆到比上次i小的数字再重复了。
+为什么这样能做到减少重复呢？我们可以这样想
+这个做法等于是把每种factorization 从小到大排了个序
+这样的排序只有一种。
+*/
+class Solution {
+    public List<List<Integer>> getFactors(int n) {
+        List<List<Integer>> allAnswer = new ArrayList<>();
+        if(n < 2) {
+            return allAnswer;
+        }
+        List<Integer> currentAnswer = new ArrayList<>();
+        DFS(n, allAnswer, currentAnswer, 2);
+        return allAnswer;
+    }
+
+    public void DFS(int target, List<List<Integer>> allAnswer,
+                    List<Integer> currentAnswer, int startIndex) {
+        if(target == 1) {
+            if (currentAnswer.size() > 1) allAnswer.add(new ArrayList(currentAnswer));
+            return;
+        }
+        for (int i = startIndex; i <= target; i++) {
+            if(target % i == 0) {
+                currentAnswer.add(i);
+                DFS(target/i, allAnswer, currentAnswer, i);
+                currentAnswer.remove(currentAnswer.size() - 1);
+            }
+        }
+    }
+}
