@@ -1,0 +1,45 @@
+/*
+LC 163 Missing Ranges
+这种细节比较多的模拟题，最好在写代码
+之前，先把整个题目的big picture 画出来
+以免做题的时候越做越乱。 这个题的图大概是这样的
+        x    x       x
+[                                     ]
+填补洞。 填补的方法无非就是从lower 填到 nums【0】
+在nums 里面自己填补， 再从nums[nums.length - 1]
+填到upper. 有了宏观的概念以后基本代码很好写
+不过这种array 加 数字的题会有很多corner case
+第一： 空array
+空array 的话就让upper 和 lower自己形成range 就行
+第二： integer overflow
+integer overflow 一般用long 或double 解决
+*/
+class Solution {
+    public List<String> findMissingRanges(int[] nums, int lower, int upper) {
+        List<String> result = new ArrayList<>();
+        if (nums.length == 0) {
+            findRange((long)lower, (long)upper, result);
+            return result;
+        }
+        // find missing interval in the front
+        findRange(lower, (long)nums[0] - 1, result);
+        // find missing interval in the middle
+        for (int i = 1; i < nums.length; i++) {
+            long st = (long)nums[i - 1] + 1;
+            long ed = (long)nums[i] - 1;
+            findRange(st,ed, result);
+        }
+        // find missing interval in the end
+        findRange((long)nums[nums.length - 1] + 1,(long)upper, result);
+        return result;
+    }
+
+    private void findRange(long st, long ed, List<String > currentList) {
+        if (st > ed) return;
+        if (st == ed) {
+            currentList.add(st + "");
+        } else {
+            currentList.add(st + "->" + ed);
+        }
+    }
+}
