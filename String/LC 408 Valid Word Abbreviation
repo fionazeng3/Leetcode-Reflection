@@ -1,0 +1,38 @@
+/*
+LC 408 Valid Word Abbreviation
+这道题看似是一道很简单的string问题， 但其实
+有很多大坑。也可能string 问题都是有很多大坑的
+也说不定。我们一一来看看
+坑1: abbr 的数字可能不只以为数，这就要求我们
+要看到char 再倒回来算直到上一步积累的数字
+坑2: abbr 里面不能有0， 但是能有10 100
+这就要看前一位是不是也是0 来判断合不合法
+坑3: 前面如果有accumulation 的话这一步
+的abbr 是不需要去掉一个字母的，因为只是
+在处理以前残存的accumulation
+坑4: 个人认为是最坑的。如果abbr 最后一位
+是个数字， 那是看不到下一个char
+这就需要我们开头判断，如果abbr 长度是0
+accumulation 不是0， 就要把最后一个数字处理掉
+这道题的写法我选的是分治型dfs 其实完全可以用iterative
+method 写。但是抽风想练习一下，写完后发现好像太慢了
+就只能献上别人写的最佳solution
+*/
+public boolean validWordAbbreviation(String word, String abbr) {
+        int number = 0;
+        int i = 0, j = 0;
+        while (i < word.length() && j < abbr.length()) {
+            if (Character.isDigit(abbr.charAt(j))) {
+                number = number * 10 + abbr.charAt(j) - '0';
+                if (number == 0) return false;
+                j++;
+            } else {
+                i += number;
+                if (i >= word.length() || word.charAt(i) != abbr.charAt(j)) return false;
+                number = 0;
+                i++; j++;
+            }
+        }
+        i += number;
+        return i == word.length() && j == abbr.length();
+    }
