@@ -23,6 +23,9 @@ LC 282 Expression Add Operators
 5 来算的。 也就是说一个数字如果有前置0， 除了0 之外
 就废了。 解决办法很简单， 如股票num（start） == 0
 的话，第一次运算完就把for loop break 掉就好了
+
+最后说一下， 这道题为什么不用特意去剪枝呢？ 因为不到最后一步就
+不知道答案是不是对的。所以错误答案是在base case被砍了 
 */
 class Solution {
     public List<String> addOperators(String num, int target) {
