@@ -1,0 +1,57 @@
+/*
+LC 282 Expression Add Operators
+这道题是很难的一道枚举型dfs了。
+最大的难点就在于有两样东西要枚举
+一个是数字，再一个就是数字之间的符号
+
+一开始审题之后很晕， 不知道怎么枚举
+这个数字。 这种情况可以想一想第一个数字都
+有哪些情况呢？ 拿数字123456 来举例
+答案的第一个数字无非就是1， 12， 123 。。。123456
+这样就很明了了。 这道题撒网的时候就枚举以 startindex
+开始的不同长度的数字。这样recursion 的下一步 就是枚举
+从上一个endindex 开始的不同数字。 这道题让我对深度优先
+也有了一个更深的理解。 每次recursion 的东西其实就是
+接在本次答案后面的东西。
+
+在每次枚举完数字之后就要枚举符号了， + - 都很简单，
+直接更新sum 就行了。 * 因为有运算顺序的问题， 更新
+的时候要 sum = sum - lastF + lastF * x
+
+最后还有个细节问题，就是0 的问题
+虽然题目没说清楚， 但是05， 005 这些数字是不能当
+5 来算的。 也就是说一个数字如果有前置0， 除了0 之外
+就废了。 解决办法很简单， 如股票num（start） == 0
+的话，第一次运算完就把for loop break 掉就好了
+*/
+class Solution {
+    public List<String> addOperators(String num, int target) {
+        List<String> result = new ArrayList<>();
+        dfs(num, target, 0, "", 0, 0, result);
+        return result;
+    }
+
+    public void dfs(String num, int target, int start, String currentAnswer,
+                    long sum, long lastF, List<String> result) {
+        if(sum == target && start == num.length()) {
+            result.add(currentAnswer);
+            return;
+        }
+        // enumerate numbers
+        for (int i = start; i < num.length(); i++) {
+            long x = Long.parseLong(num.substring(start, i+1));
+            if(currentAnswer.isEmpty()) {
+                // x is the fist number, only one possibility
+                dfs(num, target, i+1, num.substring(start, i+1), x, x, result);
+            }else {
+                // +
+                dfs(num, target, i+1, currentAnswer + "+" + x, sum + x, x, result);
+                //-
+                dfs(num, target, i+1, currentAnswer + "-" + x, sum - x, -1 * x, result);
+                // *
+                dfs(num,target, i+1, currentAnswer + "*" + x, sum - lastF + lastF * x, lastF * x, result);
+            }
+            if (x == 0) break;
+        }
+    }
+}
