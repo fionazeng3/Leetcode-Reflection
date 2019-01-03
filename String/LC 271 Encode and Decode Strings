@@ -1,0 +1,55 @@
+/*
+LC 271 Encode and Decode Strings
+这道题其实是一道design 题， 主要难点
+在于怎么把string 链接起来。链接符号
+自己也可以出现在string 里。所以这就
+涉及到一个escape 的问题。 这里我们
+用 ： 表示escape， ： 自己是 ：：
+分割是：；
+*/
+public class Codec {
+    // Encodes a list of strings to a single string.
+    public String encode(List<String> strs) {
+        StringBuilder result = new StringBuilder();
+        for (String eachWord : strs) {
+            for(char currentChar: eachWord.toCharArray()) {
+                if(currentChar == ':') {
+                    result.append("::");
+                } else {
+                    result.append(currentChar);
+                }
+            }
+            result.append(":;");
+        }
+        return result.toString();
+    }
+
+    // Decodes a single string to a list of strings.
+    public List<String> decode(String s) {
+        List<String> result = new ArrayList<>();
+        int i = 0;
+        String word = "";
+        while(i < s.length()) {
+            char currentCharacter = s.charAt(i);
+            if(currentCharacter == ':') {
+                // escaped :
+                if(s.charAt(i + 1) == ':') {
+                    word += ":";
+                // seperator :
+                } else {
+                    result.add(word);
+                    word = "";
+                }
+                i += 2;
+            } else {
+                word += currentCharacter;
+                i++;
+            }
+        }
+        return result;
+    }
+}
+
+// Your Codec object will be instantiated and called as such:
+// Codec codec = new Codec();
+// codec.decode(codec.encode(strs));
