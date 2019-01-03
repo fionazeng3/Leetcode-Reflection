@@ -1,0 +1,37 @@
+/*
+LC 346 Moving Average from Data Stream
+这道题如果用O（n）的话很好解决， 每次loop 一下就好
+但是如果想优化到）O(1)就要用到前缀数组和的技巧
+用一个lastSum 来记录之前的和是多少
+如果超出window 界限就减去老数字。同样在nums 里面
+也是老数字替代新数字。
+这种前缀数组和的技巧在moving average 中尤其好用
+*/
+class MovingAverage {
+    private int[] nums;
+    private int index;
+    private int size;
+    private int lastSum;
+    /** Initialize your data structure here. */
+    public MovingAverage(int size) {
+        this.nums = new int[size];
+        this.index = 0;
+        this.size = size;
+        this.lastSum = 0;
+    }
+
+    public double next(int val) {
+        int location = this.index % (size);
+        this.index ++;
+        this.lastSum = this.lastSum - nums[location] + val;
+        nums[location] = val;
+        if (index < this.size) return (double) lastSum / index;
+        return (double) lastSum / this.size;
+    }
+}
+
+/**
+ * Your MovingAverage object will be instantiated and called as such:
+ * MovingAverage obj = new MovingAverage(size);
+ * double param_1 = obj.next(val);
+ */
