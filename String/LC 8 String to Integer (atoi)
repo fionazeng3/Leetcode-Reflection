@@ -1,0 +1,44 @@
+/*
+LC 8 String to Integer (atoi)
+这道题出得是真烂， 被踩4728 脚是有原因的
+其实题目意思很简单， 就是找到第一个合法string
+转换成数字。一旦找到不合法的 character 就 return0
+或者已经找到的合法数字。 注意e 在这题里面被视为了
+不合法character
+
+做法很简单。先在开头去空格
+然后找+-，然后如果看到数字就加到result里
+防溢出我用的是long，每个loop检查是否溢出
+*/
+class Solution {
+    public int myAtoi(String str) {
+        long result = 0;
+        char sign = '+';
+        if(str.isEmpty()) return 0;
+        int i = 0;
+        while(i < str.length() && str.charAt(i) == ' ') i++;
+        if(i < str.length() && (str.charAt(i) == '+' || str.charAt(i) == '-')) {
+            sign = str.charAt(i);
+            i++;
+        }
+        while(i < str.length() && Character.isDigit(str.charAt(i))) {
+            result = result * 10 + (str.charAt(i) - '0');
+            if (result > Integer.MAX_VALUE) {
+                    return checkMax(result, sign);
+            }
+            i++;
+        }
+        return (int) checkMax(result, sign);
+    }
+
+
+    private int checkMax(long result, char sign){
+        if (sign == '-') result = result * (-1);
+        if (result > Integer.MAX_VALUE) {
+            result = Integer.MAX_VALUE;
+        }else if (result < Integer.MIN_VALUE) {
+            result = Integer.MIN_VALUE;
+        }
+        return (int)result;
+    }
+}
