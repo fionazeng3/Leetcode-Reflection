@@ -1,0 +1,46 @@
+/*
+LC 388 Longest Absolute File Path
+这道题想明白了其实很好implement
+我觉得难点在于怎样找到一个文件的path
+而不被中途其他的路径干扰到。最好的方法就是记录每个level
+string的长度。其中如果遇到相同的level 就后面的替代前面的
+这样就保证了到file 的时候当前路径是file 的真正路径。
+每次遇到filename 的时候，更新一下max 就好了
+
+这道题我刚开始做的时候犯了一个大错误'\n', '\t'
+这些都是一个character， 绝对不能当乘 \ 和 n
+去处理。如果一个string 是"\n" 那他的charAt(0)
+是 \n 而不是 \
+
+还有一个值得注意的点就是这里求level 最好的
+方法就是看有几个\t 那String.lastIndexOf("\t")
+就可以用来求level啦
+*/
+class Solution {
+    public int lengthLongestPath(String input) {
+        String[] tokens = input.split("\n");
+        int currentMax = 0;
+        List<Integer> levels = new ArrayList<>();
+        int level = 0;
+        for (int i = 0; i < tokens.length; i++) {
+            String currentToken = tokens[i];
+            level = currentToken.lastIndexOf("\t") + 1;
+            int currentLength = currentToken.length() - level;
+            if(levels.size() <= level) {
+                levels.add(currentLength);
+            } else {
+               levels.set(level, currentLength);
+            }
+            // is a file
+            if(currentToken.contains(".")) {
+                int sum = 0;
+                for (int j = 0;  j <= level; j++) {
+                    sum += levels.get(j);
+                }
+                sum = sum + level;
+                currentMax = Math.max(currentMax, sum);
+            }
+        }
+        return currentMax;
+    }
+}
