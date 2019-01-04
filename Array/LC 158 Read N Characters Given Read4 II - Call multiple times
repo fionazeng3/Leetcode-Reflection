@@ -1,0 +1,45 @@
+/*
+LC 158 Read N Characters Given Read4 II - Call multiple times
+首先这道题目说的贼不清楚， 先把问题模糊的地方澄清一下
+1. read4(char[] buf)有自己的file pointer， 并把
+读出的character 放进buf 里面， 然后return 读了几个char
+2.read(char[] buf, int n) 同样把读出的char 写到buf
+里，然后return 读了几个。 注意buf 是output， 不是file的
+内容。 file 的内容是read4 自带的
+
+看到这道题以后应该想一想难点在哪里。难点就在于
+read4 每次读四个，那读多了下次就应该从剩下的
+字母开始读。这个问题很像计算机里的cache 问题。解决方法
+就是建立一个缓冲区， 如果缓冲区没读完就先读缓冲区
+缓冲区空了就用read4 从file 里买呢填充缓冲区array
+*/
+/* The read4 API is defined in the parent class Reader4.
+      int read4(char[] buf); */
+
+public class Solution extends Reader4 {
+    char[] cache = new char[4];
+    int index = 0;
+    int maxLen = 0;
+    /**
+     * @param buf Destination buffer
+     * @param n   Maximum number of characters to read
+     * @return    The number of characters read
+     */
+    public int read(char[] buf, int n) {
+        int readNumber = 0;
+        while (readNumber < n) {
+            // cache is not empty
+            if(index < maxLen) {
+                buf[readNumber] = cache[index];
+                readNumber ++;
+                index ++;
+            // cache is empty now
+            } else {
+                maxLen = read4(cache);
+                index = 0;
+                if (maxLen == 0) break;
+            }
+        }
+        return readNumber;
+    }
+}
