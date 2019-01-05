@@ -1,0 +1,41 @@
+/*
+LC 161 One Edit Distance
+这道题的思路很简单， s 和 t 的情况分为三种
+s 和 t 长度相等； s 比 t 长度大； t 比 s
+长度大。 用双指针来检查两个字符， 当遇到两个
+char 不一样的是后， 如果两个字符长度相同，那两个
+指针一起向右移一位。 如果长度不相同， 肯定就要只把
+长的string 向右移一位。
+
+最后检查： 如果两个指针都移到底了， 并且只有一个不同，
+就满足了条件。 这里还要检查一个corner case， 就是
+不同点在最后一个character。那就在最后再加一个： 如果
+没找到不同， 但是有一个string 差一个到头， 这个时候也满足。
+string 的题记住一定要检查corner case
+*/
+class Solution {
+    public boolean isOneEditDistance(String s, String t) {
+        int sl = s.length();
+        int tl = t.length();
+        int diff = 0;
+        int i = 0;
+        int j = 0;
+        while(i < sl && j < tl) {
+            if(s.charAt(i) != t.charAt(j)) {
+                if(sl == tl) {
+                    i++;
+                    j++;
+                } else if(sl < tl) {
+                    j++;
+                } else {
+                    i++;
+                }
+                diff ++;
+            } else {
+                i++;
+                j++;
+            }
+        }
+        return (diff == 1 && i == sl && j == tl) ||(diff == 0 && (i == sl - 1 || j == tl - 1));
+    }
+}
