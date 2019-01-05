@@ -1,0 +1,46 @@
+/*
+LC 56 Merge Intervals
+interval 类的题big picture 很重要
+这道题的picture 就是， 一大堆 interval
+在你面前， 要怎么把区域划分出来呢？
+最好的办法就是先把interval 根据start 排序
+然后下一个interval 的start 如果比上一个的
+end 小， 肯定就merge。 如果不是，那就把
+这个interval 直接加进来
+
+给intervals 排序的时候我用到了comparator
+和lambda 表达式。 代码长这样子
+Collections.sort(intervals, (a,b) -> { return a.start - b.start;});
+复习一下lambda 表达式： lambda 表达式用于只有一个abstract
+function 的interface 里。 格式是 (参数s) -> { 方法体;}
+*/
+/**
+ * Definition for an interval.
+ * public class Interval {
+ *     int start;
+ *     int end;
+ *     Interval() { start = 0; end = 0; }
+ *     Interval(int s, int e) { start = s; end = e; }
+ * }
+ */
+class Solution {
+    public List<Interval> merge(List<Interval> intervals) {
+        List<Interval> result = new ArrayList<>();
+        if(intervals.isEmpty()) return result;
+        Collections.sort(intervals, (a,b) -> { return a.start - b.start;});
+        Interval last = intervals.get(0);
+        result.add(last);
+        for (int i = 1; i < intervals.size(); i++) {
+            Interval currentSample = intervals.get(i);
+            // need to update interval, overlap found
+            if(currentSample.start <= last.end) {
+                last.end = Math.max(last.end, currentSample.end);
+            // no overlap found
+            } else {
+                last = new Interval(currentSample.start, currentSample.end);
+                result.add(last);
+            }
+        }
+        return result;
+        }
+    }
