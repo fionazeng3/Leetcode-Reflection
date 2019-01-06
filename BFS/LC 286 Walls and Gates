@@ -1,0 +1,47 @@
+/*
+LC 286 Walls and Gates
+这道题也是一道类流水问题。 INF 到 0
+的最小距离也就是 0 到 INF 的最小距离
+套用bfs 模版就一定能解。 但是这道题的难点在于
+流水的先后顺序问题。 如果有多个起点，那么big picture
+肯定是每个门同时注水， 谁先流到一个room，就把它占领。
+实现方法就是把所有门先加到queue里面， 然后一个门一个门
+处理， 而不是找到一个门就走到头。 这也充分验证了为什么
+bfs 要用queue， 而不是用stack。
+*/
+class Solution {
+    public void wallsAndGates(int[][] rooms) {
+        if(rooms.length == 0) return;
+        int y = rooms.length;
+        int x = rooms[0].length;
+        int[] dx = {0,0,1,-1};
+        int[] dy = {1, -1, 0, 0};
+        Queue<Integer> qx = new LinkedList<>();
+        Queue<Integer> qy = new LinkedList<>();
+        // add gates into the queue
+        // horizontal
+        for (int i = 0; i < x; i++) {
+            // vertical
+            for (int j = 0; j < y; j++) {
+                if(rooms[j][i] == 0) {
+                    qx.offer(i);
+                    qy.offer(j);
+                }
+            }
+        }
+        while(!qx.isEmpty()) {
+            int cx = qx.poll();
+            int cy = qy.poll();
+            // search all directions
+            for (int i = 0; i < 4; i++) {
+                int nx = cx + dx[i];
+                int ny = cy + dy[i];
+                if (nx >= 0 && nx < x && ny >=0 && ny < y && rooms[ny][nx] == Integer.MAX_VALUE) {
+                    rooms [ny][nx] = rooms[cy][cx] + 1;
+                    qx.offer(nx);
+                    qy.offer(ny);
+                }
+            }
+        }
+    }
+}
