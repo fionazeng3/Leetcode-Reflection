@@ -1,0 +1,74 @@
+/*
+LC 130 Surrounded Regions
+BFS 问题可以理解成在一个平原上有一个盆地,
+盆地里有一口井,井水缓慢的溢了出来,成一个圆
+形在盆地里扩展。 这个题目是要找被X包围的O
+这样的话可以在棋盘四个边开始给O注水， 用bfs
+向上下左右延伸， 那么没有被注水的O 就是我们
+要找的。最后翻成X就行了。
+
+其实BFS 都是有模版的。 首先用dx dy 定义延伸的
+方向， 再给queue offer 一个 现在的 x y。
+在queue 没空的情况下，处理，并向四周延伸
+*/
+class Solution {
+    public void solve(char[][] board) {
+        // get board demension
+        if(board.length == 0) return;
+        int y = board.length;
+        int x = board[0].length;
+        // fill the water from the four sides of the board
+        // horizontal sides
+        for (int i = 0; i < x; i++) {
+            // upper
+            bfs(board, i, 0);
+            // lower
+            bfs(board, i, y - 1);
+        }
+
+        // vertical sides
+        for (int j = 0; j < y; j++) {
+            // left
+            bfs(board, 0, j);
+            // right
+            bfs(board, x - 1, j);
+        }
+
+        //check, flip
+        for (int i = 0; i < x; i++) {
+            for (int j = 0; j < y; j++) {
+                if(board[j][i] == 'W') {
+                    board[j][i] = 'O';
+                } else if(board[j][i] == 'O') {
+                    board[j][i] = 'X';
+                }
+            }
+        }
+    }
+
+    public void bfs(char[][] board, int currentX, int currentY) {
+        if(board[currentY][currentX] == 'X') return;
+        int y = board.length;
+        int x = board[0].length;
+        int[] dx = {0,0,1,-1};
+        int[] dy = {1,-1,0,0};
+        Queue<Integer> qx = new LinkedList<>();
+        Queue<Integer> qy = new LinkedList<>();
+        qx.offer(currentX);
+        qy.offer(currentY);
+        board[currentY][currentX] = 'W';
+        while(!qx.isEmpty()) {
+            int cx = qx.poll();
+            int cy = qy.poll();
+            for (int i = 0; i < 4; i++) {
+                int nx = cx + dx[i];
+                int ny = cy + dy[i];
+                if(nx >= 0 && nx < x && ny >= 0 && ny < y && board[ny][nx] == 'O') {
+                    board[ny][nx] = 'W';
+                    qx.offer(nx);
+                    qy.offer(ny);
+                }
+            }
+        }
+    }
+}
