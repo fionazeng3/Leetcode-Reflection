@@ -1,0 +1,70 @@
+/*
+LIN 598 Zombie in Matrix
+做到这里bfs 已经非常简单了。 这道题基本
+和 walls and gates 一模一样。 首先把🧟‍♀️
+位置存到queue 里。然后再用bfs 每只僵尸轮流
+咬人。 最后再用个for loop 检查一下最终情况就好了
+注意这里有个很tricky 的corner case， 就是
+门的值是2，可能会影响到最后一步找最大的step
+所以在第一次traversal 的时候把门都变成-1 就行了
+*/
+public class Solution {
+    /**
+     * @param grid: a 2D integer grid
+     * @return: an integer
+     */
+    public int zombie(int[][] grid) {
+        // write your code here
+        if(grid.length == 0) return -1;
+        int y = grid.length;
+        int x = grid[0].length;
+        int[] dx = {0,0,1,-1};
+        int[] dy = {1,-1,0,0};
+        Queue<Integer> qx = new LinkedList<>();
+        Queue<Integer> qy = new LinkedList<>();
+        // add all zombies' location in the queue
+        for (int i = 0; i < x; i++) {
+            for (int j = 0; j < y; j++) {
+                if(grid[j][i] == 1) {
+                    qx.offer(i);
+                    qy.offer(j);
+                } else if (grid[j][i] == 2) {
+                    grid[j][i] = -1;
+                }
+            }
+        }
+        // perform bfs on every zombie
+        while(!qx.isEmpty()) {
+            int cx = qx.poll();
+            int cy = qy.poll();
+            for (int i = 0; i < 4; i++) {
+                int nx = cx + dx[i];
+                int ny = cy + dy[i];
+                if(nx >= 0 && nx < x && ny >= 0 && ny < y && grid[ny][nx] == 0) {
+                    grid[ny][nx] = grid[cy][cx] + 1;
+                    qx.offer(nx);
+                    qy.offer(ny);
+                }
+            }
+        }
+        // check the result
+        int maxStep = 1;
+        boolean peopleFound = false;
+        for (int i = 0; i < x; i++) {
+            for(int j = 0; j < y; j++) {
+                if(grid[j][i] == 0) {
+                    peopleFound = true;
+                    break;
+                } else {
+                    maxStep = Math.max(maxStep,grid[j][i]);
+                }
+            }
+        }
+        maxStep --;
+        if(peopleFound) {
+            return -1;
+        } else {
+            return maxStep;
+        }
+    }
+}
