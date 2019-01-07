@@ -18,6 +18,8 @@ int nextNum = (num + d[j] + 10) % 10;
 
 还有我们怎么记录当前是变动的第几层呢？ 方法就是在每一层
 数字后面价格null。 看到null depth ++
+
+记住这种有起点的最短距离问题一般都使用bfs解决的
 */
 class Solution {
     public int openLock(String[] deadends, String target) {
