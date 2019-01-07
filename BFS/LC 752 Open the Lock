@@ -1,0 +1,60 @@
+/*
+LC 752 Open the Lock
+这道题的bfs不像前几道那么直观，
+是一个隐形的bfs。 那么这个bfs 体现在哪呢？
+体现在每一个layer 的延伸。
+比如果 从0000 开始，每个数字+1， -1求出
+邻居长什么样。把邻居放在queue 里面。再找每个
+邻居的邻居这样扩展。 这道题为什么不能用dfs呢？
+枚举型dfs也可以列举出所有combination的。 因为这道题要求找出
+从0000出发的最短路径而dfs 的思路是深度逐渐增大（从一个数，到两个数到三个数。。。）
+这样是不能找出从0000出发的最短路径的。
+
+所以我们套用bfs模版， 建立queue。再建立一个seen 和 dead 来
+决定要不要延伸一个string 然后不断的poll， 处理， offer。
+这里求邻居的number 的时候用到了这个公式
+int nextNum = (num + d[j] + 10) % 10;
+这个是为了照顾0 向-1 转完以后是9 而设计的
+
+还有我们怎么记录当前是变动的第几层呢？ 方法就是在每一层
+数字后面价格null。 看到null depth ++
+*/
+class Solution {
+    public int openLock(String[] deadends, String target) {
+        Set<String> dead = new HashSet();
+        Set<String> seen = new HashSet();
+        // initialize dead set
+        for (int i = 0; i < deadends.length; i++) {
+            dead.add(deadends[i]);
+        }
+        Queue<String> q = new LinkedList<>();
+        q.offer("0000");
+        q.offer(null);
+        seen.add("0000");
+        int[] d = {-1,1};
+        int depth = 0;
+        while(!q.isEmpty()) {
+            String current = q.poll();
+            if(current == null) {
+                depth++;
+                if(q.peek() != null) q.offer(null);
+            } else if(current.equals(target)) {
+                return depth;
+            } else if (!dead.contains(current)) {
+                // expand breadth on each number
+                for(int i = 0; i < 4; i++) {
+                    int num = current.charAt(i) - '0';
+                    for (int j = 0; j < d.length; j++) {
+                        int nextNum = (num + d[j] + 10) % 10; // ratate one number
+                        String newString = current.substring(0,i) + nextNum + current.substring(i + 1, 4);
+                        if(!seen.contains(newString)) {
+                            q.offer(newString);
+                            seen.add(newString);
+                        }
+                    }
+                }
+            }
+        }
+        return -1;
+    }
+}
