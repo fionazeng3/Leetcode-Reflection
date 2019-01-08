@@ -1,0 +1,80 @@
+/*
+LC 538 Convert BST to Greater Tree
+这是一道比较经典的分治型🌲问题
+首先复习一下BST： BST node 右边的
+child 比自己大， 左边的child 比自己小。
+如果BST 向下做投影，就会得到一个从小到大的数列
+而向下投影就是in order traversal 的结果。
+而这道题要让current node + 比它大的所有 node sum
+这就提醒我们要用反中根遍历（right， process， left）
+
+分治型dfs 的话不用想按照实际执行顺序的模拟，只要
+按照DFS的定义宏观理解即可。以这道题来说应该这样理解
+
+dfs (CEO):我的任务是对 cur=6 这棵树做三件事
+1. “反中根遍历”的顺序访问cur这颗树每个节点
+2. sum要在当前的基础上要加上所有访问元素的值
+3. 所有访问元素要变成大于等于它的元素之和
+
+dfs (CEO):我先检查下cur=6
+这颗树是否是空的,空的话
+我就完事交差了
+
+dfs (CEO):既然cur=6不为空,那我们来
+分配下任务吧:23行的dfs,你是总监,
+你先帮我把8为根的这棵右子树做了,
+任务还是这三样,等你结果
+
+dfs@23:报告老大,任务已完成,sum
+已经加上了访问过的元素的值,所有元
+素的已经变成大于等于它的元素之和
+
+dfs (CEO):总监dfs@23已经完成了他的
+工作,我要在他工作的基础之上完成自
+己的工作@24 25:sum 加上当前的值,
+当前的值变为所有比它的大的元素之和,
+也就是sum
+
+dfs (CEO):好了,dfs@26,你也是总监,
+dfs@23和我的工作都做完了,sum现在
+是所有大于等于6的元素的和,条件已
+经给你创造好了,剩下的以3为根的这
+棵左子树就交给你了
+dfs@26:放心,包在我身上
+
+dfs@26:报告老大,全部做完
+dfs(CEO):不错,所有工作都做完了,
+可以向董事会汇报了
+
+其实在做的过程中,总监把任务分给了
+经理,经理又分配给了主管,主管又分
+配给了各级干活的。。。他们的任务都
+是这三件事,直到某个干活的发现分给
+他的树是空的,他就啥也没干,高兴的
+直接交差了
+*/
+
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    int sum = 0;
+    public TreeNode convertBST(TreeNode root) {
+        dfs(root);
+        return root;
+    }
+
+    public void dfs(TreeNode root) {
+        if (root == null) return;
+        dfs(root.right);
+        sum += root.val;
+        root.val = sum;
+        dfs(root.left);
+    }
+}
