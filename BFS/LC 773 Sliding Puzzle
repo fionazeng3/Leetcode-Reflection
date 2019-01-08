@@ -1,0 +1,98 @@
+/*
+LC 773 Sliding Puzzle
+这道题跟 open the lock 很像，
+也是一道隐形bfs，求最短距离的问题
+基本思路就是在每一个0 的四周扩展，放到queue
+里面。 这里同样涉及到怎么记录换了几层的问题
+解决办法同样是用 null
+
+还有，这类问题建立seen hashset 很重要，
+不然会不停的处理同样的case， 导致超时
+还有因为这道题要处理2D array， 注意reference
+semantic。用clone每次建立新的array
+*/
+class Solution {
+    public int slidingPuzzle(int[][] board) {
+        int[][] standard = new int[2][3];
+        standard[0][0] = 1;
+        standard[0][1] = 2;
+        standard[0][2] = 3;
+        standard[1][0] = 4;
+        standard[1][1] = 5;
+        standard[1][2] = 0;
+        String standardString = Arrays.deepToString(standard);
+        Set<String> seen = new HashSet();
+        Queue<Node> q = new LinkedList<>();
+        int startX = 0;
+        int startY = 0;
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j< 2; j++) {
+                if(board[j][i] == 0) {
+                    startX = i;
+                    startY = j;
+                    break;
+                }
+            }
+        }
+        Node initial = new Node(board, startX, startY);
+        q.offer(initial);
+        q.offer(null);
+        int[] dx = {0,0,-1,1};
+        int[] dy = {-1,1,0,0};
+        int depth = 0;
+        while(!q.isEmpty()) {
+            System.out.println(q.size());
+            Node cn = q.poll();
+            // identify layers
+            if(cn == null) {
+                depth++;
+                if(q.peek() != null) q.offer(null);
+            // check if destination is met
+            } else if(cn.boardString.equals(standardString)) {
+                return depth;
+            } else {
+                int cx = cn.zeroX;
+                int cy = cn.zeroY;
+                int[][]cb = cn.board;
+                for(int i = 0; i < 4; i++) {
+                    int nx = cx + dx[i];
+                    int ny = cy + dy[i];
+                    if(nx >= 0 && nx < 3 && ny >=0 && ny < 2) {
+                        // clone the board
+                        int[][] cloneBoard = new int[2][3];
+                        for (int k = 0; k < 2; k++) {
+                            cloneBoard[k] = cb[k].clone();
+                        }
+                        // swap the element
+                        cloneBoard[ny][nx] = 0;
+                        cloneBoard[cy][cx] = cb[ny][nx];
+                        String nextString = Arrays.deepToString(cloneBoard);
+                        if(!seen.contains(nextString)) {
+                            Node nextNode = new Node(cloneBoard, nx,ny);
+                            System.out.println(nextString);
+                            q.offer(nextNode);
+                            seen.add(nextString);
+                        }
+                    }
+                }
+            }
+        }
+        return -1;
+    }
+
+    class Node {
+        public int[][]board;
+        public String boardString;
+        public int zeroX;
+        public int zeroY;
+
+
+        // constructor
+        public Node(int[][] board, int zeroX, int zeroY) {
+            this.board = board;
+            this.boardString = Arrays.deepToString(this.board);
+            this.zeroX = zeroX;
+            this.zeroY = zeroY;
+        }
+    }
+}
