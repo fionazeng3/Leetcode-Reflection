@@ -4,6 +4,12 @@ LC 438 Find All Anagrams in a String
 记录每个substring 的出现个数。 为了减少runtime，
 每一次新的window 都是减少一个字母， 增加下一个字母，
 而不是每一次都重新统计。
+
+还有这一类string 问题一定要注意fence post problem
+在最后一个for loop 里面， 做了检查和更新两个动作。 这样
+最后一个更新的结果是没有检查到的。一定要在for loop 外面
+再检查一遍
+
 */
 class Solution {
     public List<Integer> findAnagrams(String s, String p) {
