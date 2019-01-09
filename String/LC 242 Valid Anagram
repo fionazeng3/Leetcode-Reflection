@@ -1,0 +1,20 @@
+/*
+LC 242 Valid Anagram
+很简单的一道题， 还是用到了拿
+数组当 hashmap 用的技巧花式写代码
+两个string 如果每个字母出现的个数
+相同， 就一定是anagram。
+那么只要比较两个数组是否相同就好了
+*/
+class Solution {
+    public boolean isAnagram(String s, String t) {
+        if(s.length() != t.length()) return false;
+        int [] sRecord = new int[256];
+        int [] tRecord = new int [256];
+        for (int i = 0; i < s.length(); i++) {
+            sRecord[s.charAt(i)] ++;
+            tRecord[t.charAt(i)] ++;
+        }
+        return Arrays.equals(sRecord, tRecord);
+    }
+}
