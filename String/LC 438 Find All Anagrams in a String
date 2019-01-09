@@ -1,0 +1,30 @@
+/*
+LC 438 Find All Anagrams in a String
+这道题也很简单， 用 array as hashmap 和 sliding window 的方法
+记录每个substring 的出现个数。 为了减少runtime，
+每一次新的window 都是减少一个字母， 增加下一个字母，
+而不是每一次都重新统计。
+*/
+class Solution {
+    public List<Integer> findAnagrams(String s, String p) {
+        List<Integer> result = new ArrayList<>();
+        if(p.length() > s.length()) return result;
+        int[] pRecord = new int[256];
+        int[] sRecord = new int[256];
+        int pLen = p.length();
+        for (int i = 0; i < pLen; i++) {
+            pRecord[p.charAt(i)] ++;
+            // initialize the hashmap of the first substring in s
+            sRecord[s.charAt(i)] ++;
+        }
+        // check is anagram
+        // update sRecord
+        for (int i = 1; i <= s.length() - p.length(); i++) {
+            if(Arrays.equals(sRecord, pRecord)) result.add(i - 1);
+            sRecord[s.charAt(i - 1)] --;
+            sRecord[s.charAt(i + pLen - 1)] ++;
+        }
+        if(Arrays.equals(sRecord, pRecord)) result.add(s.length() - p.length());
+        return result;
+    }
+}
