@@ -1,0 +1,47 @@
+/*
+LC 156 Binary Tree Upside Down
+这道题先画出来看看是什么样的问题， 然后开始做
+首先想一下是先反转再递归还是先递归再反转
+
+先反转的话左边子树的children 就丢了。 所以
+要先递归再反转。
+
+其实这道题变了树， 应该是x = change（x）问题
+但是因为用指针操作，会更容易一些。
+
+这个答案的newRoot 其实是从最左下脚的node 一路传上来的
+没有变。最后只会return 一次。
+
+这道题的答案用九章的思路应该怎么想呢？
+CEO 说： 如果我是最右下角的node， 我就完事了
+如果我不是， 让下属去找最左的node 同时反转， 然后我把
+我的这一层反转就好了。
+*/
+
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public TreeNode upsideDownBinaryTree(TreeNode root) {
+        if (root == null) {
+            return null;
+        }
+        return dfs(root);
+    }
+
+    private TreeNode dfs(TreeNode root) {
+        if (root.left == null) return root;
+        TreeNode newRoot = dfs(root.left);
+        root.left.right = root;
+        root.left.left = root.right;
+        root.left = null;
+        root.right = null;
+        return newRoot;
+    }
+}
