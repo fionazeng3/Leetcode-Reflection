@@ -1,0 +1,41 @@
+/*
+LC 107 Binary Tree Level Order Traversal II
+这道题还是比较简单。 用 List<List<Integer>> 来记录
+每一层的value， 最后反过来就好了
+
+在dfs中， ceo 记录了自己这一层， 然后把下一层交给
+下属就好了
+*/
+
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+
+class Solution {
+    List<List<Integer>> result = new ArrayList<>();
+    public List<List<Integer>> levelOrderBottom(TreeNode root) {
+        if (root == null) return result;
+        dfs(root, 1);
+        List<List<Integer>> reverseResult = new ArrayList<>();
+        for(int i = result.size() - 1; i >= 0; i--) {
+            reverseResult.add(result.get(i));
+        }
+        return reverseResult;
+    }
+
+    private void dfs(TreeNode root, int height) {
+        if(root == null) return;
+        if(height > result.size()) {
+            result.add(new ArrayList<>());
+        }
+        result.get(height - 1).add(root.val);
+        dfs(root.left, height + 1);
+        dfs(root.right, height + 1);
+    }
+}
