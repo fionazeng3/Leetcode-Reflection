@@ -1,0 +1,45 @@
+/*
+LC 288 Unique Word Abbreviation
+这道题考察的主要是对问题的理解
+什么时候缩写才是unique 呢？
+反过来想， 如果单词abbr 不是unique 会发生什么情况？
+如果一个word abbr 不是unique， 肯定有别的词的abbr 和
+它的一样， 然后给该abbr 的个数加上几个。
+所以， 肯定就是 word 出现次数和它的abbr 出现次数相等的时候
+就证明word 的abbr 是unique 的
+
+在九章的答案里， 我还发现了map 的一个新的function 比较有用
+这里献上官方文档
+getOrDefault(Object key, V defaultValue)
+Returns the value to which the specified key is mapped, or defaultValue if this map contains no mapping for the key.
+*/
+class ValidWordAbbr {
+    Map<String, Integer> wordBank = new HashMap<>();
+    Map<String, Integer> abbrBank = new HashMap<>();
+
+    public ValidWordAbbr(String[] dictionary) {
+        for (String currentWord : dictionary) {
+            String ab = toAbbr(currentWord);
+            wordBank.put(currentWord, wordBank.getOrDefault(currentWord, 0) + 1);
+            abbrBank.put(ab, abbrBank.getOrDefault(ab,0) + 1);
+        }
+
+    }
+
+    public boolean isUnique(String word) {
+        String ab = toAbbr(word);
+        return abbrBank.get(ab) == wordBank.get(word);
+    }
+
+    private String toAbbr(String input) {
+        int len = input.length();
+        if(len <= 2) return input;
+        return "" + input.charAt(0) + (len - 2) + input.charAt(len - 1);
+    }
+}
+
+/**
+ * Your ValidWordAbbr object will be instantiated and called as such:
+ * ValidWordAbbr obj = new ValidWordAbbr(dictionary);
+ * boolean param_1 = obj.isUnique(word);
+ */
