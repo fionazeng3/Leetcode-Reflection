@@ -1,0 +1,44 @@
+/*
+LC 277 Find the Celebrity
+这道题最笨的方法是对每个人做名人检查
+看看每一个人认不认识他。 这样的复杂度是O(n^2)
+那么我该怎么减少冗余呢？ 刚才的算法笨在
+只用到了true 的结果。 我们也把false 的结果利用起来
+试试看。 knows（a, b）如果是true， 就应该淘汰
+a， 如果是false 就应该淘汰b。 n-1 比较下来只剩下
+一个人了， 再对这个人进行名人检查就行了。 这样的
+复杂度减少到了O（n）
+
+怎么实现呢？
+在0～n-1 人里面扫描。 用指针的办法。 如果knows（a，b）是true
+就把指针挪到b， 这样就淘汰了a
+如果knows（a，b） 是false
+就让for loop 继续， 这样就淘汰了b
+最后做检验就好了
+
+这道题要多回来看看
+*/
+/* The knows API is defined in the parent class Relation.
+      boolean knows(int a, int b); */
+
+public class Solution extends Relation {
+    public int findCelebrity(int n) {
+        int c = 0;
+        // eliminate candidates
+        for (int i = 1; i < n;i++) {
+            if(knows(c, i)) {
+                c = i;
+            }
+        }
+        // confirm it is celabraty
+        for (int i = 0; i < n; i++) {
+            if(i != c && knows(c, i)) {
+                return -1;
+            }
+            if(i != c && !knows(i,c)) {
+                return -1;
+            }
+        }
+        return c;
+    }
+}

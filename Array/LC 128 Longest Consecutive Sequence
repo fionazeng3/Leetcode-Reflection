@@ -1,0 +1,38 @@
+/*
+LC 128 Longest Consecutive Sequence
+这道题用到了一个很巧妙的思路
+要想求最大的Consecutive Sequence 就
+先看数组里的每一个数字， 看它向左右最多能延伸
+多少。 已经延伸过的数字就不用再看了， 因为如果
+他们在答案里， 就一定跟看过的数字是连起来的
+
+具体的实现方法很简单， 先把数组每一个数字加到
+hashset 里面。 延伸的时候在set 里面找数字，再
+删除就行了
+*/
+class Solution {
+    public int longestConsecutive(int[] nums) {
+        Set<Integer> bank = new HashSet<>();
+        for (int number : nums) {
+            bank.add(number);
+        }
+        int currentMax = 0;
+        for (int number : nums) {
+            int l = number - 1;
+            int r = number + 1;
+            bank.remove(number);
+            // extend to the left
+            while(bank.contains(l)) {
+                bank.remove(l);
+                l--;
+            }
+            // extend to the right
+            while (bank.contains(r)) {
+                bank.remove(r);
+                r++;
+            }
+            currentMax = Math.max(currentMax, r - l - 1);
+        }
+        return currentMax;
+    }
+}
