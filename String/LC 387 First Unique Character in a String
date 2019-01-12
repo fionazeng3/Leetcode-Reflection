@@ -1,0 +1,25 @@
+/*
+LC 387 First Unique Character in a String
+在一个string 中找到第一个unique char 的index
+loop 第一遍用九章里面的array as hashmap 方法
+记录每个char 出现次数
+第二次loop 如果当前char 出现次数为1， 停止，return
+*/
+class Solution {
+    public int firstUniqChar(String s) {
+        int len = s.length();
+        int[] bank = new int[256];
+        int result = -1;
+        for (int i = 0; i < len; i++) {
+            bank[s.charAt(i)] ++;
+        }
+
+        for (int i = 0; i < len; i++) {
+            if(bank[s.charAt(i)] == 1) {
+                result = i;
+                break;
+            }
+        }
+        return result;
+    }
+}

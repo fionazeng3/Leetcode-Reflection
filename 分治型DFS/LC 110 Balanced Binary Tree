@@ -1,0 +1,38 @@
+/*
+LC 110 Balanced Binary Tree
+这道题的思路是计算出每一个左右node 的深度
+检查left - right 是不是大于1。 因为树里面
+只要有一个node 不符合标准， 整个树就废了。
+所以把不合格的node 深度设置为 -1。 每次检查的时候
+左右有一个是-1， 当前的node 深度就为-1. 最后只要检查
+root 是不是-1 就能知道数是不是balance 了
+
+这道题用的是bottom up 的思路。 先用dfs 走到底，
+再往上一步一步return。 应该仔细思考一下
+*/
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+
+class Solution {
+    public boolean isBalanced(TreeNode root) {
+        int result = computeDepth(root);
+        return result >= 0;
+    }
+
+    private int computeDepth(TreeNode root) {
+        if(root == null) return 0;
+        int left = computeDepth(root.left);
+        int right = computeDepth(root.right);
+        if(left == -1 || right == -1 || Math.abs(left - right) > 1) {
+            return -1;
+        }
+        return Math.max(left, right) + 1;
+    }
+}
