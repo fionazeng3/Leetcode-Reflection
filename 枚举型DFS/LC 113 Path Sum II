@@ -1,0 +1,49 @@
+/*
+LC 113 Path Sum II
+这道题把枚举型dfs 嵌套在树里面了
+其实还是利用模版写枚举型dfs， 唯一不同的
+是，这里把for loop 改成了 left right
+注意一定要加一个node， backtrack 一次
+才是正确的方法。 可以想一想正常dfs 模版
+的for loop 跑两次是什么样的。 这道题分治的
+部分和LC 112 Path Sum 基本一样， 可以参考一下
+*/
+
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public List<List<Integer>> pathSum(TreeNode root, int sum) {
+        List<List<Integer>> result = new ArrayList<>();
+        if(root == null) return result;
+        List<Integer> currentAnswer = new ArrayList<>();
+        currentAnswer.add(root.val);
+        dfs(root, sum, root.val, result, currentAnswer);
+        return result;
+    }
+
+    private void dfs(TreeNode root, int sum, int currentSum, List<List<Integer>> result,
+                     List<Integer>currentAnswer) {
+        if(root == null) return;
+        if(root.left == null && root.right == null) {
+            if(currentSum == sum) result.add(new ArrayList<>(currentAnswer));
+            return;
+        }
+        if(root.left != null) {
+            currentAnswer.add(root.left.val);
+            dfs(root.left, sum, currentSum + root.left.val, result, currentAnswer);
+            currentAnswer.remove(currentAnswer.size() - 1);
+        }
+        if(root.right != null) {
+            currentAnswer.add(root.right.val);
+            dfs(root.right, sum, currentSum + root.right.val, result, currentAnswer);
+            currentAnswer.remove(currentAnswer.size() - 1);
+        }
+    }
+}

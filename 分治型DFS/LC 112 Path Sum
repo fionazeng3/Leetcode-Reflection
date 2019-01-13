@@ -1,0 +1,29 @@
+/*
+LC 112 Path Sum
+这道题一开始想复杂了， 想要遇到null 的时候
+再判断当前是不是path sum。 这就有一个很麻烦的
+问题就是要判断上一级是不是一个leaf（没有children）
+与其判断null 不如遇到leaf 的时候判断sum 相不相等
+这样会让答案更简单
+*/
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public boolean hasPathSum(TreeNode root, int sum) {
+        if(root == null) return false;
+        return dfs(root, 0, sum);
+    }
+
+    private boolean dfs(TreeNode root, int currentSum, int sum) {
+        if(root == null) return false;
+        if(root.left == null && root.right == null && currentSum + root.val == sum) return true;
+        return dfs(root.left, currentSum + root.val, sum) || dfs(root.right, currentSum + root.val, sum);
+    }
+}

@@ -1,0 +1,31 @@
+/*
+LC 226 Invert Binary Tree
+这是一道典型的x = change（x）
+问题。 注意node 之间的连接。
+还有如果在原树上动的话一定要注意reference
+semantics。 这里我是每一个都建立了新的
+node
+*/
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public TreeNode invertTree(TreeNode root) {
+        TreeNode newRoot = dfs(root);
+        return newRoot;
+    }
+
+    private TreeNode dfs(TreeNode root) {
+        if (root == null) return null;
+        TreeNode newRoot = new TreeNode(root.val);
+        newRoot.left = dfs(root.right);
+        newRoot.right = dfs(root.left);
+        return newRoot;
+    }
+}
