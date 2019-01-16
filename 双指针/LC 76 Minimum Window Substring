@@ -1,0 +1,56 @@
+/*
+LC 76 Minimum Window Substring
+这道hard题其实有了双指针的思路以后就很好做了
+怎么判断是单调双指针呢？还是一样的套路，
+从每一个元素开始都能找到一个window。 左指针
+往右移动的时候右指针只能往右移动。
+
+这道题用两个array as hashmap 来记录
+字母出现的次数。 s 用双指针来找最长window。
+每次左指针向右移动一次。 那么原来左指针指的char 频率
+就减一下。 然后再移动右指针就好了。
+
+这里面还有一个优化的点。 每次右指针往右移动的时候， 怎么
+判断当前window 就符合条件了呢？ 最笨的方法是每一次都
+把 两个bank 过一遍。 这样确实没什么必要。 优化方案就是
+用一个数字记录目前有多少个char 合格了。 只要这个数字达到了
+t uniqueChar， 当前window 就合格了
+
+*/
+class Solution {
+    public String minWindow(String s, String t) {
+        int minLen = Integer.MAX_VALUE;
+        int lFinal = -1, rFinal = -1;
+        int r = 0, l = 0;
+        int lenS = s.length(), lenT = t.length();
+        int[] sBank = new int[256], tBank = new int[256];
+        char[] sArray = s.toCharArray(), tArray = t.toCharArray();
+        int numQualify = 0, uniqueChar = 0;
+        // put string t into the bank
+        for (int i = 0; i < lenT; i++) {
+            if(tBank[tArray[i]] == 0) uniqueChar++; // record different chars
+            tBank[tArray[i]]++;
+        }
+        // use double pointer to find substring
+        while (l < lenS) {
+            // move right pointer
+            while (r < lenS && numQualify < uniqueChar) {
+                sBank[sArray[r]] ++;
+                if(sBank[sArray[r]] == tBank[sArray[r]]) {
+                    numQualify ++;
+                }
+                r++;
+            }
+            if(uniqueChar == numQualify && r - l < minLen) {
+                lFinal = l;
+                rFinal = r;
+                minLen = r - l;
+            }
+            // move left pointer
+            if(sBank[sArray[l]] == tBank[sArray[l]]) numQualify --;
+            sBank[sArray[l]]--;
+            l++;
+        }
+        return lFinal == -1 ? "" : s.substring(lFinal, rFinal);
+    }
+}

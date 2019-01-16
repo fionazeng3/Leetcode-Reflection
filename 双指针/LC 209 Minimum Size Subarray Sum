@@ -1,0 +1,33 @@
+/*
+LC 209 Minimum Size Subarray Sum
+这是一道典型的双指针问题。 双指针主要的
+关键词就是subarray/ substring 这些的
+套路是这样的： 在这个array 里面， 每一个
+元素都能找到对应的minimum size subarray
+可是这样的话时间复杂度为 O(n^2). 怎么样才能
+优化呢？ 一般来讲， 左指针往右移动以后， 对应的
+右指针肯定也得往右移动。 因为如果往左移动的
+话sum 会越来越小。 所以说，每次移动左指针的
+时候， sum 减去上一个左指针的值，再一直往右
+移动右指针，直到sum >= s 为止。 这道题的code
+就是一个很经典的双指针模版了
+*/
+
+class Solution {
+    public int minSubArrayLen(int s, int[] nums) {
+        int minLen = Integer.MAX_VALUE;
+        int l = 0;
+        int r = 0;
+        int sum = 0;
+        while(l< nums.length) {
+            while (r < nums.length && sum < s) {
+                sum += nums[r];
+                r++;
+            }
+            if(sum >= s) minLen = Math.min(minLen, r - l);
+            sum -= nums[l];
+            l++;
+        }
+        return minLen == Integer.MAX_VALUE ? 0 : minLen;
+    }
+}

@@ -1,0 +1,29 @@
+/*
+LC 3 Longest Substring Without Repeating Characters
+这也是比较典型的一道双指针问题 substring 就是一个很明显的关键词
+一样的套路：每一个元素都能找到自己的最长substring
+每次左指针往右移动的时候， 上一个左指针character --
+然后再移动右指针就好了。 这种题注意一下off by 1 的细节
+还有string 的频率问题 array as hashmap 是一个很好的
+工具
+*/
+class Solution {
+    public int lengthOfLongestSubstring(String s) {
+        int result = 0;
+        int[] bank = new int[256];
+        char[] input = s.toCharArray();
+        int l = 0;
+        int r = 0;
+        int len = s.length();
+        while (l < len) {
+            while(r < len && bank[input[r]] == 0) {
+                bank[input[r]]++;
+                r++;
+            }
+            result = Math.max(result, r - l);
+            bank[input[l]]--;
+            l++;
+        }
+        return result;
+    }
+}
