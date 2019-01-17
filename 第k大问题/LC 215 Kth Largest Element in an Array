@@ -1,0 +1,62 @@
+/*
+LC 215 Kth Largest Element in an Array
+在数组中找出第k 大元素
+最快的方法是用selection sort 变形
+找到一个pivot， 先把它放在最后边
+然后逐个查找， 把比它小的元素放在它
+左边， 最后再在把pivot 换回来。
+用它的ranking 和k 比较。
+如果等于k， return pivot
+如果小于k， recurse 右边
+如果大于k， recurse 左边
+这是一个很好的selection sort 模版
+partition function 里的代码，很巧妙地
+把所有比pivot 小的元素都放在了左边
+*/
+class Solution {
+    int[] nums;
+    public int findKthLargest(int[] nums, int k) {
+        this.nums = nums;
+        int len = nums.length;
+        return selectionSort(0, len - 1, len - k);
+    }
+
+    // main recursion
+    public int selectionSort(int start, int end, int rank) {
+        if(start == end) return nums[start]; // if there is only one element
+        int pivotIndex = (start + end) / 2;
+        int partitionIndex = partition(start, end, pivotIndex);
+        if(partitionIndex == rank) {
+            return nums[partitionIndex]; // found the number
+        } else if (partitionIndex < rank) {
+            return selectionSort(partitionIndex + 1, end, rank); // recurse on the right
+        } else {
+            return selectionSort(start, partitionIndex - 1, rank); // recurse on the left
+        }
+    }
+
+    // partition
+    public int partition(int start, int end, int pivotIndex) {
+        // move the pivot number to the end
+        int pivotValue = nums[pivotIndex];
+        swap(pivotIndex, end);
+        int finalIndex = start;
+        // put all the numbers smaller than the pivot on the left
+        for (int i = start; i < end; i++) {
+            if(nums[i] < pivotValue) {
+                swap(finalIndex, i);
+                finalIndex ++;
+            }
+        }
+        // swap the pivot back
+        swap(finalIndex, end);
+        return finalIndex;
+    }
+
+    // swaping two elements
+    public void swap(int i, int j) {
+        int temp = nums[i];
+        nums[i] = nums[j];
+        nums[j] = temp;
+    }
+}

@@ -1,0 +1,30 @@
+/*
+LC 340 Longest Substring with At Most K Distinct Characters
+又是一道很经典的双指针问题 substring 是关键词
+左指针往右移动的时候右指针只能往右移动
+这道题注意右指针的移动条件
+*/
+class Solution {
+    public int lengthOfLongestSubstringKDistinct(String s, int k) {
+        int[] bank = new int[256];
+        int uniqueChar = 0;
+        char[] sChar  = s.toCharArray();
+        int l = 0, r = 0;
+        int len = s.length();
+        int maxLen = 0;
+        while(l < len) {
+            while(r < len && (uniqueChar < k || (uniqueChar == k && bank[sChar[r]] != 0))) {
+                if(bank[sChar[r]] == 0) {
+                    uniqueChar++;
+                }
+                bank[sChar[r]] ++;
+                r++;
+            }
+            maxLen = Math.max(maxLen, r - l);
+            if(bank[sChar[l]] == 1) uniqueChar--;
+            bank[sChar[l]] --;
+            l++;
+        }
+        return maxLen;
+    }
+}
