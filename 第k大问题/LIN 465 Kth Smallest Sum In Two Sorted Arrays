@@ -1,0 +1,63 @@
+/*
+LC 465 Kth Smallest Sum In Two Sorted Arrays
+给两个排序好的数组， 要求数组两两和的第k 小数
+首先想一下怎么把它转化成传统的第k 大问题。
+把所有的两两和列出来组成一个2D array。
+其中的第i，j 坐标的值就是A[i] + B[j]
+这个2D array 的横轴和纵轴都是排好序的
+所以接下来利用minheap 模版， 先把左上角的
+数字加到minheap 里， 然后每poll 一次， 就offer
+右边和下边的元素。 执行k-1次
+最后peek 的值就是第k 小的值
+*/
+public class Solution {
+    /**
+     * @param A: an integer arrays sorted in ascending order
+     * @param B: an integer arrays sorted in ascending order
+     * @param k: An integer
+     * @return: An integer
+     */
+    private class Position {
+        int x, y;
+        public Position(int x , int y) {
+            this.x = x;
+            this.y = y;
+        }
+    }
+
+    public int kthSmallestSum(int[] A, int[] B, int k) {
+        // consruct result array
+        int x = B.length;
+        int y = A.length;
+        int[][] results = new int[y][x];
+        for (int i = 0; i < x; i++) {
+            for (int j = 0; j < y; j++) {
+                results[j][i] = A[j] + B[i];
+            }
+        }
+        // construct minHeap
+        Queue<Position>minHeap = new PriorityQueue<>((p1, p2) -> results[p1.y][p1.x] - results[p2.y][p2.x]);
+        // visited
+        boolean[][] visited = new boolean[y][x];
+        // add upper left corner
+        minHeap.add(new Position(0,0));
+        visited[0][0] = true;
+        // poll and offer for k-1 times
+        for (int i = 0; i < k -1; i++) {
+            Position currentPosition = minHeap.poll();
+            int cx = currentPosition.x, cy = currentPosition.y;
+            // add lower
+            if(cy + 1 < y && !visited[cy + 1][cx]) {
+                minHeap.offer(new Position(cx, cy + 1));
+                visited[cy + 1][cx] = true;
+            }
+            // add right
+            if(cx + 1 < x && !visited[cy][cx + 1]) {
+                minHeap.offer(new Position(cx + 1, cy));
+                visited[cy][cx + 1] = true;
+            }
+        }
+        Position finalPosition = minHeap.peek();
+        return results[finalPosition.y][finalPosition.x];
+    }
+}
