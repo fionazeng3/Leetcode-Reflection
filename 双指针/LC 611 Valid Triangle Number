@@ -1,0 +1,31 @@
+/*
+LC 611 Valid Triangle Number
+单调双指针问题。 怎么判断的呢？
+因为三角形必须两边之和大于第三边
+所以如果固定了前两个指针， 第三个指针的
+情况是： VVVXXXXXXXXXX。 所以每次第三个指针移动的时候，
+只要前两个指针之和小于当前元素， 就不用再往右移动了
+*/
+class Solution {
+    public int triangleNumber(int[] nums) {
+        int result = 0;
+        Arrays.sort(nums);
+        int i = 0, j = 0, k = 0, currentSum = 0;
+        int len = nums.length;
+        while (i < len) {
+            j = i + 1;
+            k = j + 1;
+            while(j < len) {
+                currentSum = nums[i] + nums[j];
+                while(k < len && currentSum > nums[k]) {
+                    k++;
+                    result++;
+                }
+                j++;
+                k = j + 1;
+            }
+            i++;
+        }
+        return result;
+    }
+}

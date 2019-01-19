@@ -1,0 +1,30 @@
+/*
+LIN 609 Two Sum - Less than or equal to target
+很简单的单调双指针问题
+右指针的情况是 VVVVVXXXX
+我发现所有这种情况的右指针， 每次左指针往右移动的时候，
+右指针要先回到左指针右边 r = l + 1;
+*/
+
+public class Solution {
+    /**
+     * @param nums: an array of integer
+     * @param target: an integer
+     * @return: an integer
+     */
+    public int twoSum5(int[] nums, int target) {
+        int result = 0, l = 0, r = 1;
+        int len = nums.length;
+        if(len < 2) return result;
+        Arrays.sort(nums);
+        while(l < len) {
+            while(r < len && nums[l] + nums[r] <= target) {
+                result++;
+                r++;
+            }
+            l++;
+            r = l + 1;
+        }
+        return result;
+    }
+}

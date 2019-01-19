@@ -1,0 +1,35 @@
+/*
+LC 270 Closest Binary Search Tree Value
+一道很简单的BST 分治型dfs。 在solution 留一个
+finalVal， 然后在dfs 里面不断更新finalVal。
+如果target 比当前值小， 往左走， 不然就往右走
+最后return finalVal 就行了
+*/
+
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    int finalVal;
+    public int closestValue(TreeNode root, double target) {
+        finalVal = root.val;
+        dfs(root, target);
+        return finalVal;
+    }
+
+    public void dfs(TreeNode root, double target) {
+        if(root == null) return;
+        if(Math.abs(root.val - target) < Math.abs(finalVal - target)) finalVal = root.val;
+        if(target < root.val) {
+            dfs(root.left, target);
+        } else {
+            dfs(root.right, target);
+        }
+    }
+}
