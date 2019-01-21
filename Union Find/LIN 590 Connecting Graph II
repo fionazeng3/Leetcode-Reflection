@@ -1,0 +1,62 @@
+/*
+LIN 590 Connecting Graph II
+这道题也可以称得上是模版提了。 可以基本
+套用LIN 589的模版。 但是因为这道题query 的
+是 the number of connected component nodes which include node a
+所以加一个size 数组。 一开始所有node 的size 都是1，
+每次connect 的时候更新一下。
+注意如果题目有把一个元素从一个集合中抽离出来这个动作，就没办法用union find 了
+*/
+public class ConnectingGraph2 {
+    int[] father;
+    int[] size;
+    /*
+    * @param n: An integer
+    */public ConnectingGraph2(int n) {
+        // do intialization if necessary
+        father = new int[n + 1];
+        size = new int[n + 1];
+        for (int i = 1; i < n + 1; i++) {
+            father[i] = i;
+            size[i] = 1;
+        }
+    }
+
+    private int find(int x) {
+        int boss = x;
+        while(father[boss] != boss) {
+            boss = father[boss];
+        }
+        while (x!= boss) {
+            int temp = father[x];
+            father[x] = boss;
+            x = temp;
+        }
+        return boss;
+    }
+
+    /*
+     * @param a: An integer
+     * @param b: An integer
+     * @return: nothing
+     */
+    public void connect(int a, int b) {
+        // write your code here
+        int bossA = find(a);
+        int bossB = find(b);
+        if(bossA != bossB) {
+            father[bossA] = bossB;
+            size[bossB] += size[bossA];
+        }
+    }
+
+    /*
+     * @param a: An integer
+     * @return: An integer
+     */
+    public int query(int a) {
+        // write your code here
+        int rootA = find(a);
+        return size[rootA];
+    }
+}

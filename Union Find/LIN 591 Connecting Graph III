@@ -1,0 +1,54 @@
+/*
+LIN 591 Connecting Graph III
+还是一道模版题。 唯一改变的地方就是
+要记录number of connected component in the graph
+只要一开始起始成n， 每union 一次就减一个1 就行了
+*/
+public class ConnectingGraph3 {
+    int[] father;
+    int numberOfIslands;
+
+    public ConnectingGraph3(int n) {
+        father = new int[n + 1];
+        numberOfIslands = n;
+        for (int i = 1; i < n + 1; i++) {
+            father[i] = i;
+        }
+    }
+    /**
+     * @param a: An integer
+     * @param b: An integer
+     * @return: nothing
+     */
+    public void connect(int a, int b) {
+        // write your code here
+        int rootA = find(a);
+        int rootB = find(b);
+        if(rootA != rootB) {
+            father[rootA] = rootB;
+            numberOfIslands --;
+        }
+    }
+    private int find(int x) {
+        int boss = x;
+        // find the boss
+        while(father[boss]!= boss) {
+            boss = father[boss];
+        }
+        // path compression
+        while(x != boss) {
+            int temp = father[x];
+            father[x] = boss;
+            x = temp;
+        }
+        return boss;
+    }
+
+    /**
+     * @return: An integer
+     */
+    public int query() {
+        // write your code here
+        return numberOfIslands;
+    }
+}
