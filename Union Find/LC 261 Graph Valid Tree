@@ -1,0 +1,48 @@
+/*
+LC 261 Graph Valid Tree
+形成树有两个条件
+• n-1条边 （不是 n - 1 条边就会有圈 或者 断点）
+• 最后只有一个连通块
+联通问题理所应当用union find， 直接套用模版就可以了
+*/
+class Solution {
+    int[] father;
+    private int find(int x) {
+        // find the boss
+        int boss = x;
+        while(father[boss] != boss) {
+            boss = father[boss];
+        }
+        // path compression
+        while (x!= boss) {
+            int temp = father[x];
+            father[x] = boss;
+            x = temp;
+        }
+        return boss;
+    }
+
+    public boolean validTree(int n, int[][] edges) {
+        // initialization
+        father = new int[n];
+        for (int i = 0; i < n; i++) {
+            father[i] = i;
+        }
+        int total = n;
+        int len = edges.length;
+        if(len != n - 1) return false;
+        // process each edge
+        for (int i = 0; i < edges.length;i++) {
+            int[] eachEdge = edges[i];
+            int end1 = eachEdge[0];
+            int end2 = eachEdge[1];
+            int boss1 = find(end1);
+            int boss2 = find(end2);
+            if(boss1 != boss2) {
+                total --;
+                father[boss1] = boss2;
+            }
+        }
+        return total == 1;
+    }
+}
