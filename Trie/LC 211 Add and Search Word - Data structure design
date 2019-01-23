@@ -1,0 +1,68 @@
+/*
+LC 211 Add and Search Word - Data structure design
+这也是trie 的模版题
+唯一要注意的是怎么解决 .
+要用枚举型dfs。 注意一下这种有
+return 的dfs function。 在for loop
+里面撒网的时候让dfs return value 作为判断句
+而不是return 句。这样才不会出现第一根筋是错的就全盘return false
+情况（我猜的，有待核查）
+*/
+class TrieNode {
+    TrieNode[] pos;
+    boolean isWord;
+    public TrieNode() {
+        pos = new TrieNode[26];
+        isWord = false;
+    }
+}
+
+class WordDictionary {
+    TrieNode root;
+    /** Initialize your data structure here. */
+    public WordDictionary() {
+        root = new TrieNode();
+    }
+
+    /** Adds a word into the data structure. */
+    public void addWord(String word) {
+        TrieNode currentNode = root;
+        for (int i = 0; i < word.length(); i++) {
+            char c = word.charAt(i);
+            if(currentNode.pos[c - 'a'] == null){
+                currentNode.pos[c - 'a'] = new TrieNode();
+            }
+            currentNode = currentNode.pos[c - 'a'];
+        }
+        currentNode.isWord = true;
+    }
+
+    /** Returns if the word is in the data structure. A word could contain the dot character '.' to represent any one letter. */
+    public boolean search(String word) {
+        return dfs(word, root);
+    }
+
+    private boolean dfs(String word, TrieNode currentNode) {
+        int len = word.length();
+        if(len == 0) return currentNode.isWord;
+        char c = word.charAt(0);
+        if(c != '.') {
+            if(currentNode.pos[c - 'a'] == null) return false;
+            return dfs(word.substring(1,len), currentNode.pos[c - 'a']);
+        } else {
+            for (int i = 0; i < 26; i++) {
+                if(currentNode.pos[i] != null && dfs(word.substring(1,len), currentNode.pos[i])) {
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
+}
+
+/**
+ * Your WordDictionary object will be instantiated and called as such:
+ * WordDictionary obj = new WordDictionary();
+ * obj.addWord(word);
+ * boolean param_2 = obj.search(word);
+ */

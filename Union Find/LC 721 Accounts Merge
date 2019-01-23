@@ -1,0 +1,108 @@
+/*
+LC 721 Accounts Merge
+这是一道很灵活的union find 题目
+我发现在union find 中， 我要清楚union 的
+是什么， 用什么条件来union。
+用这道题来说， 需要union 的是account， 用email 来union
+所以， 应该很自然的想到先用email 来整理一下信息
+归纳出一个hashmap， key 是email， value 是所有account Number
+例如
+email1 【0，1】
+email2  【0】
+email3  [0]
+然后， 在每个value 里面进行union
+接下来， 我们需要输出每个账号的邮箱
+所以应该想到这时候该重新按账号来整理一下account 信息了
+我们用另一个hashmap， key 是所有老大哥的accountNumber
+value 是一个包括所有email 的hashset。 为什么用hashset 呢？
+因为这样能防止重复。
+这样整理好了之后， sort， 输出就行了
+*/
+class Solution {
+    int[] father;
+    // sort informtion by email
+    private Map<String, List<Integer>> sortByEmail(List<List<String>> accounts) {
+        Map<String, List<Integer>> result = new HashMap<>();
+        // each account
+        for (int aNum = 0; aNum < accounts.size(); aNum++) {
+            List<String> eachAccount = accounts.get(aNum);
+            // each email
+            for(int eNum = 1; eNum < eachAccount.size(); eNum++) {
+                String email = eachAccount.get(eNum);
+                // add current account Number into the email array
+                List<Integer> ids = result.getOrDefault(email, new ArrayList<Integer>());
+                ids.add(aNum);
+                result.put(email, ids);
+            }
+        }
+        return result;
+    }
+
+    private Map<Integer, Set<String>> sortByAccount(List<List<String>> accounts) {
+        Map<Integer, Set<String>> result = new HashMap<>();
+        for (int aNum = 0; aNum < accounts.size(); aNum++) {
+            int root = find(aNum);
+            Set<String> emailSet = result.getOrDefault(root, new HashSet<String>());
+            // add all the current account's email into the collection
+            List<String> emailList = accounts.get(aNum);
+            for (int i = 1; i < emailList.size(); i++) {
+                emailSet.add(emailList.get(i));
+            }
+            result.put(root, emailSet);
+        }
+        return result;
+    }
+
+    // union find, union
+    private void union(int x, int y) {
+        int bossX = find(x);
+        int bossY = find(y);
+        if(bossX != bossY) {
+            father[bossX] = bossY;
+        }
+    }
+
+    // union find, find
+    private int find(int x) {
+        int boss = x;
+        // find boss
+        while(boss != father[boss]) {
+            boss = father[boss];
+        }
+        // path compression
+        while(x != boss) {
+            int temp = father[x];
+            father[x] = boss;
+            x = temp;
+        }
+        return boss;
+    }
+
+    // main function
+    public List<List<String>> accountsMerge(List<List<String>> accounts) {
+        // initialize union fiond array
+        int accountNumber = accounts.size();
+        father = new int[accountNumber];
+        for (int i = 0; i < accountNumber; i++){
+            father[i] = i;
+        }
+        // categorize information by email
+        Map<String, List<Integer>> email2accounts = sortByEmail(accounts);
+        for (String eachEmail : email2accounts.keySet()) {
+            List<Integer> aList = email2accounts.get(eachEmail);
+            for (int i = 1; i < aList.size(); i++) {
+                union(aList.get(i), aList.get(0));
+            }
+        }
+        // sort the information by account
+        Map<Integer, Set<String>> account2emails = sortByAccount(accounts);
+        List<List<String>> answer = new ArrayList<>();
+        for (int aNum: account2emails.keySet()) {
+            List<String> sortedEmails = new ArrayList<>(account2emails.get(aNum));
+            Collections.sort(sortedEmails);
+            sortedEmails.add(0, accounts.get(aNum).get(0));
+            answer.add(sortedEmails);
+        }
+        return answer;
+    }
+}

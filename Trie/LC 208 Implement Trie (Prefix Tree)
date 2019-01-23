@@ -1,0 +1,60 @@
+/*
+LC 208 Implement Trie (Prefix Tree)
+这题是trie 的模版
+Trie 的主要结构是这样的：
+每一个节点是一个trieNode
+trieNode 存了26 个字母的array 还有boolean isWord
+这个array 相当于是树枝， 用于连接不同TrieNode
+*/
+class TrieNode {
+    TrieNode[] pos;
+    boolean isWord;
+    public TrieNode() {
+        pos = new TrieNode[26];
+        isWord = false;
+    }
+
+}
+
+class Trie {
+    TrieNode root;
+    /** Initialize your data structure here. */
+    public Trie() {
+        root = new TrieNode();
+    }
+
+    /** Inserts a word into the trie. */
+    public void insert(String word) {
+        TrieNode currentNode = root;
+        for (int i = 0; i < word.length(); i++) {
+            char c = word.charAt(i);
+            if(currentNode.pos[c - 'a'] == null) {
+                currentNode.pos[c - 'a'] = new TrieNode();
+            }
+            currentNode = currentNode.pos[c - 'a'];
+        }
+        currentNode.isWord = true;
+    }
+
+    /** Returns if the word is in the trie. */
+    public boolean search(String word) {
+        TrieNode currentNode = root;
+        for (int i = 0; i < word.length(); i++) {
+            char c = word.charAt(i);
+            if(currentNode.pos[c - 'a'] == null) return false;
+            currentNode = currentNode.pos[c - 'a'];
+        }
+        return currentNode.isWord;
+    }
+
+    /** Returns if there is any word in the trie that starts with the given prefix. */
+    public boolean startsWith(String prefix) {
+        TrieNode currentNode = root;
+        for (int i = 0; i < prefix.length(); i++) {
+            char c = prefix.charAt(i);
+            if(currentNode.pos[c - 'a'] == null) return false;
+            currentNode = currentNode.pos[c - 'a'];
+        }
+        return true;
+    }
+}
