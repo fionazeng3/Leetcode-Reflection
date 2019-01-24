@@ -1,0 +1,75 @@
+LC 51 N-Queens
+  这道题想清楚以后其实很好做
+  queen 攻击的范围是 横，竖， 斜
+  每一行肯定不会有多余一个的queen
+  那么我们枚举的就是每个queen 在每一行的位置
+  枚举型dfs 的套路现在已经很熟悉了：撒网， 剪枝，递归， backtracking
+
+  唯一一个新的点就是怎么来判断对角线的问题
+  其实很简单， 两个点横竖各唯一了1 位就是一个对角线
+
+  class Point{
+      int x;
+      int y;
+      public Point(int x,int y) {
+          this.x = x;
+          this.y = y;
+      }
+  }
+
+  class Solution {
+      List<List<Point>> pos = new ArrayList<>();
+      // main function
+      public List<List<String>> solveNQueens(int n) {
+          List<Point> currentPath = new ArrayList<>();
+          dfs(0, currentPath ,n);
+          List<List<String>> result = posToMap(n);
+          return result;
+      }
+
+      // dfs
+      public void dfs(int index, List<Point>currentPath, int n) {
+          if (index == n) {
+              pos.add(new ArrayList(currentPath));
+              return;
+          }
+          for (int x = 0; x < n; x++) {
+              if(!isValid(currentPath, x, index)) continue;
+              Point placement = new Point(x, index);
+              currentPath.add(placement);
+              dfs(index + 1, currentPath, n);
+              currentPath.remove(placement);
+          }
+      }
+
+      // check if the current placement is valid
+      public boolean isValid(List<Point> currentPath, int x, int index) {
+          for (Point eachPoint: currentPath) {
+              if(eachPoint.x == x || Math.abs(eachPoint.x - x) == Math.abs(eachPoint.y - index)) return false;
+          }
+          return true;
+      }
+
+      // transfer pos to answer
+      public List<List<String>> posToMap (int n) {
+          List<List<String>> result = new ArrayList<>();
+          for (List<Point> eachPath: pos) {
+              System.out.println();
+              List<String> eachPathAnswer = new ArrayList<>();
+              for (Point eachPoint: eachPath) {
+                  int index = eachPoint.x;
+                  String eachPointAnswer = "";
+                  for (int i = 0; i < n; i++) {
+                      if(i == index) {
+                          eachPointAnswer += 'Q';
+                      } else {
+                          eachPointAnswer += '.';
+                      }
+                  }
+                  eachPathAnswer.add(eachPointAnswer);
+              }
+              result.add(eachPathAnswer);
+          }
+          return result;
+      }
+  }

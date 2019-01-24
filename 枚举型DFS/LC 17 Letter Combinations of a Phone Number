@@ -1,0 +1,45 @@
+/*
+LC 17 Letter Combinations of a Phone Number
+很简单的枚举从dfs 啦， 连剪枝都不用， 直接每个数字枚举就好了
+*/
+class Solution {
+    Map<Integer, List<Character>> table;
+    List<String> result = new ArrayList<>();
+    char current = 'a';
+    // build the table
+    public void buildTable() {
+        table = new HashMap<>();
+        for (int i = 2; i <= 9; i++){
+            List<Character> currentList = new ArrayList<>();
+            int totalNum = 3;
+            if(i == 7 || i == 9) totalNum = 4;
+            for (int j = 0; j < totalNum; j++) {
+                currentList.add(current);
+                current++;
+            }
+            table.put(i, currentList);
+        }
+    }
+
+    // main function
+    public List<String> letterCombinations(String digits) {
+        if(digits.isEmpty()) return result;
+        buildTable();
+        dfs(digits,"");
+        return result;
+    }
+
+    // permutation dfs
+    public void dfs(String digits, String currentWord) {
+        if(digits.length() == 0) {
+            result.add(currentWord);
+            return;
+        }
+        int currentNum = digits.charAt(0) - '0';
+        List<Character> choices = table.get(currentNum);
+
+        for (int i = 0; i < choices.size(); i++) {
+            dfs(digits.substring(1, digits.length()), currentWord + choices.get(i));
+        }
+    }
+}

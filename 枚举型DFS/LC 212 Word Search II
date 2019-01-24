@@ -1,0 +1,109 @@
+/*
+LC 212 Word Search II
+这道题是一道trie配合dfs 配合bfs 的问题
+思路是先建好trie， 然后从board 中每一个点出发
+向四面八方做dfs。 我觉得这道题最难处理的部分在于
+每一个字母在一个单词里面只能用一次。 这里就要用到recursive
+backtracking 在一根筋走的时候， 先把下一个位置isVisited
+设置成false， 然后一层一层递归回来的时候再变回true。
+这道题之所以在dfs 外再写一个从每个位置开始的for loop
+就是因为这个不能重复原则。 在for loop里面， 很容易把第一个字母
+isVisited 先设置成true， 再设置成false
+
+还有一个注意的点： 当dict.hasWord(currentWord) 的时候
+千万不要习惯性的就return 了， 因为后面还可能有很多新词啊！
+*/
+class TrieNode {
+    boolean isWord;
+    TrieNode[] pos;
+    public TrieNode() {
+        isWord = false;
+        pos = new TrieNode[26];
+    }
+}
+class Trie {
+    TrieNode root;
+    // constructor
+    public Trie() {
+        root = new TrieNode();
+    }
+    // add
+    public void add(String word) {
+        TrieNode current = root;
+        for (int i = 0; i < word.length(); i++) {
+            char c = word.charAt(i);
+            if(current.pos[c - 'a'] == null) current.pos[c - 'a'] = new TrieNode();
+            current = current.pos[c - 'a'];
+        }
+        current.isWord = true;
+    }
+
+    // search
+    public boolean hasWord(String word) {
+        TrieNode current = root;
+        for (int i = 0; i < word.length(); i++) {
+            char c = word.charAt(i);
+            if(current.pos[c - 'a'] == null) return false;
+            current = current.pos[c - 'a'];
+        }
+        return current.isWord;
+    }
+
+    // has prefix
+    public boolean hasPrefix(String prefix) {
+        TrieNode current = root;
+        for (int i = 0; i < prefix.length(); i++) {
+            char c = prefix.charAt(i);
+            if(current.pos[c - 'a'] == null) return false;
+            current = current.pos[c - 'a'];
+        }
+        return true;
+    }
+}
+
+class Solution {
+    HashSet<String> wordSet = new HashSet();
+    int[] dx = {-1, 1, 0, 0};
+    int[] dy = {0, 0, -1, 1};
+    int x;
+    int y;
+    boolean[][] isVisited;
+    public List<String> findWords(char[][] board, String[] words) {
+        // initialize
+        Trie dict = new Trie();
+        for (String word : words) {
+            dict.add(word);
+        }
+        y = board.length;
+        x = board[0].length;
+        isVisited = new boolean[y][x];
+        for (int i = 0; i < x; i++){
+            for (int j = 0; j < y; j++) {
+                isVisited[j][i] = true;
+                dfs(dict, board, i, j, "" + board[j][i]);
+                isVisited[j][i] = false;
+            }
+        }
+        return new ArrayList<>(wordSet);
+    }
+
+    // permustation dfs
+    public void dfs(Trie dict, char[][] board, int cx, int cy, String currentWord)  {
+        System.out.println(currentWord);
+        if(!dict.hasPrefix(currentWord)) return;
+        if(dict.hasWord(currentWord)) {
+            wordSet.add(currentWord);
+        }
+        for (int i = 0; i < 4; i++) {
+            int nx = cx + dx[i];
+            int ny = cy + dy[i];
+            if(nx >= 0 && nx < x && ny >= 0 && ny < y && !isVisited[ny][nx]) {
+                isVisited[ny][nx] = true;
+                String newWord = currentWord + board[ny][nx];
+                dfs(dict, board, nx, ny, newWord);
+                isVisited[ny][nx] = false;
+            }
+
+        }
+    }
+}
