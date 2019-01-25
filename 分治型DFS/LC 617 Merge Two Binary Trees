@@ -1,0 +1,32 @@
+/*
+LC 617 Merge Two Binary Trees
+属于x = change（x）类问题
+要注意当前要return node 的左右连接问题
+但是就这道题而言， 如果其中一个树已经是null 了，
+那把另一棵树直接接上去就好了， 不用管left 和right
+*/
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public TreeNode mergeTrees(TreeNode t1, TreeNode t2) {
+        TreeNode result = dfs(t1, t2);
+        return result;
+    }
+
+    public TreeNode dfs(TreeNode t1, TreeNode t2) {
+        if(t1 == null && t2 == null) return null;
+        if(t1 == null) return t2;
+        if(t2 == null) return t1;
+        TreeNode newNode = new TreeNode(t1.val + t2.val);
+        newNode.left = dfs(t1.left, t2.left);
+        newNode.right = dfs(t1.right, t2.right);
+        return newNode;
+    }
+}
