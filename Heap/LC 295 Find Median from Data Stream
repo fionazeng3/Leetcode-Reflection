@@ -1,0 +1,49 @@
+/*
+LC 295 Find Median from Data Stream
+这是一道动态找中位数的题。 找中位数的话静态的
+最好用quickselect， 平均复杂度O（n。 动态的
+就最好用双heap， 一个minheap， 一个maxheap
+这个理念就是把所有的数分为两部分。 最小的那些数
+从大往小排， 最大的那些数从小往大排。 这样的话， 如果
+一共有偶数个element， 那么两个heap 的heap 之和处以2 就是
+median。 如果有奇数个element， 那么maxheap 的head 就是
+median。 那么这两个heap 要怎么维护呢？
+
+首先进来一个数， 先把它放在maxheap里。然后保证maxHeap 比minHeap 的size 最多大1.因为要保证最大的数字都在minHeap里，所以检查maxHeap 的head 是不是比minheap 的head 大。如果是，两个heap 换头
+*/
+class MedianFinder {
+    PriorityQueue<Integer> minHeap, maxHeap;
+    int numberOfElement;
+    /** initialize your data structure here. */
+    public MedianFinder() {
+        minHeap = new PriorityQueue<>();
+        maxHeap = new PriorityQueue<>(Collections.reverseOrder());
+        numberOfElement = 0;
+    }
+    
+    public void addNum(int num) {
+        numberOfElement++;
+        maxHeap.add(num);
+        if(maxHeap.size() > minHeap.size() + 1) {
+            minHeap.offer(maxHeap.poll());
+        }
+        if(!minHeap.isEmpty()&&maxHeap.peek() > minHeap.peek()) {
+            maxHeap.offer(minHeap.poll());
+            minHeap.offer(maxHeap.poll());
+        }
+    }
+    
+    public double findMedian() {
+        if(numberOfElement % 2 == 0) {
+            return (double)(maxHeap.peek() + minHeap.peek())/2;
+        }
+        return maxHeap.peek();
+    }
+}
+
+/**
+ * Your MedianFinder object will be instantiated and called as such:
+ * MedianFinder obj = new MedianFinder();
+ * obj.addNum(num);
+ * double param_2 = obj.findMedian();
+ */

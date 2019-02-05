@@ -1,0 +1,48 @@
+/* LC 155 Min Stack
+这道题是单调stack 的入门题
+因为求minimum 要O（1）time， 所以开一个单调stack
+来记录目前为止最小的值是多少
+*/
+class MinStack {
+    Stack<Integer> normalStack;
+    Stack<Integer> minStack;
+
+    /** initialize your data structure here. */
+    public MinStack() {
+        normalStack = new Stack<>();
+        minStack = new Stack<>();
+    }
+
+    public void push(int x) {
+        normalStack.push(x);
+        if(minStack.isEmpty() || x < minStack.peek()) {
+            minStack.push(x);
+        } else {
+            minStack.push(minStack.peek());
+        }
+
+    }
+
+    public void pop() {
+        minStack.pop();
+        normalStack.pop();
+
+    }
+
+    public int top() {
+        return normalStack.peek();
+    }
+
+    public int getMin() {
+        return minStack.peek();
+    }
+}
+
+/**
+ * Your MinStack object will be instantiated and called as such:
+ * MinStack obj = new MinStack();
+ * obj.push(x);
+ * obj.pop();
+ * int param_3 = obj.top();
+ * int param_4 = obj.getMin();
+ */

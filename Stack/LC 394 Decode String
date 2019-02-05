@@ -1,0 +1,52 @@
+/*
+LC 394 Decode String
+这道题因为会有nested 的情况，所以用stack 是不错的
+选择。主要思想就是看到[ 就push 当前数字， 看到 ] 就
+pop 所有character， 然后重复 number 次。 字母和数字都直接push
+
+这个题的答案还用到了很巧妙的方法就是让stack 的类型是
+object， 然后可以在里面加入string 和 int。 string 因为本来就是
+一个object， 所以可以直接push。 而int 和char 因为是primative type，
+所以要用 Integer.valueOf()/ String.valueOf() 这两个都会
+生出一个string 或者integer 的instance。 而 instanceof
+就会检查当前object 是什么类型
+*/
+class Solution {
+    Stack<Object> mainStack = new Stack<>();
+    public String decodeString(String s) {
+        int currentNum = 0;
+        for (int i = 0; i < s.length(); i++) {
+            char c = s.charAt(i);
+            if(Character.isDigit(c)) {
+                currentNum = currentNum * 10 + (c - '0');
+            } else if(c == '[') {
+                mainStack.push(Integer.valueOf(currentNum));
+                currentNum = 0;
+            } else if (Character.isLetter(c)) {
+                mainStack.push(String.valueOf(c));
+            } else if (c == ']'){
+                String result = createString();
+                mainStack.push(result);
+            }
+        }
+        String result = "";
+        while(!mainStack.isEmpty()) {
+            String segment = (String)mainStack.pop();
+            result = segment + result;
+        }
+        return result;
+    }
+
+    public String createString() {
+        String result = "";
+        String stringVal = "";
+        while(mainStack.peek() instanceof String) {
+            stringVal = (String)mainStack.pop() + stringVal;
+        }
+        int rTime = (int)mainStack.pop();
+        for (int i = 0; i < rTime; i++) {
+            result += stringVal;
+        }
+        return result;
+    }
+}

@@ -1,0 +1,59 @@
+/*
+LC 480 Sliding Window Median
+因为是动态的median， 所以想到双heap
+的方法。这道题就把双heap诠释得更清楚了
+双heap 得精髓就在balance 里。 maxHeap
+最多比 minHeap 的size 大一， 并且每个回合都要把
+最大的那些值给minHeap
+
+还有个小技巧就是如果想要一个collection 反着排序，
+只要在传comparator 的地方传入Collections.reverseOrder() 就好了
+
+*/
+class Solution {
+    PriorityQueue<Long> minHeap, maxHeap;
+    public double[] medianSlidingWindow(int[] nums, int k) {
+        minHeap = new PriorityQueue<Long>();
+        maxHeap = new PriorityQueue<Long>(Collections.reverseOrder());
+        int size = nums.length - k + 1;
+        double[] result = new double[size];
+        // slide the window
+        for(int i = 0; i < nums.length; i++) {
+            if(i >= k) {
+                balance();
+                double median = findMedian((long)k);
+                result[i - k] = median;
+                delete(nums[i - k]);
+            }
+            maxHeap.add((long)nums[i]);
+        }
+        balance();
+        double median = findMedian((long)k);
+        result[size - 1] = median;
+        return result;
+
+    }
+
+    public double findMedian(long k) {
+        if(k %2 == 0) return ((double)minHeap.peek() + maxHeap.peek()) / 2;
+        return (double)maxHeap.peek();
+    }
+
+    public void balance() {
+        while(maxHeap.size() < minHeap.size()) {
+            maxHeap.offer(minHeap.poll());
+        }
+        while(maxHeap.size() > minHeap.size() + 1) {
+            minHeap.offer(maxHeap.poll());
+        }
+        if(!minHeap.isEmpty()&&maxHeap.peek() > minHeap.peek()) {
+            maxHeap.offer(minHeap.poll());
+            minHeap.offer(maxHeap.poll());
+        }
+    }
+
+    public void delete(long number) {
+        if(maxHeap.remove(number)) return;
+        minHeap.remove(number);
+    }
+}
