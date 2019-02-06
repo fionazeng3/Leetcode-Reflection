@@ -1,0 +1,40 @@
+/*
+LC 84 Largest Rectangle in Histogram
+这道题是monotonous stack 的典型题
+单调栈专门解决找一个值左/右第一个比它大/小的值
+仔细想一下这道题， 从每个柱子出发， 能组成的最大长方形
+就是往两边走， 一直走到第一个比自己小的柱子停下来， 所组成的
+长方形面积。
+
+那么我们用一个单调递增的stack， 每次push 的时候， 看到stack 里有比自己大的
+就踢出去。这样的话每踢一次， 就证明找到了一个柱子右边第一个比自己小的值。
+在处理当前柱子的时候， stack 的上一个值就是自己左边第一个比自己小的值？
+为什么呢？ 因为stack 是单调递增的， 自己的上一个是自己之前最新加入的一个， 也是
+肯定比自己小。 所以说， 每次需要pop 比自己大的值的时候， 就证明有一根柱子找到了自己能组成
+的最大长方形面积。 也就是在这个时候， 我们更新一下max
+
+最后返回max 就好了
+*/
+
+class Solution {
+    public int largestRectangleArea(int[] heights) {
+        int len = heights.length;
+        int current = 0,h = 0,w = 0, max = 0;
+        Stack<Integer> helper = new Stack<>();
+        for (int i = 0; i <= len; i++) {
+            if(i == len) {
+                current = -1;
+            } else {
+                current = heights[i];
+            }
+            // one element's right bound has been found
+            while(!helper.isEmpty() && current < heights[helper.peek()]) {
+                h = heights[helper.pop()];
+                w = helper.isEmpty() ? i : i - helper.peek() - 1;
+                max = Math.max(max, h * w);
+            }
+            helper.push(i);
+        }
+        return max;
+    }
+}

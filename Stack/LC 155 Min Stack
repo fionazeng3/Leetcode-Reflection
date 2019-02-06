@@ -1,5 +1,4 @@
 /* LC 155 Min Stack
-这道题是单调stack 的入门题
 因为求minimum 要O（1）time， 所以开一个单调stack
 来记录目前为止最小的值是多少
 */

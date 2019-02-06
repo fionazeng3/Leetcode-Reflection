@@ -1,0 +1,54 @@
+/*
+LC 654 Maximum Binary Tree
+我们观察可以发现，每个值X的父亲一定是min{左边第一个比它大的值L,右边第一个比
+它大的值R}。 这种找左右第一个比自己大的值问题就用单调stack。 max rectangle
+那道题是一旦找到比自己矮的rectangle， 就要更新， 所以用单调递增stack
+
+而这道题， 因为看到比自己大的node， 就要更新， 所以用单调递减stack。
+每次要push 一个node 的时候，如果比stack 顶大， 就代表要连线了。 把stack
+顶拿出来， 然后用currentNode 和stack 的下一个元素比（因为下一个元素肯定也比currentNode 大），
+谁更小就当谁的儿子
+*/
+
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public TreeNode constructMaximumBinaryTree(int[] nums) {
+        Stack<TreeNode> stk = new Stack<>();
+        int len = nums.length;
+        TreeNode right = null;
+        for (int i = 0; i <= len; i++) {
+            if(i == len) {
+                right = new TreeNode(Integer.MAX_VALUE);
+            } else {
+                right = new TreeNode(nums[i]);
+            }
+            while(!stk.isEmpty()) {
+                if(right.val > stk.peek().val) {
+                    TreeNode currentNode = stk.pop();
+                    if(stk.isEmpty()) {
+                        right.left = currentNode;
+                    } else {
+                        TreeNode left = stk.peek();
+                        if(left.val > right.val) {
+                            right.left = currentNode;
+                        } else {
+                            left.right = currentNode;
+                        }
+                    }
+                } else {
+                    break;
+                }
+            }
+            stk.push(right);
+        }
+        return stk.peek().left;
+    }
+}
