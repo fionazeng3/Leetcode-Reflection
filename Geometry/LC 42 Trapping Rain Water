@@ -1,0 +1,40 @@
+/*
+LC 42 Trapping Rain Water
+我们观察可以发现， 每个柱子上能积的水
+取决于左边最高的柱子和右边的柱子。
+所以我可以从左到右记录一下左边到目前为止最高的
+然后记录一下从右到左最高的。 这样每看一个柱子
+就左右看一下， 找一下左右最高里面比较矮的一个
+再减去自己的高度就是该柱子头顶上积水的量
+
+当然了， 如果左右最高还是比自己矮的话积水量为0
+*/
+class Solution {
+    public int trap(int[] height) {
+        int len = height.length;
+        int[] left = new int[len];
+        int[] right = new int[len];
+        int result = 0;
+        int max = 0;
+        // record the biggest value from the left
+        for (int i = 0; i < len; i++){
+            max = Math.max(max, height[i]);
+            left[i] = max;
+        }
+        max = 0;
+        // record the biggest value from the right
+        for (int i = len - 1; i>= 0; i--) {
+            max = Math.max(max, height[i]);
+            right[i] = max;
+        }
+        // record each bin has how much water
+        for (int i = 0; i < len; i++) {
+            int leftMax = i == 0 ? 0: left[i - 1];
+            int rightMax = i == len - 1 ? 0 : right[i + 1];
+            int maxHeight = Math.min(leftMax, rightMax);
+            int waterAmount = maxHeight > height[i] ? (maxHeight - height[i]) : 0;
+            result += waterAmount;
+        }
+        return result;
+    }
+}

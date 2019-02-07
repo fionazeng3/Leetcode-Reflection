@@ -1,0 +1,91 @@
+/*
+LC 218 The Skyline Problem
+因为看到input 是interval， 要求求状态， 所以想到用
+sweep line 的方法。 基本思路就是开一个max heap 维护
+最大高度。 看到上升事件heap 里面加入当前高度。 看到下降
+事件 heap 里面减去当前高度
+
+我觉得这道题的难点在于怎样merge 转折点。 如果不merge 的话
+加入在2 的位置出现了新高度5， 然后同时在2 的位置又出现了新高度
+8， 那么转折点应该怎么算呢？ 其实很简单，在上一个转折点
+和当前转折点相同的情况下， 如果当前事件是一个上升事件， 那么这个点
+的用途只可能是给skyline 带来新高度。 所以把当前转折点高度set 成
+现在和过去的最高点。 反之， 如果当前事件是一个下降事件， 那么这个事件
+的效果只可能是把以前最高的删了， 把skyline 变矮。在这种情况下，我们
+需要求现在和过去的最低点
+*/
+class Solution {
+    private class Event {
+        int location;
+        int height;
+        int type; // up 1 down 0
+        public Event(int location, int height, int type) {
+            this.location = location;
+            this.height = height;
+            this.type = type;
+        }
+    }
+
+    public static Comparator<Event> EventComparator = new Comparator<Event>() {
+        public int compare(Event e1, Event e2) {
+            if(e1.location != e2.location) {
+                return e1.location - e2.location;
+            }
+            // up is in front of down
+            return e2.type - e1.type;
+        }
+    };
+
+    public List<int[]> getSkyline(int[][] buildings) {
+        List<Event> timeLine = new ArrayList<>();
+        for (int i = 0; i < buildings.length; i++) {
+            int start = buildings[i][0];
+            int end = buildings[i][1];
+            int height = buildings[i][2];
+            Event rise = new Event(start, height, 1);
+            Event fall = new Event(end, height, 0);
+            timeLine.add(rise);
+            timeLine.add(fall);
+        }
+        Collections.sort(timeLine, EventComparator);
+        List<int[]> result = new ArrayList<>();
+        PriorityQueue<Integer> maxHeight = new PriorityQueue<>(Collections.reverseOrder());
+        int prevHeight = 0;
+        int currentHeight = 0;
+        for (int i = 0; i < timeLine.size(); i++) {
+            Event e = timeLine.get(i);
+            if(e.type == 1) {
+                maxHeight.add(e.height);
+            } else {
+                maxHeight.remove(e.height);
+            }
+            currentHeight = maxHeight.isEmpty() ? 0: maxHeight.peek();
+            // possible turning point
+            if(currentHeight != prevHeight) {
+                int[] newElement = {e.location, currentHeight};
+                prevHeight = merge(newElement, result, e);
+            }
+        }
+        return result;
+    }
+
+    private int merge(int[] newElement, List<int[]>result, Event e) {
+        int[] lastElement = result.isEmpty() ? null : result.get(result.size() - 1);
+        if(result.isEmpty() || lastElement[0] != newElement[0]) {
+            result.add(newElement);
+            return newElement[1];
+        }
+        // last element has the same turning point
+        int newHeight;
+        // current event is rising
+        if(e.type == 1) {
+            newHeight = Math.max(lastElement[1], newElement[1]);
+        // current event is falling
+        } else {
+            newHeight = Math.min(lastElement[1], newElement[1]);
+        }
+        int[] update = {newElement[0], newHeight};
+        result.set(result.size() - 1, update);
+        return newHeight;
+    }
+}

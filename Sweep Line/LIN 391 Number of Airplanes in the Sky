@@ -1,0 +1,72 @@
+/*
+LIN 391 Number of Airplanes in the Sky
+这是一道经典的sweep line 问题。 sweep line 的
+精髓就在于把区间变成时间点， 因为状态只有在关键点才会改变
+以这道题来说， 我们可以把飞机在天空的时间变成起飞和降落两个点
+天空的飞机数也是在这些点上更新。 起飞++ 降落--
+
+还有一个很重要的点， 就是时间重叠怎么办。 题目中说了
+Landing happen before taking off。 所以建立comparator 的时候
+注意一下就好了
+*/
+/**
+ * Definition of Interval:
+ * public classs Interval {
+ *     int start, end;
+ *     Interval(int start, int end) {
+ *         this.start = start;
+ *         this.end = end;
+ *     }
+ * }
+ */
+
+public class Solution {
+    private class Event {
+        int time;
+        int type; // landing : 0 take off : 1
+        public Event(int time, int type) {
+            this.time = time;
+            this.type = type;
+        }
+    }
+
+    public static Comparator<Event> EventComparator = new Comparator<Event>() {
+        public int compare(Event e1, Event e2) {
+            if(e1.time != e2.time) {
+                return e1.time - e2.time;
+            } else {
+                return e1.type - e2.type;
+            }
+        }
+    };
+
+
+    /**
+     * @param airplanes: An interval array
+     * @return: Count of airplanes are in the sky.
+     */
+    public int countOfAirplanes(List<Interval> airplanes) {
+        // write your code here
+        List<Event> timeLine  =new ArrayList<>();
+        for (int i = 0; i< airplanes.size();i++) {
+            Interval interval = airplanes.get(i);
+            Event takeOff = new Event(interval.start, 1);
+            Event land = new Event(interval.end, 0);
+            timeLine.add(takeOff);
+            timeLine.add(land);
+        }
+        Collections.sort(timeLine, EventComparator);
+        int max = 0;
+        int currentNumber = 0;
+        for (int i = 0; i < timeLine.size(); i++) {
+            Event e = timeLine.get(i);
+            if(e.type == 1) {
+                currentNumber ++;
+            } else {
+                currentNumber --;
+            }
+            max = Math.max(currentNumber, max);
+        }
+        return max;
+    }
+}
