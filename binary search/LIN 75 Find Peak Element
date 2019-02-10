@@ -1,0 +1,32 @@
+/*
+LIN 75 Find Peak Element
+这道题为什么能用二分法呢？ 因为答案是可以用区间
+来找的。 策略是用mid 跟右边比。 如果mid小于右边邻居，
+证明mid 是上升阶段的一个元素。 我们可以舍弃左边的所有元素
+因为上升之后下降的点一定在右边。 反之， 如果mid 是下降
+中的一个元素， 我们可以舍弃右边的所有元素找左边
+*/
+public class Solution {
+    /**
+     * @param A: An integers array.
+     * @return: return any of peek positions.
+     */
+    public int findPeak(int[] A) {
+        int len = A.length;
+        int left = 1, right = len - 2;
+        int mid = (left + right) / 2;
+        while (left <= right) {
+            mid = (left + right) / 2;
+            int lastIndex = mid - 1;
+            int nextIndex = mid + 1;
+            int target = A[mid];
+            if(target < A[nextIndex]) {
+                left = mid + 1;
+            } else {
+                if (target >= A[lastIndex]) break;
+                right = mid - 1;
+            }
+        }
+        return mid;
+    }
+}

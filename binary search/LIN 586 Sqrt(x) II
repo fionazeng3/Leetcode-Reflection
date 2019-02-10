@@ -1,0 +1,35 @@
+/*
+LIN 586 Sqrt(x) II
+这道题的解题思路基本跟sqrt（x） 一模一样
+但是需要注意的一点是这次的查找范围不是0 - x 了
+而是0 - Math.max(1.0, x)。 为什么呢？
+举个简单的例子 0.1
+它的答案是0.3。。。。 比0.1 大
+所以最大值要至少是1
+
+*/
+public class Solution {
+    public final double p = 1e-12;
+
+    /**
+     * @param x: a double
+     * @return: the square root of x
+     */
+    public double sqrt(double x) {
+        if(x == 0) return 0;
+        double left = 0;
+        double right = Math.max(1.0, x);
+        while (left + p < right) {
+            double mid = (left + right) / 2;
+            if(mid > x / mid) {
+                right = mid;
+            } else if (mid < x / mid) {
+                left = mid;
+            } else {
+                return mid;
+            }
+        }
+        if(right <= x / right) return right;
+        return left;
+    }
+}

@@ -1,0 +1,35 @@
+/*
+LC 69 Sqrt(x) 这道题是很明显的要用binary search
+这种题目叫 binary search on result
+往往没有给你一个数组让你二分
+同样是找到满足某个条件的最大或者最小值
+
+因为整数除法的问题，会发生很多edge case
+
+首先，这道题中如果一个数的平方小于x， 不能就把这个数排除
+所以， 要用left = mid 而不是left = mid + 1. 这就引起了另一个问题
+就是可能会出现死循环。 例如 left = 2 right = 3 mid = 2. 下一次
+left 又是2， right 是3 mid 是5. 要怎么避免这种情况呢？ while loop
+中判断条件改为 left + 1 < right 就可以避免了。 最后跳出来以后 left
+肯定和right 最多差1. 这样他们的mid 肯定跟他俩之一相等。 所以只要判断
+是return left 还是return right 就行了
+*/
+class Solution {
+    public int mySqrt(int x) {
+        if(x == 0) return 0;
+        long left = 0;
+        long right = x;
+        while (left + 1 < right) {
+            long mid = (left + right) / 2;
+            if(mid < (long)x / mid) {
+                left = mid;
+            } else if (mid > (long)x / mid) {
+                right = mid - 1;
+            } else {
+                return (int)mid;
+            }
+        }
+        if(right <= (long)x / right) return (int)right;
+        return (int)left;
+    }
+}
