@@ -1,0 +1,51 @@
+/*
+LIN 437 Copy Books
+这道题让求抄书最短时间。 可以利用二分答案的思路
+不断的提出这样的问题： 如果用时T， k 个人能完成吗？
+这个问题回答的方法写在了isTimeEnough 函数里面
+战略是： 从第一本书开始,第一个人一直抄到时间即将超过T， 换成
+第二个人。。。 这样如果最后能把所有书抄完， 时间就够
+
+主程序里面， 还是套用整数的二分答案模版就好了
+*/
+public class Solution {
+    /**
+     * @param pages: an array of integers
+     * @param k: An integer
+     * @return: an integer
+     */
+    public int copyBooks(int[] pages, int k) {
+        // write your code here
+        long minTime = 0, maxTime = 0;
+        for (int i = 0; i < pages.length; i++) {
+            maxTime += pages[i];
+            minTime = Math.max(minTime, pages[i]);
+        }
+        while(minTime + 1 < maxTime) {
+            long midTime = (minTime + maxTime) / 2;
+            // Time is too long
+            if(isTimeEnough(midTime, pages, (long)k)) {
+                maxTime = midTime;
+            // time is too short
+            } else {
+                minTime = midTime;
+            }
+        }
+        if(isTimeEnough(minTime, pages, (long)k)) {
+            return (int)minTime;
+        }
+        return (int)maxTime;
+    }
+
+    public boolean isTimeEnough(long time, int[] pages, long people) {
+        int finalIndex = 0;
+        for (long p = 0; p < people; p++) {
+            long timeRemain = time;
+            while(finalIndex < pages.length && timeRemain >= pages[finalIndex]) {
+                timeRemain -= pages[finalIndex];
+                finalIndex++;
+            }
+        }
+        return finalIndex == pages.length;
+    }
+}

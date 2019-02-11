@@ -1,0 +1,46 @@
+/*
+LIN 183. Wood Cut
+每当长度增加的时候， 切的块数就减少
+两者成反比。 为了减少运算时间， 使用二分法。
+注意整数除法一定要 while(minLen + 1 < maxLen)
+不然会出死循环， 最后return max min 两者之一
+*/
+public class Solution {
+    /**
+     * @param L: Given n pieces of wood with length L[i]
+     * @param k: An integer
+     * @return: The maximum length of the small pieces
+     */
+    public int woodCut(int[] L, int k) {
+        // write your code here
+        long minLen = 1;
+        long maxPiece = pieces(minLen, L);
+        if(maxPiece < k) return 0;
+        long maxLen = 0;
+        for (int i = 0; i < L.length; i++) {
+            maxLen = Math.max(maxLen, L[i]);
+        }
+        while(minLen + 1 < maxLen) {
+            long midLen = (minLen + maxLen) / 2;
+            long pieceNumber = pieces(midLen, L);
+            if(pieceNumber >= k) {
+               minLen = midLen;
+            // length is too big
+            } else {
+                maxLen = midLen;
+            // length is too small
+            }
+        }
+        if(pieces(maxLen, L) >= k) return (int)maxLen;
+        return (int)minLen;
+
+    }
+
+    private long pieces (long len, int[]L) {
+        long result = 0;
+        for (int i = 0; i < L.length; i++) {
+            result += L[i] / len;
+        }
+        return result;
+    }
+}

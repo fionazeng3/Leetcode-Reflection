@@ -1,0 +1,51 @@
+/*
+LC 287 Find the Duplicate Number
+这道题的关键在于题目中的这个条件
+nums containing n + 1 integers where each integer is between 1 and n (inclusive)
+举个例子 n = 4
+那么能用的数字有： 1 2 3 4
+这样写出来的话， 抽出一个数字T。 数组中小于等于自己的个数就是T
+比如说抽出3. 小于等于自己的数字有1 2 3。 题目中还说了， 数组长度要为n+1
+而且必须有且仅有一个数字重复。 如果想重复的数字是3 ， 那就必须在数列里插入一个3 或者把其他
+数字替换成3. 这样的话， 数组中小于等于自己的个数就一定大于3. 以此类推， 大于3 的所有数字
+在数组中也肯定有比自己本身的值还有大的数字个数小于等于自己。
+反过来， 任意一个比3 小的数字T 有 <=自己值的个数小于等于自己。 等于的话就是截止到T 的数字
+中没有被3 替换过。 小于就是替换过。 总结下来就是这两句话
+
+而且对于所有T>=S, <=T的个数大于T
+
+而对于所有T<S, <=T的个数小于等于T
+
+Implement 过程用二分答案
+*/
+class Solution {
+    public int findDuplicate(int[] nums) {
+        long min = Integer.MAX_VALUE;
+        long max = 1;
+        for (int i = 0; i < nums.length; i++) {
+            min = Math.min(min, nums[i]);
+            max = Math.max(max, nums[i]);
+        }
+        while(min + 1 < max) {
+            long mid = (max + min) / 2;
+            long count = numberSmallerOrEqual(nums, mid);
+            // count bigger than mid. mid is probably too big
+            if(count > mid) {
+                max = mid;
+            // count smaller or equal to mid. mid is definately too small
+            } else {
+                min = mid + 1;
+            }
+        }
+        if(numberSmallerOrEqual(nums, min) > min) return (int) min;
+        return (int)max;
+    }
+
+    private long numberSmallerOrEqual(int[] nums, long target) {
+        long result = 0;
+        for(int i = 0; i <nums.length; i++) {
+            if(nums[i] <= target) result++;
+        }
+        return result;
+    }
+}
