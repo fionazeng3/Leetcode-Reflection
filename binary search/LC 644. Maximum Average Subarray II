@@ -1,0 +1,54 @@
+/*
+LC 644. Maximum Average Subarray II
+这道题用到了二分答案法。 找出一个数字T， 不断地问：
+这个数组存不存在一个average 能达到T的区间？
+根据这个问题的答案， 不断更新寻找T 的范围最终找到T
+
+那么这个问题应该怎么回答呢？ 首先， 如果一个子区间的average 是T
+i.e. （a + b + c） / 3 = T , 那么 a - T + b - T + c - T = 0
+想要回答数组里有没有子区间average 能达到 T 就要回答是否有个子区间
+(A[left]-T) + ... + (A[right]-T) >= 0
+
+这个子区间应该怎么找呢？
+因为数组大小要大于等于k， 所以先找出数组前k 个 A[left]-T) + ...
+如果这个和不大于0， 那么把区间往右边扩展的同时， 减去左边最小的
+和
+*/
+class Solution {
+    public final double p = 1e-12;
+    public double findMaxAverage(int[] nums, int k) {
+        double max = (double)Integer.MIN_VALUE;
+        double min = (double)Integer.MAX_VALUE;
+        for (int i = 0; i< nums.length; i++) {
+            max = Math.max(max, nums[i]);
+            min = Math.min(min, nums[i]);
+        }
+        while(min + p < max) {
+            double mid = (min + max) / 2;
+            // mid is too small
+            if(canFind(nums, k, mid)) {
+                min = mid;
+            // mid is too big
+            } else {
+                max = mid;
+            }
+        }
+        if(canFind(nums, k, max)) return max;
+        return min;
+    }
+
+    public boolean canFind(int[] nums, int k, double T) {
+        double rightSum = 0, leftSum = 0, minLeftSum = 0;
+        for (int i = 0; i < k; i++) {
+            rightSum += nums[i] - T;
+        }
+        for (int i = k; i < nums.length; i++) {
+            if(rightSum - minLeftSum >= 0) return true;
+            rightSum += nums[i] - T;
+            leftSum += nums[i - k] - T;
+            minLeftSum = Math.min(minLeftSum, leftSum);
+        }
+        return rightSum - minLeftSum >= 0;
+    }
+
+}

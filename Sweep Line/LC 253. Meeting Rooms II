@@ -1,0 +1,62 @@
+/*
+LC 253. Meeting Rooms II
+很明显的一道sweepLine， 直接套模版就好了
+注意comparator 要写在一个class 里面
+*/
+/**
+ * Definition for an interval.
+ * public class Interval {
+ *     int start;
+ *     int end;
+ *     Interval() { start = 0; end = 0; }
+ *     Interval(int s, int e) { start = s; end = e; }
+ * }
+ */
+class Point {
+    int time;
+    int type; // 0 being start 1 being end
+    public Point(int time, int type) {
+        this.time = time;
+        this.type = type;
+    }
+}
+
+class Solution {
+
+    public static Comparator<Point> PointComparator = new Comparator<Point>() {
+        public int compare(Point p1, Point p2) {
+            if(p1.time != p2.time) {
+                return p1.time - p2.time;
+            } else {
+                return p2.type - p1.type;
+            }
+        }
+    };
+
+    public int minMeetingRooms(Interval[] intervals) {
+        List<Point> timeLine = new ArrayList<>();
+        for (int i = 0; i < intervals.length; i++) {
+            Interval interval = intervals[i];
+            int startTime = interval.start;
+            int endTime = interval.end;
+            timeLine.add(new Point(startTime, 0));
+            timeLine.add(new Point(endTime, 1));
+        }
+        Collections.sort(timeLine, PointComparator);
+        int maxMeeting = 0;
+        int local = 0;
+        for (int i = 0; i < timeLine.size(); i++) {
+            Point p = timeLine.get(i);
+            // meeting start
+            if(p.type == 0) {
+                local++;
+            // meeting end
+            } else {
+                local--;
+            }
+            maxMeeting = Math.max(maxMeeting, local);
+        }
+        return maxMeeting;
+
+    }
+}

@@ -1,0 +1,41 @@
+/*
+LC 239. Sliding Window Maximum
+Deque 是一个前后两端都可以进行操作的数据结构
+这道题就非常适用。 这道题的思路是：inqueue 的时候，
+把比自己小的element 全删除。 这样下来， 最大的数永远
+排在deque 第一位。 outqueue 的时候只要看看需要删除
+的数是不是deque 第一位就行了。 是第一位的话就删除， 不是的话
+说明在inqueue 的时候已经被删除了。什么都不做就好了
+*/
+class Solution {
+    public int[] maxSlidingWindow(int[] nums, int k) {
+        int len = nums.length;
+        if(k == 0 || len == 0) return new int[0];
+        int[] ans = new int[len - k + 1];
+        Deque<Integer> deque = new ArrayDeque<>();
+        for (int i = 0; i < k - 1; i++) {
+            inQueue(nums[i], deque);
+        }
+        int index = 0;
+        for (int i = k - 1; i < len; i++) {
+            inQueue(nums[i], deque);
+            ans[index] = deque.peekFirst();
+            index++;
+            outQueue(nums[i - k + 1], deque);
+        }
+        return ans;
+    }
+
+    private void inQueue(int num, Deque<Integer> deque) {
+        while(!deque.isEmpty() && deque.peekLast() < num) {
+            deque.pollLast();
+        }
+        deque.offer(num);
+    }
+
+    private void outQueue(int num, Deque<Integer> deque) {
+        if(!deque.isEmpty() && deque.peekFirst() == num) {
+            deque.pollFirst();
+        }
+    }
+}
