@@ -1,0 +1,33 @@
+/*
+LC 29. Divide Two Integers
+这道题让球a / b 不让用乘除法 和mod
+那我们来想一想， 怎么求这个值
+说到底， 我们需要找到以一个x 使得 b * x = a
+我们可以把x 分成x1 + x2 + ... xn
+也就是说 b(x1 + x2 + x3 ...) = a
+但是题目不让用乘法， 怎么处理呢？ 可以用shift
+我们知道 n << r = n * 2^r。 这样可以不断地
+把 b << shift 跟 a 比较。 如果shift 滚雪球滚得太大了， 就
+先用 a - b << shift - 1 再重新从shift = 0 开始
+用result 来积累。 到最后， result 就是我们要求的x
+
+注意求dividend 绝对值的时候要先把他俩转成 long 再求绝对值
+*/
+class Solution {
+    public int divide(int dividend, int divisor) {
+        if(divisor == 0) return 0;
+        if(dividend == Integer.MIN_VALUE && divisor == -1) return Integer.MAX_VALUE;
+        boolean isAnswerPositive = (dividend < 0 && divisor < 0) || (dividend > 0 && divisor > 0);
+        long dividend_a = Math.abs((long) dividend);
+        long divisor_a = Math.abs((long)divisor);
+        long result = 0;
+        System.out.println(dividend_a);
+        while(dividend_a >= divisor_a) {
+            int shift = 0;
+            while(dividend_a >= divisor_a << shift) shift++;
+            dividend_a -= divisor_a << shift - 1;
+            result += 1 << (shift - 1);
+        }
+        return isAnswerPositive ? (int)result : (int)-result;
+    }
+}
