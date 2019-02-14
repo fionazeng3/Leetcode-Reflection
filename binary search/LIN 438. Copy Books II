@@ -1,0 +1,50 @@
+/*
+LIN 438. Copy Books II
+这道题其实就只是 copy books  换了一个问法
+还是用二分答案法。 二分答案法最重要的一个步骤就是想出来要问一个什么样的
+问题。 这道题来说， 问的问题就是： 这么多本书 T 时间能完成吗？
+怎么来验证呢？ traverse times 每个人一本书一本书地加， 直到要超过T
+最后看剩下的书是不是小于0 就好了。
+
+主程序套用二分答案模板就好了。
+*/
+public class Solution {
+    /**
+     * @param n: An integer
+     * @param times: an array of integers
+     * @return: an integer
+     */
+    public int copyBooksII(int n, int[] times) {
+        // write your code here
+        int min = 0;
+        int max = 0;
+        for (int i = 0; i < times.length; i++) {
+            max = Math.max(max, times[i]);
+        }
+        max = max * n;
+        while(min + 1 < max) {
+            int mid =(min + max) / 2;
+            // time is probably too long
+            if(isTimeEnough(mid, n ,times)) {
+                max = mid;
+            // time is probably too short 
+            } else {
+                min = mid;
+            }
+        }
+        if(isTimeEnough(min, n, times)) return min;
+        return max;
+    }
+    
+    private boolean isTimeEnough(int targetTime, int bookNumber, int[] timePerBook) {
+        int bookLeft = bookNumber;
+        for (int i = 0; i < timePerBook.length; i++) {
+            int bookPerPerson = 1;
+            while(bookPerPerson * timePerBook[i] <= targetTime) {
+                bookPerPerson++;
+                bookLeft--;
+            }
+        }
+        return bookLeft <= 0;
+    }
+}

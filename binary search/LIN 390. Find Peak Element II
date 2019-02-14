@@ -1,0 +1,47 @@
+/*
+LIN 390. Find Peak Element II
+这道题其实很简单。把每个row 提出来
+用find peak Element 的方法把每一行的peak
+提出来， 然后上下比较一下合理就return 就好了
+这个做法的时间复杂度是O（n * logm）可以再想一想O（m + n） 的方法
+*/
+public class Solution {
+    /*
+     * @param A: An integer matrix
+     * @return: The index of the peak
+     */
+    public List<Integer> findPeakII(int[][] A) {
+        int y = A.length;
+        List<Integer> result = new ArrayList<>();
+        for (int j = 1; j <= y - 2; j++) {
+            int[] currentRow = A[j];
+            int i = findSinglePeak(currentRow);
+            if(A[j][i] > A[j - 1][i] && A[j][i] > A[j + 1][i]) {
+                result.add(j);
+                result.add(i);
+                return result;
+            }
+        }
+        return result;
+    }
+    
+    public int findSinglePeak(int[] currentRow) {
+        int min = 0;
+        int max = currentRow.length - 1;
+        while (min + 1 < max) {
+            int mid = (min + max) / 2;
+            // accending
+            if(mid > 0 && currentRow[mid] > currentRow[mid - 1]) {
+                min = mid;
+            } else {
+                max = mid;
+            }
+        }
+        if(min - 1 >= 0 && currentRow[min] > currentRow[min - 1] && min + 1 < currentRow.length && currentRow[min] > currentRow[min + 1]) {
+            return min;
+            
+        } else {
+            return max;
+        }
+    }
+}
