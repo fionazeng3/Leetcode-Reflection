@@ -1,0 +1,45 @@
+/*
+LC 64. Minimum Path Sum
+这是一道dp 的入门题。 适用滚动数组记录。
+dp 最重要的几个元素就是： 转移方程， 初始化值， 和运算顺序
+dp 题想转移方程的时候一个很常见的思路就是想一想最后一步是怎么
+走到的？ 就这道题而言，最后一步要不就是从上面走下来的， 要不就是从左边
+走过来的。 所以转移方程是:f[i][j] = min{f[i-1][j], f[i][j-1]} + A[i][j]
+再来想运算顺序： 首先初始化左上角位置0 0 的值，然后算出第一行和第一列
+第一行很好算， 每一步就肯定是左变走过来的。 所以helper 左边的加上当前元素就行了
+第一列也很好算，从上到下加起来就行了。 位于中间的值从左往右从上到下用转移方程算就ok
+
+空间复杂度优化
+因为这道题每个位置只用看上面和左面的element， 所以只开一个2 by x 数组就好了
+不用开y by x 节省空间
+*/
+class Solution {
+    public int minPathSum(int[][] grid) {
+        int y = grid.length;
+        int x = grid[0].length;
+        int old =0, now = 0;
+        int[][] helper = new int[2][x];
+        // every row
+        for (int j = 0; j < y; j++) {
+            old = now;
+            now = 1- now;
+            // every column
+            for (int i = 0; i < x; i++) {
+                if(j == 0 && i == 0){
+                    helper[now][0] = grid[0][0];
+                // first row
+                }else if(j == 0) {
+                    helper[now][i] = helper[now][i - 1] + grid[j][i];
+                // first column
+                }else if (i == 0) {
+                    helper[now][i] = helper[old][i] + grid[j][i];
+                // elements in the middle
+                }else {
+                    helper[now][i] = Math.min(helper[old][i], helper[now][i - 1]) + grid[j][i];
+                }
+            }
+        }
+        return helper[now][x - 1];
+
+    }
+}

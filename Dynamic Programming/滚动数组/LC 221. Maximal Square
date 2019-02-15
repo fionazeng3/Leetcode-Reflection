@@ -1,0 +1,56 @@
+/*
+LC 221. Maximal Square
+这道题也是一道dp滚动数组的模版题
+首先想转移方程。 最后一步是怎么来的
+假如一个位置是最大正方形的右下角， 那么这个正方形的
+变长是从以左边为右下角， 以上面为右下角， 和以左斜上方
+为右下角组成正方形边长的最小值加一。（可以自己再画图验证一下）
+写成数学方程式就是这样的
+转移方程:f[i][j] = min{f[i-1][j], f[i][j-1], f[i-1][j-1]} + 1
+
+再来想一下初始值和计算顺序。 因为边缘的值都知道， 所以直接从matrix 抄过来
+中间的值用转移方程算
+
+因为每个计算最多只用看上面和左面， 所以用2by x 滚动数组
+
+最后有个小技巧
+矩阵类的题目
+
+正方形用右下角作为定位角
+
+长方形可以用左上角和右下角作为定位角
+*/
+class Solution {
+    public int maximalSquare(char[][] matrix) {
+        int y = matrix.length;
+        if(y == 0 ) return 0;
+        int x = matrix[0].length;
+        int[][] helper = new int[2][x];
+        int old = 0, now = 0;
+        int result = 0;
+        // every row
+        for (int j = 0; j < y; j++) {
+            old = now;
+            now = 1- now;
+            // every column
+            for (int i =0; i < x; i++) {
+                // things on the edge
+                if(i == 0 || j == 0) {
+                    helper[now][i] = matrix[j][i] - '0';
+                } else {
+                    if(matrix[j][i] - '0' == 0) {
+                        helper[now][i] = 0;
+                    } else {
+                        // left and up
+                        int min = Math.min(helper[now][i - 1], helper[old][i]);
+                        // diagnal
+                        min = Math.min(min, helper[old][i - 1]);
+                        helper[now][i] = min + 1;
+                    }
+                }
+                result = Math.max(result, helper[now][i]);
+            }
+        }
+        return result * result;
+    }
+}
