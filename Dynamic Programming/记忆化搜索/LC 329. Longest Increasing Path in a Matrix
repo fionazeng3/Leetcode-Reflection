@@ -1,0 +1,52 @@
+/*
+LC 329. Longest Increasing Path in a Matrix
+这是一道记忆化搜索的经典题。 什么时候用记忆化搜索呢？
+多重循环DP解决不了的问题:
+到从上到下循环不能解决问题
+初始状态不好定义
+状态转移特别麻烦,不是顺序性
+其实这道题无非就是在dp 的基础上加入了一个记忆的
+matrix。 在dp 的时候， 如果下一个值已经计算过了， 就不用
+再计算一遍， 直接用就行了
+*/
+class Solution {
+    int[] dx = {-1, 1, 0, 0};
+    int[] dy = {0, 0, -1, 1};
+    int[][] helper;
+    int x, y;
+    // main program
+    public int longestIncreasingPath(int[][] matrix) {
+        y = matrix.length;
+        if(y == 0) return 0;
+        int ans = 0;
+        x = matrix[0].length;
+        helper = new int[y][x];
+        for (int i = 0; i < x; i++) {
+            for (int j = 0; j < y; j++) {
+                helper[j][i] = -1;
+            }
+        }
+
+        for (int i = 0; i< x; i++) {
+            for (int j = 0; j < y; j++) {
+                search(i, j, matrix);
+                ans = Math.max(ans, helper[j][i]);
+            }
+        }
+        return ans;
+    }
+
+    // dfs function
+    private void search(int i, int j, int[][] matrix) {
+        if(helper[j][i] != -1) return;
+        helper[j][i] = 1;
+        for (int index = 0; index < 4; index++) {
+            int nx = i + dx[index];
+            int ny = j + dy[index];
+            if(nx >= 0 && nx < x && ny >= 0 && ny < y && matrix[ny][nx] > matrix[j][i]) {
+                search(nx, ny, matrix);
+                helper[j][i] = Math.max(helper[j][i], helper[ny][nx] + 1);
+            }
+        }
+    }
+}

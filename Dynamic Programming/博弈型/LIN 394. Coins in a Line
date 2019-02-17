@@ -1,0 +1,49 @@
+/*
+LIN 394. Coins in a Line
+这是一道典型的博弈型dp 问题。 要想理解博弈型dp， 我们必须了解什么叫先手
+必胜和先手必败
+
+先手： 就是面对当前局面的人
+在这道题中，
+先手必胜就是：取1个或2个石子后,能让剩下的局面先手必败
+先手必败就是：不管怎么走,剩下的局面都是先手必胜
+
+游戏宗旨就是 在每一步都走有利于自己的一步
+
+这个转移方程是：f[i] = f[i-1] == FALSE OR f[i-2] == FALSE
+运算顺序是先算 f[0] (false) f[1] (true) f[2] (false)
+然后再按顺序往下算就好了
+
+注意博弈型dfs 要采取buttom up 的思路。 先从游戏结束的时候开始想
+*/
+public class Solution {
+    /**
+     * @param n: An integer
+     * @return: A boolean which equals to true if the first player will win
+     */
+    public boolean firstWillWin(int n) {
+        boolean[] helper = new boolean[3];
+        helper[0] = false;
+        helper[1] = true;
+        helper[2] = true;
+        if(n < 3) return helper[n];
+        boolean ans= false;;
+        int counter = 3;
+        int left = 1;
+        int right = 2;
+        while(counter <= n) {
+            int now = calculatePosition(right);
+            helper[now] = ((!helper[left]) || (!helper[right]));
+            if(counter == n) ans = helper[now];
+            right = calculatePosition(right);
+            left = calculatePosition(left);
+            counter++;
+        }
+        return ans;
+    }
+
+   private int calculatePosition(int now) {
+       if(now == 2) return 0;
+       return now + 1;
+   }
+}
