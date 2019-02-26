@@ -1,0 +1,55 @@
+/*
+LC 87 Scramble String
+区间型dp 先想想最后一步。
+T最后可以分为 T1 T2， S 最后可以分为S1 S2
+如果T 是S 的scramble string，有以下两种可能
+– T也有两部分T=T1T2,T1是S1变换而来的,T2是S2变换而来的
+– T也有两部分T=T1T2,T1是S2变换而来的,T2是S1变换而来的
+开一个3d array f[i][j][k]来表示 S以i 开头， T 以j 开头
+长度为k 的两个substring 是不是scramble string。
+那么转移方程就是
+转移方程:f[i][j][k] = OR{f[i][j][w] AND f[i+w][j+w][k-w]}
+OR{f[i][j+k-w][w] AND f[i+w][j][k-w]}
+也就是说只要有一个砍的方式或者交换方式满足， 这两个string 就是scramble string
+初始条件:如果S[i]=T[j],f[i][j][1]=True,否则f[i][j][1]=False
+计算顺序：k 从小到大（区间型dp 常见计算顺序）
+最后返回f【0】【0】【N】
+就行了。 f 的第三维用的是从1 到 N 的数。 所以大小开成 N + 1
+*/
+class Solution {
+    public boolean isScramble(String s1, String s2) {
+        if(s1.length() != s2.length()) return false;
+        char[] s1Array = s1.toCharArray();
+        char[] s2Array = s2.toCharArray();
+        int len = s1.length();
+        boolean[][][] f = new boolean[len][len][len + 1];
+        // initialize
+        for (int i = 0; i < len; i++) {
+            for (int j = 0; j < len; j++) {
+                f[i][j][1] = s1Array[i] == s2Array[j];
+            }
+        }
+        // main program loop
+        for (int interval = 2; interval <= len; interval++) {
+            for (int i = 0; i <= len - interval; i++) {
+                for (int j = 0; j <= len - interval; j++) {
+                    // w is the length of the first string
+                    for (int w = 1; w <= interval - 1; w++) {
+                        // no swap
+                        if(f[i][j][w] && f[i + w][j + w][interval - w]) {
+                            f[i][j][interval] = true;
+                            break;
+                        }
+
+                        // swap
+                        if(f[i][j + interval - w][w] && f[i + w][j][interval - w]) {
+                            f[i][j][interval] = true;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        return f[0][0][len];
+    }
+}
