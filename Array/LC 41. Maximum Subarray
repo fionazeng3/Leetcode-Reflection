@@ -1,0 +1,23 @@
+/*
+LC 41. Maximum Subarray
+简单的array 题， 只要在加入每个元素的
+时候衡量一下加上它好， 还是丢掉前面的只留它好就行了
+*/
+public class Solution {
+    /**
+     * @param nums: A list of integers
+     * @return: A integer indicate the sum of max subarray
+     */
+    public int maxSubArray(int[] nums) {
+        // write your code here
+        int len = nums.length;
+        if(len == 0) return 0;
+        if(len == 1) return nums[0];
+        int current = nums[0], result = nums[0];
+        for (int i = 1; i < nums.length; i++) {
+            current = Math.max(current + nums[i], nums[i]);
+            result = Math.max(result, current);
+        }
+        return result;
+    }
+}

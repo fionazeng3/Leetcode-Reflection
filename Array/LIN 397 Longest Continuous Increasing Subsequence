@@ -1,0 +1,25 @@
+/*
+LIN 397 Longest Continuous Increasing Subsequence
+一道普通的array 题， 注意细节
+*/
+public class Solution {
+    /**
+     * @param A: An array of Integer
+     * @return: an integer
+     */
+    public int longestIncreasingContinuousSubsequence(int[] nums) {
+        if (nums.length <= 1) return nums.length;
+        int longest = 1, current = 1;
+        boolean isUp = nums[1] > nums[0];
+        for(int i = 1; i < nums.length; i++) {
+            if(isUp == nums[i] > nums[i - 1]){
+                current ++;
+            } else {
+                current = 2;
+                isUp = nums[i] > nums[i - 1];
+            }
+            longest = Math.max(longest, current);
+        }
+        return longest;
+    }
+}
