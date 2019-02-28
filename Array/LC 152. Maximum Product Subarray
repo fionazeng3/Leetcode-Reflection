@@ -1,0 +1,39 @@
+/*
+LC 152. Maximum Product Subarray
+这道题跟加法的maximum subarray 不同在于：
+对于一个负的element 来说，
+当前element 乘上了， 可能当前result 变小了，
+但是如果后面还有负数， 那可能就翻盘了， 之后result
+会因为乘上了当前element 变大了。 所以建立两个数组，
+一个记录最大的乘积， 一个记录最小的乘积。
+如果当前element 是负数，则
+max[i] = Math.max(max[i], min[i - 1] * nums[i]);
+min[i] = Math.min(min[i], max[i - 1] * nums[i]);
+如果当前element 是正数， 则
+max[i] = Math.max(max[i], max[i - 1] * nums[i]);
+min[i] = Math.min(min[i], min[i- 1] * nums[i]);
+因为当前element 是正数的时候， 你想让乘的数字越小越好
+当element 是负数的时候， 你想让乘的数字越大越好
+*/
+class Solution {
+    public int maxProduct(int[] nums) {
+        if(nums.length == 0) return 0;
+        int len = nums.length;
+        int[] max = new int[len];
+        int[] min = new int[len];
+        int result = nums[0];
+        max[0] = min[0] = nums[0];
+        for (int i = 1; i < len; i++) {
+            max[i] = min[i] = nums[i];
+            if(nums[i] > 0) {
+                max[i] = Math.max(max[i], max[i - 1] * nums[i]);
+                min[i] = Math.min(min[i], min[i- 1] * nums[i]);
+            } else if (nums[i] < 0) {
+                max[i] = Math.max(max[i], min[i - 1] * nums[i]);
+                min[i] = Math.min(min[i], max[i - 1] * nums[i]);
+            }
+            result = Math.max(result, max[i]);
+        }
+        return result;
+    }
+}

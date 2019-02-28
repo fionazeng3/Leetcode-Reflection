@@ -1,0 +1,52 @@
+/*
+LC 5. Longest Palindromic Substring
+palindrome 问题基本的思路就是从每一个字母开始， 往外
+扩展。 扩展到极限就停下来。 有一个大坑就是palindrome 分为奇数palindrome
+和偶数palindrome。 奇数palindrome 大概是这样的 bab 偶数palindrome 是这样的
+baab。 所以一定要枚举两种情况。 第一种左指针从i开始， 右指针从i 开始。 第二种左指针
+从i 开始， 右指针从i + 1 开始。 最后算start 的时候奇数的情况start = i - resultLen / 2;
+偶数的情况start = i - resultLen / 2 + 1;
+*/
+class Solution {
+    public String longestPalindrome(String s) {
+        if(s.length() == 0) return "";
+        int longest = 0;
+        String result = "";
+        for(int i = 0; i < s.length(); i++) {
+            String odd = findPalindrome(s, i, i, i);
+            String even = findPalindrome(s, i, i + 1, i);
+            String longer = "";
+            if(even.length() > odd.length()) {
+                longer= even;
+            } else {
+                longer = odd;
+            }
+            if(longer.length() > result.length()) result = longer;
+
+        }
+        return result;
+    }
+
+    private String findPalindrome(String s, int left, int right, int i) {
+        boolean isOdd = left == right;
+        int resultLen = 0;
+        char[] sChar = s.toCharArray();
+        int len = s.length();
+        while(left >= 0 && right < len) {
+            if(sChar[left] != sChar[right]) {
+                break;
+            }
+            resultLen += left == right ? 1: 2;
+            left --;
+            right++;
+        }
+        int start;
+        if(isOdd) {
+            start = i - resultLen / 2;
+        } else {
+            start = i - resultLen / 2 + 1;
+        }
+        return(s.substring(start, start + resultLen));
+
+    }
+}

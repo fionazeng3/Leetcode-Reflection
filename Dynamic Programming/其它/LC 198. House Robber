@@ -3,7 +3,8 @@ LC 198. House Robber
 一道简单的动态规划问题
 转移方程是 f[i] = max{f[i - 1], nums[i] + f[i - 2]}
 一定要注意初始条件。 f[0] = 0 f[1] = nums[0]
-不然就错了
+如果让f[0] = nums[0], f[1] = nums[1]
+那么f[1]就不一定选的是对的， 从而影响到后面的答案
 */
 public class Solution {
     /**
