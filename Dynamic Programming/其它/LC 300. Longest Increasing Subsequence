@@ -1,0 +1,28 @@
+/*
+LC 300. Longest Increasing Subsequence
+很简单的一道dp， 建立一个array 来记录当前为止最长的
+increasing sequence 长度， 接下来没看一个新的element，
+跟前面所有element 作比较， 如果比前面element 大，
+f[i] = Math.max{helper[i], helper[j] + 1}这个就是转移方程
+运算顺序就是从左到右， 第一个的值是1
+*/
+class Solution {
+    public int lengthOfLIS(int[] nums) {
+        int len = nums.length;
+        if(len <= 1) return len;
+        int[] helper = new int[len];
+        helper[0] = 1;
+        int longest =1;
+        for (int i = 1; i < len; i++) {
+            for (int j = 0; j <= i - 1; j++) {
+                if(nums[i] > nums[j]) {
+                    helper[i] = Math.max(helper[i], helper[j] + 1);
+                    longest = Math.max(longest, helper[i]);
+                }
+            }
+            if(helper[i] == 0) helper[i] = 1;
+
+        }
+        return longest;
+    }
+}
