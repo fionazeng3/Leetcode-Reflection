@@ -1,0 +1,49 @@
+/*
+LC 97. Interleaving String
+设f[i][j]=X前i+j个字符是否由A前i个字符和B前j个字符交错形成
+每一次判断的时候其实就是判断X 现在这个字母是由A 而来还是B 而来
+转移方程:f[i][j] = (f[i-1][j] AND X[i+j-1]==A[i-1])OR(f[i][j-1] AND X[i+j-1]==B[j-1])
+什么意思呢？
+-f[i-1][j] AND X[i+j-1]==A[i-1] 当前字母由A而来， 在这之前， 去掉A 中的这个字母前面也成立
+并且当前X的字母与A 的字母相等
+-f[i][j-1] AND X[i+j-1]==B[j-1] 当前字母由B而来， 在这之前， 去掉B 中的这个字母前面也成立
+并且当前X的字母与B的字母相等
+运算顺序是
+f[0][0] true
+f[0][1-n]
+f[1-m][0]
+
+– f[0][0], f[0][1], ..., f[0][n]
+– ...
+– f[m][0], f[m][1], ..., f[m][n]
+
+双序列型dp 为什么非要开f[m + 1][n + 1] 的数组而不是f[m][n]呢？
+因为要照顾到A 或 B 一个字母都不取的情况
+*/
+class Solution {
+    public boolean isInterleave(String s1, String s2, String s3) {
+        char[] c1 = s1.toCharArray();
+        char[] c2 = s2.toCharArray();
+        char[] c3 = s3.toCharArray();
+        int len1 = s1.length();
+        int len2 = s2.length();
+        int len3 = s3.length();
+        if(len3 != len1 + len2) return false;
+        // initialize
+        boolean[][] f = new boolean[len1 + 1][len2 + 1];
+        f[0][0] = true;
+        for (int i = 1; i <= len1; i++){
+            f[i][0] = f[i - 1][0] && c1[i - 1] == c3[i - 1];
+        }
+        for(int j = 1; j <= len2; j++) {
+            f[0][j] = f[0][j - 1] && c2[j - 1] == c3[j - 1];
+        }
+        for (int i = 1; i <= len1; i++) {
+            for (int j = 1; j <= len2; j++) {
+                f[i][j] = (f[i - 1][j] && c1[i - 1] == c3[i+j - 1]) || (f[i][j - 1] && c2[j - 1] == c3[i + j - 1]);
+            }
+        }
+        return f[len1][len2];
+
+    }
+}

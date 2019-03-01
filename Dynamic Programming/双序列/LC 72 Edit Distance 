@@ -1,0 +1,48 @@
+/*
+LC 72 Edit Distance 
+双序列题的一个思考的精髓就是： 尾巴是怎么来的？
+揪住一个B的尾巴， 它是怎么从A 变过来的呢？
+– 增加一个字符
+– 去掉一个字符
+– 替换一个字符
+状态:设f[i][j]为A前i个字符A[0..i-1]和B前j个字符B[0..j-1]的最小编辑距离
+我们可以把每个情况用f 写出来
+– 增加一个字符 f[i][j -1] + 1
+– 去掉一个字符 f[i - 1][j] + 1
+– 替换一个字符 f[i - 1][j - 1]
+- 免费的午餐f[i - 1][j - 1]
+转移方程:min{f[i][j-1]+1, f[i-1][j-1]+1, f[i-1][j]+1, f[i-1][j-1]|A[i-1]=B[j-1]}
+初始条件和边界情况:
+– f[0][j] = j, j=0..n
+– f[i][0] = i, i=0..m
+因为每一个空字符串到另一个string 的edit distance 肯定就是那个string 的长度
+计算顺序:
+– f[0][0..n-1]
+– ...
+– f[m-1][0..n-1]
+*/
+class Solution {
+    public int minDistance(String word1, String word2) {
+        int len1 = word1.length();
+        int len2 = word2.length();
+        int[][]f = new int[len1 + 1][len2 + 1];
+        for (int i = 0; i <= len1; i++) {
+            f[i][0] = i;
+        }
+        for (int j = 0; j <= len2; j++) {
+            f[0][j] = j;
+        }
+        for (int i = 1; i <= len1; i++) {
+            for (int j = 1; j <= len2; j++) {
+                                   //insert         // delete
+                f[i][j] = Math.min(f[i][j - 1] + 1, f[i - 1][j] + 1);
+                                             // replace
+                f[i][j] = Math.min(f[i][j], f[i - 1][j -1] + 1);
+                if(word1.charAt(i-1) == word2.charAt(j-1)) {
+                    f[i][j] = Math.min(f[i][j], f[i - 1][j - 1]);
+                }
+            }
+        }
+        return f[len1][len2];
+    }
+}
