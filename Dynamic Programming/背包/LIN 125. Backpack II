@@ -1,0 +1,51 @@
+/*
+LIN 125. Backpack II
+这道题跟backpack 题很相似， 只不过在backpack 的
+基础上加入了value 这个维度。 那么可以设设f[i][w] = 用前i个物品拼出重量w时最大总价值 (-1表示不能拼出w)
+转移方程就是f[i][w] = max{f[i-1][w], f[i-1][w-Ai-1] + Vi-1 | w≥Ai-1 且f[i-1][w-Ai-1] ≠-1}
+f[i-1][w]： 不参与Ai-1 情况所得的价值
+f[i-1][w-Ai-1] + Vi-1 | w≥Ai-1 且f[i-1][w-Ai-1] ≠-1 参与Ai-1 情况所得的价值
+• 初始条件和边界情况:
+– f[0][0] = 0: 0个物品可以拼出重量0,最大总价值是0
+– f[0][1..M] = -1: 0个物品不能拼出大于0的重量
+– f[i-1][w-Ai-1]只能在w≥Ai-1,并且f[i-1][w-Ai-1] ≠-1时使用
+
+• 计算顺序:
+– f[0][0..m]
+– ...
+– f[n][0..m]
+• 答案是max0<=j<=M{f[N][j] | f[N][j] ≠-1}
+*/
+public class Solution {
+    /**
+     * @param m: An integer m denotes the size of a backpack
+     * @param A: Given n items with size A[i]
+     * @param V: Given n items with value V[i]
+     * @return: The maximum value
+     */
+    public int backPackII(int m, int[] A, int[] V) {
+        // write your code here
+        int result = 0;
+        int len = A.length;
+        int[][] f = new int[len + 1][m + 1];
+        for (int i = 0; i <= len; i++) {
+            for (int w = 0; w <= m; w++) {
+                f[i][w] = -1;
+            }
+        }
+        for (int i = 0; i <= len; i++) {
+            f[i][0]= 0;
+        }
+        for (int i = 1; i <= len; i++) {
+            for (int w = 1; w <= m; w++) {
+                f[i][w] = f[i - 1][w];
+                if(w >= A[i - 1] && f[i - 1][w - A[i - 1]] != -1) {
+                    f[i][w] = Math.max(f[i][w], f[i - 1][w - A[i - 1]] + V[i - 1]);
+                }
+                if(i == len) result = Math.max(result, f[i][w]);
+            }
+        }
+        return result;
+
+    }
+}

@@ -1,0 +1,43 @@
+/*
+LIN 440. Backpack III
+其实这道题跟backpack II 一模一样，
+唯一不同的一点是每一个element 都可以有无限个
+backpack II 的转移方程是这样的
+f[i][w] = max{f[i-1][w], f[i-1][w-Ai-1] + Vi-1 | w≥Ai-1 且f[i-1][w-Ai-1] ≠-1}
+那backpack III 就是这样的f[i][w] = max{f[i-1][w], f[i][w-Ai-1] + Vi-1}
+也就是说， 当A（i-1）参与的时候， 上次用到的值是f[i][w-Ai-1] + Vi-1。 也就是说
+上一次Ai-1 也可以参与。 f[i-1][w-Ai-1]的意思就是上一次Ai-1 不可以可以参与， 因为
+backpack II 中每个元素只能用一次
+*/
+public class Solution {
+    /**
+     * @param A: an integer array
+     * @param V: an integer array
+     * @param m: An integer
+     * @return: an array
+     */
+    public int backPackIII(int[] A, int[] V, int m) {
+        // write your code here
+        int result = 0;
+        int len = A.length;
+        int[][]f = new int[len + 1][m + 1];
+        for(int i = 0; i <= len; i++) {
+            for (int w = 0; w <= m; w++) {
+                f[i][w] = -1;
+            }
+        }
+        for(int i = 0; i <= len; i++) {
+            f[i][0] = 0;
+        }
+        for (int i = 1; i <= len; i++) {
+            for (int w = 1; w <= m; w++) {
+                f[i][w] = f[i - 1][w];
+                if(w >= A[i - 1] && f[i][w - A[i - 1]] >= 0) {
+                    f[i][w] = Math.max(f[i][w], f[i][w - A[i - 1]] + V[i - 1]);
+                }
+                if(i == len) result = Math.max(result, f[i][w]);
+            }
+        }
+        return result;
+    }
+}

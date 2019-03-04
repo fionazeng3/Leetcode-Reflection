@@ -1,0 +1,50 @@
+/*
+LIN92. Backpack
+这道题是一道典型的背包型dp 问题。
+背包dp 有一个特点就是动态数组有一个维度一定跟要求的重量
+有关系。 一这道题来说， 动态数组是
+f[i][w] = 能否用前i个物品刚好拼出重量w (TRUE / FALSE)
+那么转移方程就是f[i][w] = f[i-1][w] OR f[i-1][w-A（i-1）]
+怎么理解呢？
+f[i-1][w]： 不用A（i-1）也能正好拼出w， 那么加上A（i-1）更能拼出来了
+多余的元素不用就好了
+f[i-1][w-A（i-1）]：不用A（i-1）的时候能正好拼出w-A（i-1）
+那有了A（i-1）就能正好拼出w
+
+初始条件是：
+– f[0][0] = TRUE: 0个物品可以拼出重量0
+– f[1..M][0] = FALSE: 0个物品不能拼出大于0的重量
+– f[w-Ai-1][i - 1]只能在w≥Ai-1时使用
+
+计算顺序:
+– f[0][0..m]
+– ...
+– f[n][0..m]
+答案是最大的j使得f[j][n]=True
+*/
+public class Solution {
+    /**
+     * @param m: An integer m denotes the size of a backpack
+     * @param A: Given n items with size A[i]
+     * @return: The maximum size
+     */
+    public int backPack(int m, int[] A) {
+        int result = 0;
+        int len = A.length;
+        // write your code here
+        boolean[][] f = new boolean[m + 1][len + 1];
+        for (int i = 0; i <= len; i++) {
+            f[0][i] = true;
+        }
+        for (int j = 1; j <= m; j++) {
+            for (int i = 1; i <=len; i++) {
+                f[j][i] = f[j][i - 1];
+                if(j >= A[i - 1]) {
+                    f[j][i] = f[j][i] || f[j - A[i - 1]][i - 1];
+                }
+                if(i == len && f[j][i]) result = j;
+            }
+        }
+        return result;
+    }
+}
