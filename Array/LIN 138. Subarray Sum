@@ -1,0 +1,35 @@
+/*
+LIN 138. Subarray Sum
+这道题最简单暴力的方法就是从array 中的每一个element 开始扩展0， 1 。。。一直到n
+这样的时间复杂度为O(n^2) 有什么更好的方法呢？
+拿出一个数组-3, 1, 2, -3, 4 不断的算前缀和。 如果前缀和其实是一个数， 加了
+一段时间以后又回到了那个数， 那么证明这期间的和就是0
+具体实现方法是用hashmap 记录直到每个index 的前缀和。 每次sum 更新以后
+检查以前有没有出现过这个sum 就行了
+*/
+public class Solution {
+    /**
+     * @param nums: A list of integers
+     * @return: A list of integers includes the index of the first number and the index of the last number
+     */
+    public List<Integer> subarraySum(int[] nums) {
+        // write your code here
+        Map<Integer, Integer> map = new HashMap<>();
+        map.put(0, -1);
+        List<Integer> ans = new ArrayList<>();
+        int sum = 0;
+        for (int i = 0; i< nums.length; i++) {
+            sum += nums[i];
+            if(!map.containsKey(sum)) {
+                map.put(sum, i);
+            } else {
+                int index = map.get(sum) + 1;
+                ans.add(index);
+                ans.add(i);
+                return ans;
+
+            }
+        }
+        return ans;
+    }
+}
