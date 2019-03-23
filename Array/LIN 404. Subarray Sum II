@@ -1,0 +1,47 @@
+/*
+LIN 404. Subarray Sum II
+这道题的思路是， 枚举右指针，然后算左指针的
+范围。
+先求出一个前缀数组和sum
+
+左指针范围的最小值是l， 最大值是r
+假设右指针是i
+while (l < i && sum[i] - sum[l] > end) ++l;
+如果这一段总和太大了， 最小值++
+
+然而左指针的范围一只能延伸到哪呢？
+只要是sum[i] - sum[r] >= start， 左指针都能往右延伸
+while (r < i && sum[i] - sum[r] >= start) ++r;
+
+那么会不会有一种情况就是 sum[i] - sum[r] 是小于start 的呢？
+如果这样的话， l 和r 都不会动，因为end 肯定比start 大
+这样r-l 就是0
+*/
+public class Solution {
+    /**
+     * @param A: An integer array
+     * @param start: An integer
+     * @param end: An integer
+     * @return: the number of possible answer
+     */
+    public int subarraySumII(int[] A, int start, int end) {
+        // write your code here
+        int len = A.length;
+        int[] sum = new int[len + 1];
+        for(int i = 1; i <= len; i++) {
+            sum[i] = sum[i - 1] + A[i - 1];
+        }
+        int l = 0, r = 0, ans = 0;
+        for (int i = 1; i <= len; i++) {
+            while(sum[i] - sum[l] > end && l < i) {
+                l++;
+            }
+            while(sum[i] - sum[r] >= start && r < i) {
+                r++;
+            }
+            ans += r - l;
+        }
+        return ans;
+
+    }
+}

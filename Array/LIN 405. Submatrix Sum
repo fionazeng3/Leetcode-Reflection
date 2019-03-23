@@ -1,0 +1,64 @@
+/*
+LIN 405. Submatrix Sum
+看到这种array 加和为0 的题要想一想它怎么relate 到Subarray sum
+不变的地方：都是要求加和为0. 可以用到前缀数组的思路
+变得地方： 由1D 变成了2D
+
+那么现在思考的点就在于怎么解决这个2D 的问题
+解决2D matrix 前缀数组和问题的技巧就在于建一个新的2D array
+每一个格子[x,y]里面填的就是以数组[0,0] 到 [x,y]为对角线的
+submatrix 里面所有数字的总和。
+
+到时候找submatrix 为0 的时候先枚举上下边框在哪一行。
+然后枚举下边框的每一列减上边框的每一列。
+
+接下来就完全是subarray sum 的做法记录每一个diff
+如果有同样的diff 出现， 就代表找到了总和为0 的submatrix
+*/
+public class Solution {
+    /*
+     * @param matrix: an integer matrix
+     * @return: the coordinate of the left-up and right-down number
+     */
+    public int[][] submatrixSum(int[][] matrix) {
+        // write your code here
+        int[][] ans = new int[2][2];
+        int y = matrix.length;
+        if(y == 0) return ans;
+        int x = matrix[0].length;
+        int[][] helper = new int[y+1][x+1];
+        for(int j = 1; j <= y; j++) {
+            for(int i = 1; i<= x; i++) {
+                helper[j][i] = matrix[j - 1][i - 1] + helper[j - 1][i] + helper[j][i- 1] - helper[j - 1][i - 1];
+            }
+        }
+        for (int yu = 0; yu < y; yu++) {
+            for(int yd = yu+1; yd <= y; yd++) {
+                Map<Integer, Integer> record = new HashMap<>();
+                for(int i = 0; i <= x; i++) {
+                    int diff = helper[yd][i] - helper[yu][i];
+                    if(record.containsKey(diff)) {
+                        int oldX = record.get(diff);
+                        System.out.print(yu);
+                        System.out.print(yd);
+                        System.out.print(oldX);
+                        System.out.print(i);
+                        int ux = oldX;
+                        int uy = yu;
+                        int dx = i - 1;
+                        int dy = yd - 1;
+                        ans[0][0] =uy;
+                        ans[0][1] =ux;
+                        ans[1][0] =dy;
+                        ans[1][1] =dx;
+                        return ans;
+                    } else {
+                        record.put(diff, i);
+                    }
+                }
+
+            }
+        }
+        return ans;
+    }
+}
