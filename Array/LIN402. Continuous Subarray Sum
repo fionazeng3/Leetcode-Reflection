@@ -1,0 +1,35 @@
+/*
+LIN402. Continuous Subarray Sum
+这道题比较简单。 因为涉及到subarray sum， 所以想到利用前缀数组
+和，取名为sum。 在sum 里面枚举subarray 的右边界。 然后在右
+边界前面枚举最小的左边界。 因为一段subarray sum 就是sum[r] - sum[l]
+*/
+public class Solution {
+    /*
+     * @param A: An integer array
+     * @return: A list of integers includes the index of the first number and the index of the last number
+     */
+    public List<Integer> continuousSubarraySum(int[] A) {
+        // write your code here
+        int len = A.length;
+        int[] sum = new int[len + 1];
+        for(int i = 1; i <= len; i++) {
+            sum[i] = sum[i - 1] + A[i - 1];
+        }
+        List<Integer> ans = new ArrayList<>();
+        int max = Integer.MIN_VALUE;
+        int finalL = 0, finalR = 0;
+        int l = 0;
+        for(int r = 1; r <= len; r++) {
+            if(sum[r] - sum[l] > max) {
+                finalL = l;
+                finalR = r;
+                max = sum[r] - sum[l];
+            }
+            if(sum[r] < sum[l]) l = r;
+        }
+        ans.add(finalL);
+        ans.add(finalR - 1);
+        return ans;
+    }
+}

@@ -1,5 +1,5 @@
 /*
-LC 41. Maximum Subarray
+LIN 41. Maximum Subarray
 简单的array 题， 只要在加入每个元素的
 时候衡量一下加上它好， 还是丢掉前面的只留它好就行了
 */

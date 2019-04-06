@@ -1,5 +1,5 @@
 /*
-LC 465 Kth Smallest Sum In Two Sorted Arrays
+LIN 465 Kth Smallest Sum In Two Sorted Arrays
 给两个排序好的数组， 要求数组两两和的第k 小数
 首先想一下怎么把它转化成传统的第k 大问题。
 把所有的两两和列出来组成一个2D array。
