@@ -1,0 +1,47 @@
+/*
+if a linked list has a loop, find the loop start 
+ps: if the linked list does not have a loop, then
+the fast pointer will reach null
+*/
+
+public class ListNode {
+    public int val;
+    public ListNode next;
+
+    public ListNode(int x) {
+        val = x;
+    }
+
+    @Override
+    public String toString() {
+        return "ListNode [val=" + val + ", next=" + next + "]";
+    }
+
+
+}
+
+public static ListNode findLoopStart(ListNode nodeHead) {
+
+        ListNode slowPointer, fastPointer;
+        slowPointer = nodeHead;
+        fastPointer = nodeHead;
+
+        // 寻找第一次相遇点
+        while (fastPointer != null) {
+            fastPointer = fastPointer.next.next;
+            slowPointer = slowPointer.next;
+
+            if (fastPointer == slowPointer) {
+                break;
+            }
+        }
+
+        // 把慢指针移动到链表的开头
+        slowPointer = nodeHead;
+
+        while (slowPointer != fastPointer) {
+            slowPointer = slowPointer.next;
+            fastPointer = fastPointer.next;
+        }
+        return slowPointer;
+    }

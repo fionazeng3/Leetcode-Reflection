@@ -20,32 +20,27 @@ Implement 过程用二分答案
 */
 class Solution {
     public int findDuplicate(int[] nums) {
-        long min = Integer.MAX_VALUE;
-        long max = 1;
-        for (int i = 0; i < nums.length; i++) {
-            min = Math.min(min, nums[i]);
-            max = Math.max(max, nums[i]);
-        }
-        while(min + 1 < max) {
-            long mid = (max + min) / 2;
-            long count = numberSmallerOrEqual(nums, mid);
-            // count bigger than mid. mid is probably too big
-            if(count > mid) {
+        int len = nums.length;
+        int max = len - 1;
+        int min = 1;
+        while(min < max) {
+            int mid = (min + max) / 2;
+            int num = lessOrEqual(nums, mid);
+            // num is bigger or equal to target
+            if(num > mid) {
                 max = mid;
-            // count smaller or equal to mid. mid is definately too small
             } else {
                 min = mid + 1;
             }
         }
-        if(numberSmallerOrEqual(nums, min) > min) return (int) min;
-        return (int)max;
+        return max;  
     }
-
-    private long numberSmallerOrEqual(int[] nums, long target) {
-        long result = 0;
-        for(int i = 0; i <nums.length; i++) {
-            if(nums[i] <= target) result++;
+    
+    private int lessOrEqual(int[] nums, int target) {
+        int count = 0;
+        for (int i = 0; i < nums.length; i++) {
+            if(nums[i] <= target) count++;
         }
-        return result;
+        return count;
     }
 }

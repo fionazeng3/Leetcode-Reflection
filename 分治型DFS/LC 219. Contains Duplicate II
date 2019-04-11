@@ -1,0 +1,17 @@
+/*
+LC 219. Contains Duplicate II
+很简单的一道题。 用滑动窗口和hashset 来
+判断每个窗口里面有没有重复。 这里有一个很巧妙的方法
+就是用hashset 的size 来判断当前的窗口要不要滚动
+*/
+class Solution {
+    public boolean containsNearbyDuplicate(int[] nums, int k) {
+        Set<Integer> set = new HashSet<>();
+        for(int i = 0; i < nums.length; i++) {
+            if(set.contains(nums[i])) return true;
+            set.add(nums[i]);
+            if(set.size() > k) set.remove(nums[i - k]);
+        }
+        return false;
+    }
+}

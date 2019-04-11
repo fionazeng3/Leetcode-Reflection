@@ -1,0 +1,35 @@
+/*
+LC 91. Decode Ways
+这是很典型的一道 dp 题目
+转移方程是
+f[n]=f[n-1](条件s[n]!=0) + f[n-2](条件是s[n-1]与s[n]组成的数字在10-26
+之间)
+
+为什么是 10-26 而不是 0-26 呢？
+比如说201， 当指针在1的时候， 1 和01 其实是一种情况， 而不是两种
+题目也不允许 0x 这种表达式出现
+*/
+class Solution {
+    public int numDecodings(String s) {
+        int len = s.length();
+        if(len == 0) return 0;
+        int[] record = new int[len + 1];
+        record[0] = 1;
+        char[] sArray = s.toCharArray();
+        for(int i = 0; i < len; i++) {
+            int total = 0;
+            int val = sArray[i] - '0';
+            if(val != 0) {
+                total += record[i];
+            }
+            if(i > 0) {
+                int lastVal = sArray[i - 1] - '0';
+                if(lastVal * 10 + val <= 26 && lastVal * 10 + val >= 10) {
+                    total += record[i - 1];
+                }
+            }
+            record[i + 1] = total;
+        }
+        return record[len];
+    }
+}

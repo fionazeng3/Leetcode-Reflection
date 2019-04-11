@@ -1,0 +1,37 @@
+/*
+LC 104 Maximum Depth of Binary Tree
+很基础的一道tree 的题
+*/
+
+// recursion 做法
+class Solution {
+    public int maxDepth(TreeNode root) {
+        if(root == null) return 0;
+        int left = 1 + maxDepth(root.left);
+        int right = 1 + maxDepth(root.right);
+        return Math.max(left, right);
+    }
+}
+
+// 非recursion 做法
+class Solution {
+    public int maxDepth(TreeNode root) {
+        Queue<TreeNode> list = new LinkedList<>();
+        if(root == null) return 0;
+        list.add(root);
+        list.add(null);
+        int depth = 0;
+        while(!list.isEmpty()) {
+            TreeNode current = list.poll();
+            if(current == null) {
+                depth++;
+                if(!list.isEmpty())list.offer(null);
+            } else {
+                if(current.left != null) list.offer(current.left);
+                if(current.right != null) list.offer(current.right);
+            }
+
+        }
+        return depth;
+    }
+}
