@@ -1,0 +1,32 @@
+/*
+LC 98. Validate Binary Search Tree
+这道题很简单， 就每次处理一个node 的时候， 限定一下这个node 值
+的范围。
+注意double 能表示的最小数字是-1 * DOUBLE.MAX_VALUE。
+DOUBLE.MIN_VALUE表示的只是double 表示的正数中的最小数
+*/
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public boolean isValidBST(TreeNode root) {
+        return isValid(root, -1 * Double.MAX_VALUE, Double.MAX_VALUE);
+    }
+
+    private boolean isValid(TreeNode current, double min, double max) {
+        if(current == null) return true;
+        double value = (double) current.val;
+        if(value < min || value == min || value == max || value > max) return false;
+        double leftMax = Math.min(max, current.val);
+        double rightMin = Math.max(min, current.val);
+        boolean leftResult = isValid(current.left, min, leftMax);
+        boolean rightResult = isValid(current.right, rightMin, max);
+        return leftResult && rightResult;
+    }
+}

@@ -1,0 +1,36 @@
+/*
+102. Binary Tree Level Order Traversal
+很简单的一道题。 用bfs 模版就好了
+*/
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public List<List<Integer>> levelOrder(TreeNode root) {
+        Queue<TreeNode> q = new LinkedList<>();
+        List<List<Integer>> ans = new ArrayList<>();
+        if(root == null) return ans;
+        q.offer(root);
+        q.offer(null);
+        List<Integer> currentList = new ArrayList<>();
+        while(!q.isEmpty()) {
+            TreeNode current = q.poll();
+            if(current == null) {
+                if(!q.isEmpty()) q.offer(null);
+                ans.add(currentList);
+                currentList = new ArrayList<>();
+            } else {
+                currentList.add(current.val);
+                if(current.left != null) q.offer(current.left);
+                if(current.right != null) q.offer(current.right);
+            }
+        }
+        return ans;
+    }
+}
