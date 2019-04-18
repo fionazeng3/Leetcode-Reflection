@@ -1,0 +1,45 @@
+/*
+105. Construct Binary Tree from Preorder and Inorder Traversal
+这道题还是非常的tricky。 大概的想法就是拿出一个preorder 最前面的
+元素， 在inorder 里面找到这个元素。 因为inorder 里面在当前元素
+左边的元素也在inorder array 里在这个元素左边； 在当前元素
+右边的元素在inorder array 里在这个元素右边。 所以我们可以通过
+inorder index 的范围来确定， 当前位置要不要再放一个元素
+
+preorder array 中element的规律是： 树往左走， 走到不行了， 再回来，往右走
+答案中recursion 的规律也是这样的
+*/
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    int preIndex = 0;
+    Map<Integer, Integer> pos = new HashMap<>();
+    int[] inOrder;
+    int[] preOrder;
+
+    public TreeNode buildTree(int[] preorder, int[] inorder) {
+        inOrder = inorder;
+        preOrder = preorder;
+        for(int i = 0; i < inorder.length; i++) {
+            pos.put(inorder[i], i);
+        }
+        return helper(0, inorder.length);
+    }
+
+    private TreeNode helper(int start, int end) {
+        if(start == end) return null;
+        TreeNode current = new TreeNode(preOrder[preIndex]);
+        int position = pos.get(preOrder[preIndex]);
+        preIndex++;
+        current.left = helper(start, position);
+        current.right = helper(position + 1, end);
+        return current;
+    }
+}

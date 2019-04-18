@@ -1,0 +1,43 @@
+/* LC 106. Construct Binary Tree from Inorder and Postorder Traversal
+这道题和LC 105 的思路是一样的，用postorder 的顺序来取element
+通过inorder index 范围来判断当前位置能不能放
+
+唯一不同的点是这道题用的是postorder。 观察可知： postorder
+如果从后往前看， 他的traverse 顺序是： 先往右走， 走到底了
+以后回来往左走。 recursion 里面的顺序也写成这样就好了
+*/
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    int postIndex;
+    Map<Integer, Integer> pos = new HashMap<>();
+    int[] inOrder;
+    int[] postOrder;
+    public TreeNode buildTree(int[] inorder, int[] postorder) {
+        int len = inorder.length;
+        inOrder = inorder;
+        postOrder = postorder;
+        for(int i = 0; i < len; i++) {
+            pos.put(inorder[i], i);
+        }
+        postIndex = len - 1;
+        return helper(0, len);
+    }
+
+    private TreeNode helper(int start, int end) {
+        if(start == end) return null;
+        TreeNode current = new TreeNode(postOrder[postIndex]);
+        int position = pos.get(postOrder[postIndex]);
+        postIndex--;
+        current.right = helper(position + 1, end);
+        current.left = helper(start, position);
+        return current;
+    }
+}
