@@ -1,0 +1,27 @@
+/*
+LC 101. Symmetric Tree
+一个树如果是一个对称树， 它的左树和右树必须是对称的
+具体的检查方法就是： 对比树和自己的副本。 两个头是一样的
+但是t1 的左 == t2 的右。 t1的右 == t2 的左
+*/
+
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public boolean isSymmetric(TreeNode root) {
+        return helper(root, root);
+    }
+
+    private boolean helper(TreeNode t1, TreeNode t2) {
+        if(t1 == null && t2 == null) return true;
+        if(t1 == null || t2 == null) return false;
+        return (t1.val == t2.val) && helper(t1.left, t2.right) && helper(t1.right, t2.left);
+    }
+}

@@ -1,0 +1,33 @@
+/*
+108. Convert Sorted Array to Binary Search Tree
+这道题很简单。 每个node 都是它所有孩子的median。 所以每次求
+median， 再把左右两边的数给左和右就行了
+*/
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    int[] input;
+    public TreeNode sortedArrayToBST(int[] nums) {
+        int len = nums.length;
+        if(len == 0) return null;
+        input = nums;
+        return helper(0, len - 1);
+    }
+
+    private TreeNode helper(int start, int end){
+        if(start > end) return null;
+        if(start == end) return new TreeNode(input[start]);
+        int pivot = (start + end) / 2;
+        TreeNode result = new TreeNode(input[pivot]);
+        result.left = helper(start, pivot - 1);
+        result.right = helper(pivot + 1, end);
+        return result;
+    }
+}
