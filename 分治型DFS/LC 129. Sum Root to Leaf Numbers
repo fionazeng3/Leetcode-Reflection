@@ -1,0 +1,30 @@
+/*
+LC 129. Sum Root to Leaf Numbers
+这道题很简单。 用dfs。 如果当前node 已经是null 了， return 0
+如果当前是个leaf， 就return一个path 顺下来的值。 最后再recurse 到下一层
+就好了
+*/
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public int sumNumbers(TreeNode root) {
+        return dfs(0, root);
+    }
+
+    private int dfs(int sum, TreeNode current) {
+        if(current == null) return 0;
+        int newSum = sum * 10 + current.val;
+        if(current.left == null && current.right == null)  {
+            return newSum;
+        }
+       return dfs(newSum, current.left) + dfs(newSum, current.right);
+    }
+
+}

@@ -5,10 +5,18 @@ LC 94. Binary Tree Inorder Traversal
 那么在iternative 的方法中， 先把最左边的node 加进stack 中。 然后while stack 非空，
 处理每一个node。
 如当前node 的右边非null。 那就先把右边的node 加进来， 再把他的所有左node 加进来处理
-如当前的node的右边是空的， 那么处理一下以它为右节点的父亲节点， 把这些父亲节点都pop 掉。 因为
-当时加入当前节点的时候， 他们的父亲已经加入到了最终的答案里。 已经处理过了。
+这样用stack 实现了一个left print right 的顺序
 */
 
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
 class Solution {
     public List<Integer> inorderTraversal(TreeNode root) {
         List<Integer> ans = new ArrayList<>();
@@ -22,6 +30,7 @@ class Solution {
         while(!s.isEmpty()) {
             TreeNode current = s.peek();
             ans.add(current.val);
+            s.pop();
             // right is not null
             if(current.right != null) {
                 current = current.right;
@@ -29,13 +38,7 @@ class Solution {
                     s.push(current);
                     current = current.left;
                 }
-            // right is null
-            } else {
-                s.pop();
-                while(!s.isEmpty() && s.peek().right == current) {
-                    current = s.pop();
-                }
-            }
+             }
         }
         return ans;
     }

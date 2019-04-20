@@ -1,0 +1,56 @@
+/*
+145. Binary Tree Postorder Traversal
+这道题还是比较难的。 首先postorder 的顺序是left right print
+那么模拟顺序肯定是先left 走到底，加到stack里。 然后每次从stack
+里面拉出来一个node， 看看right 能不能走。
+
+如果不能走， 那么就走到print 的这一步， 同时返回上一级， 如果上一个
+元素的right是当前这个元素， 那就证明 上次的right 走完了， 该走到print 了
+所以用pop 上一个元素， print 上一个元素来模拟回到了上一级
+
+如果right能走， 就把right 加进来。 加进来以后right 本身又要走left， 所以再把它的
+left 全加进来
+。。。
+一直到结束
+
+*/
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public List<Integer> postorderTraversal(TreeNode root) {
+        List<Integer> ans = new ArrayList<>();
+        if(root == null) return ans;
+        Stack<TreeNode> s = new Stack<>();
+        TreeNode current = root;
+        while(current != null) {
+            s.push(current);
+            current = current.left;
+        }
+        while(!s.isEmpty()) {
+            TreeNode t = s.peek();
+            if(t.right == null) {
+                s.pop();
+                ans.add(t.val);
+                while(!s.isEmpty() && s.peek().right == t) {
+                    t = s.pop();
+                    ans.add(t.val);
+                }
+            } else {
+                s.push(t.right);
+                t = t.right;
+                while(t.left != null) {
+                    s.push(t.left);
+                    t = t.left;
+                }
+            }
+        }
+        return ans;
+    }
+}

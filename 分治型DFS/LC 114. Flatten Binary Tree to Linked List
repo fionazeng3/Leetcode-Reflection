@@ -1,0 +1,34 @@
+/*
+LC 114. Flatten Binary Tree to Linked List
+这道题很简单。 用recursion 看每一个node。 如果这个node 有左node，
+就把左 node放在右边， 然后把右node 放在左node 遍历到底的最后一个位置
+用recursion 看下一个node
+*/
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public void flatten(TreeNode root) {
+        helper(root);
+    }
+
+    private void helper(TreeNode current) {
+        if(current == null) return;
+        TreeNode left = current.left;
+        TreeNode right = current.right;
+        if(current.left != null) {
+            current.left = null;
+            current.right = left;
+            TreeNode temp = current;
+            while(temp.right != null) temp = temp.right;
+            temp.right = right;
+        }
+        helper(current.right);
+    }
+}
