@@ -1,0 +1,34 @@
+/*
+LC 26. Remove Duplicates from Sorted Array
+这道题很简单， 思路有点像quick sort。
+用一个指针记录着现在走到第几个index 了
+然后如果遇到了跟前面不一样的element， 就跟指针
+的index element 换， 然后指针++
+*/
+class Solution {
+    int[] input;
+    public int removeDuplicates(int[] nums) {
+        input = nums;
+        int last = 0;
+        int currentIndex = 0;
+        int len = nums.length;
+        for(int i = 0; i < len; i++) {
+            int num = nums[i];
+            if(i == 0) {
+                currentIndex++;
+            } else {
+                if(num != last) {
+                    swap(currentIndex, i);
+                    currentIndex++;
+                }
+            }
+            last = num;
+        }
+        return currentIndex;
+    }
+    private void swap(int a, int b) {
+        int temp = input[a];
+        input[a] = input[b];
+        input[b] = temp;
+    }
+}

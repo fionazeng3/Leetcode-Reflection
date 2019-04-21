@@ -1,0 +1,29 @@
+/*
+LC 1. Two Sum
+这道题最简单的办法是拿出一个element， iterate 整个array， 看看有没有这个
+数的complement。 不过这样做的时间复杂度为O（n^2）
+
+怎么减少时间复杂度呢？ 其实每次拿出一个element 以后。 就已经知道了它的complement
+sum - element。 那么如何O（1）找到这个complement 的index 呢？就用hashmap 存一下
+element和它的index 的对子就好了
+*/
+class Solution {
+    public int[] twoSum(int[] nums, int target) {
+        int[] ans = new int[2];
+        Map<Integer, Integer> map = new HashMap<>();
+        int len = nums.length;
+        for(int i = 0; i < len; i++) {
+            map.put(nums[i], i);
+        }
+        for(int i = 0; i < len; i++) {
+            int num1 = nums[i];
+            int num2 = target - num1;
+            if(map.containsKey(num2) && map.get(num2) != i) {
+                ans[0] = i;
+                ans[1] = map.get(num2);
+                return ans;
+            }
+        }
+        return ans;
+    }
+}

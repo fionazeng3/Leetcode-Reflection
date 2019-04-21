@@ -1,0 +1,29 @@
+/*
+LC 16 3Sum Closest
+这道题跟3sum 差不多。 最好的做法是O（n^ 2）
+先把数组排序， 然后提出一个数字， 后面的subarray
+用双指针找最近和
+*/
+class Solution {
+    public int threeSumClosest(int[] nums, int target) {
+        Arrays.sort(nums);
+        int result = nums[0];
+        int diff = Integer.MAX_VALUE;
+        int len = nums.length;
+        for(int i = 0; i < len - 2; i++) {
+            int low = i + 1, high = len - 1;
+            while(low < high) {
+                int sum = nums[i] + nums[low] + nums[high];
+                int localDiff = Math.abs(sum - target);
+                if(localDiff < diff) {
+                    diff = localDiff;
+                    result = sum;
+                }
+                if(sum < target) low ++;
+                if(sum > target) high --;
+                if(sum == target) return sum;
+            }
+        }
+        return result;
+    }
+}

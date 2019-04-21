@@ -1,0 +1,31 @@
+/*
+LC 11. Container With Most Water
+这道题的暴力解法肯定就是把每一对高度的面积枚举出来
+这样的是肩负大都市O（n^ 2）
+
+怎样优化成n呢？ 先把宽扩大到最大，用两个pointer
+一个在array 的头， 另一个在array 的尾。 然后让高度比较
+矮的那个pointer 往array 中心移。 用maxArea 随时记录当前
+的最大面积。
+
+为什么要把矮的往里面移呢？ 因为此时这跟矮柱子的极限已经被记录下来了
+如果把高的柱子往里面移， 就没有记录到当前这跟柱子所达到的极限
+*/
+class Solution {
+    public int maxArea(int[] height) {
+        int len = height.length;
+        int start = 0;
+        int end = len - 1;
+        int maxArea = Integer.MIN_VALUE;
+        while(start < end) {
+            int currentArea = (end - start) * Math.min(height[start], height[end]);
+            maxArea = Math.max(currentArea, maxArea);
+            if(height[start] < height[end]) {
+                start++;
+            } else {
+                end--;
+            }
+        }
+        return maxArea;
+    }
+}

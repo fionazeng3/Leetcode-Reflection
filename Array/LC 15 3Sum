@@ -1,0 +1,38 @@
+/*
+LC 15 3Sum
+这道题最暴力的做法是枚举每个triplet。 这样的时间复杂度是O(n^3)
+要想减少到O（n）， 先把数组排序
+
+然后拿出一个数字， 在这个数字后面的subarray 用两个pointer
+low 和 high 来traverse。 如果nums[low] + nums[high] == target
+那么把这三个数字加到答案里， 同时去掉重复元素
+
+如果两个数字不等于target， 那就移动lo 和 high pointer 来调整sum
+*/
+class Solution {
+    public List<List<Integer>> threeSum(int[] nums) {
+        Arrays.sort(nums);
+        List<List<Integer>> ans = new ArrayList<>();
+        int len = nums.length;
+        for(int i = 0; i < len - 2; i++) {
+            int low = i + 1;
+            int high = len - 1;
+            if(i == 0 || nums[i] != nums[i - 1]) {
+                while(low < high) {
+                    int target = -1 * nums[i];
+                    if(nums[low] + nums[high] == target) {
+                        ans.add(Arrays.asList(nums[i], nums[low], nums[high]));
+                        while(low < high && nums[low] == nums[low + 1]) low++;
+                        while(low < high && nums[high] == nums[high - 1]) high--;
+                        low++;
+                        high--;
+                    } else {
+                        if(nums[low] + nums[high] < target) low++;
+                        if(nums[low] + nums[high] > target) high--;
+                    }
+                }
+            }
+        }
+        return ans;
+    }
+}
