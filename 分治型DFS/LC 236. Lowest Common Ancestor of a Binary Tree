@@ -1,0 +1,35 @@
+/*
+LC 236. Lowest Common Ancestor of a Binary Tree
+这道题其实很简单，dfs 是boolean， return 的就是
+mid == 1 || left == 1 || right == 1; 在每个
+recursion 中，检查左右自己是不是有两个检查到的node
+就行了。 因为是dfs， 所以运算顺序自然是从底向上
+走的， 所以找出的就是最近的Common Ancestor。
+*/
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    TreeNode ans;
+    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+        ans = null;
+        dfs(root, p, q);
+        return ans;
+    }
+
+    private boolean dfs(TreeNode current, TreeNode p, TreeNode q) {
+        if(current == null) return false;
+        int mid = current == p || current == q ? 1 : 0;
+        int left = dfs(current.left, p, q) ? 1:0;
+        int right = dfs(current.right, p, q) ? 1:0;
+        if(mid + left + right == 2 && ans == null) ans = current;
+        return mid == 1 || left == 1 || right == 1;
+
+    }
+}

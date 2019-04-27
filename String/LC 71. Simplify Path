@@ -1,0 +1,29 @@
+/*
+LC 71. Simplify Path
+这道题很简单， 先用split 把文件内容分开
+把路径每个内容存在stack 里。 如果遇到
+“..” 就回到上一层。 最后从stack 剩余的
+element 把每个提出来形成最后的string
+*/
+class Solution {
+    public String simplifyPath(String path) {
+        String result = "";
+        if(path == null) return result;
+        String[] elements = path.split("/");
+        Stack<String> s = new Stack<>();
+        for(int i = 0; i< elements.length; i++) {
+            String current = elements[i];
+            if(current.equals("..")) {
+               if(!s.isEmpty()) s.pop();
+            } else if(!current.isEmpty() && !current.equals(".")) {
+                s.push(current);
+            }
+        }
+        while(!s.isEmpty()) {
+            String element = s.pop();
+            result = "/" + element + result;
+        }
+        if(result.isEmpty()) result = "/";
+        return result;
+    }
+}

@@ -1,0 +1,56 @@
+/*
+LC 34. Find First and Last Position of Element in Sorted Array
+这道题让找一个元素第一次出现和最后一次出现的位置。
+那么最快的方法就是二分法。 只不过要对二分法稍做修改
+以找一个元素出现的第一次来说。在二分法中， 如果找到了一个元素
+不直接返回。 而是继续向左走。
+
+找出现最后一次的index 的时候反过来就好了。
+还有最后决定返回low 还是high 的时候， findFirst 先查low
+findLast 先查high
+*/
+
+class Solution {
+    public int[] searchRange(int[] nums, int target) {
+        int[] ans = {-1, -1};
+        if(nums == null || nums.length == 0) {
+            return ans;
+        }
+        int left = findFirst(nums, target);
+        if(left == -1) return ans;
+        int right = findLast(nums, target);
+        return new int[]{left, right};
+    }
+
+    private int findFirst(int[] nums, int target) {
+        int low = 0;
+        int high = nums.length - 1;
+        while(low + 1 < high) {
+            int mid = (low + high) / 2;
+            if(nums[mid] >= target) {
+                high = mid;
+            } else {
+                low = mid;
+            }
+        }
+        if(nums[low] == target) return low;
+        if(nums[high] == target) return high;
+        return -1;
+    }
+
+    private int findLast(int[] nums, int target) {
+        int low = 0;
+        int high = nums.length - 1;
+        while(low + 1 < high) {
+            int mid = (low + high) / 2;
+            if(nums[mid] <= target) {
+                low = mid;
+            } else {
+                high = mid;
+            }
+        }
+        if(nums[high] == target) return high;
+        if(nums[low] == target) return low;
+        return -1;
+    }
+}

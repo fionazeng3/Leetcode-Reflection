@@ -1,0 +1,49 @@
+/*
+LC 33. Search in Rotated Sorted Array
+首先我们需要visualize 一下rotated sorted array
+长什么样子。 一根比较高的增长线， 和一条比较低的增长线
+如果要求logn 时间复杂度的话肯定用到的是binary search
+
+那binary search 要怎么判断呢？ 我们肯定是用sorted
+部分判断。 首先判断mid 跟start 是不是在一条sorted 线上。
+如果在一条线上， 就判断target 是否在start 和mid 之间，
+如果在， 那就让end = mid - 1 减小范围。 如果不是的话就用
+另一半。 接下来判断mid 和end 的时候同理。
+
+这道题最核心的思想是： mid 肯定和start 或是end
+同在一条sorted 直线上。 那我们就用sorted 部分来进行二分查找
+*/
+class Solution {
+    public int search(int[] nums, int target) {
+        if(nums == null || nums.length == 0) return -1;
+        int len = nums.length;
+        int start = 0;
+        int end = len - 1;
+        while(start < end) {
+            int mid = (start + end) / 2;
+            if(nums[mid] == target) return mid;
+            int startNum = nums[start];
+            int endNum = nums[end];
+            int midNum = nums[mid];
+            // mid on upper line
+            if(startNum <= midNum) {
+                if(target >= startNum && target <= midNum) {
+                    end = mid - 1;
+                } else {
+                    start = mid + 1;
+                }
+            // mid on lower line
+            } else {
+                if(target >= midNum && target <= endNum) {
+                    start = mid + 1;
+                } else {
+                    end = mid - 1;
+                }
+            }
+        }
+        if(nums[start] == target) return start;
+        if(nums[end] == target) return end;
+        return -1;
+
+    }
+}

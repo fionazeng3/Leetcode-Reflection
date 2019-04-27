@@ -1,0 +1,25 @@
+/*
+LC 27. Remove Element
+这道题因为说length 后面的元素是什么都无所谓， 所以可以不用swap， 直接nums[front] = nums[back];
+大概思路就是如果front 的元素等于val， 那么nums[front] = nums[back]
+back--。如果换回来的还是 val， 那么在下一轮就可以换成back-- 的元素
+
+如果front 的元素不是val 了， 那么front ++
+*/
+class Solution {
+    public int removeElement(int[] nums, int val) {
+        if(nums == null || nums.length == 0) return 0;
+        int len = nums.length;
+        int back = len - 1;
+        int front = 0;
+        while(front <= back) {
+            if(nums[front] == val) {
+                nums[front] = nums[back];
+                back--;
+            } else {
+                front++;
+            }
+        }
+        return back + 1;
+    }
+}

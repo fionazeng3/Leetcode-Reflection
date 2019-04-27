@@ -1,0 +1,41 @@
+/*
+LC 18. 4Sum
+这道题的思路跟3sum 是一模一样的。 只不过有两个指针再加上
+low high 指针。 复杂度O（n^3）
+*/
+class Solution {
+    public List<List<Integer>> fourSum(int[] nums, int target) {
+        Arrays.sort(nums);
+        int len = nums.length;
+        List<List<Integer>> ans = new ArrayList<>();
+        if(nums == null || nums.length < 4) return ans;
+        for(int i = 0; i < len - 3; i++) {
+            if (i != 0 && nums[i] == nums[i - 1]) continue; // remove duplicates
+            for (int j = i + 1; j < len - 2; j++) {
+                if(j != i +1 && nums[j] == nums[j -1]) continue;// remove duplicates
+                int low = j + 1;
+                int high = len - 1;
+                int diff = target - nums[i]  - nums[j];
+                while(low < high) {
+                    while(low < high && nums[low] + nums[high] < diff) {
+                        low++;
+                    }
+                    while(low < high && nums[low] + nums[high] > diff) {
+                        high --;
+                    }
+                    // remove duplicates
+                    if(low < high && nums[low] + nums[high] == diff) {
+                        ans.add(Arrays.asList(nums[i], nums[j], nums[low], nums[high]));
+                        while( low < high && nums[low+1]  == nums[low] && nums[high - 1] == nums[high]) {
+                            high--;
+                            low++;
+                        }
+                        high--;
+                        low++;
+                    }
+                }
+            }
+        }
+        return ans;
+    }
+}

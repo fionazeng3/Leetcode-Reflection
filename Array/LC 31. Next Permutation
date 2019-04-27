@@ -1,0 +1,59 @@
+/*
+LC 31. Next Permutation
+这道题的难点在于找规律
+基本算法就是找到最后一个i 使得nums[i] < nums[i + 1]
+然后在nums[i] 右边的subarray 中找到比nums[i]大的数字中
+最小的一个数字 nums【a】. swap nums[i] 和 nums【a】
+然后再把i 右边的subarray reverse一下就好了
+
+为什么这个算法是对的呢？ 首先只有找到nums[i] < nums[i + 1] 才能
+使得下一个permutation 更大。 为什么要找到最后一个nums[i] < nums[i + 1]
+呢？ 因为要找到下一个greater 的permutation。 要保证变化最小， 就最好
+能从低的位数开始。 最后为什么要把后面的subarray reverse 呢？
+首先找到最后一个nums[i] < nums[i + 1] 以后， i 的后面肯定是单调
+递减的。 但是词典的下一个应该后面单调递增才对。 所以要reverse
+最后一个问题， element 换到右边以后为什么没有改变右边递减的秩序呢？
+举个例子 912430 2 和3 换完了以后变成 913420. 右边还是递减的
+4 没有当选， 因为4 比2 大太多， 0 没有当选因为0 比2 小
+所以2 换到右边以后还是比4 小， 比0 大
+*/
+class Solution {
+    public void nextPermutation(int[] nums) {
+        if(nums == null || nums.length == 0) return;
+        int len = nums.length;
+        int index= -1;
+        // find the last rising number
+        for(int i = 0; i < len - 1; i++) {
+            if(nums[i] < nums[i + 1]) index = i;
+        }
+        int start = 0, end = len - 1;
+        if(index != -1) {
+            start = index+1;
+            int to = len- 1;
+            int greater = Integer.MAX_VALUE;
+            // find the next greater element
+            for(int i = index+1; i < len; i++) {
+                if(nums[i] > nums[index] && nums[i] <= greater) {
+                    greater = nums[i];
+                    to = i;
+                }
+            }
+            swap(nums, index, to);
+        }
+        reverse(nums, start, end);
+    }
+    private void swap(int[] input, int a, int b) {
+        int temp = input[a];
+        input[a] = input[b];
+        input[b] = temp;
+    }
+
+    private void reverse(int[] input, int start, int end) {
+        while(start <= end) {
+            swap(input, start, end);
+            start++;
+            end--;
+        }
+
+    }
+}
