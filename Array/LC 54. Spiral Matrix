@@ -1,0 +1,50 @@
+/*
+LC 54. Spiral Matrix
+这道题的做法用到了模拟。 首先spiral 的顺序是
+右，下，左，上。 那么定义方向数组
+int[] dx = {1,0,-1,0};
+int[] dy = {0,1,0,-1};
+这两个的顺序也是右，下，左，上
+
+如果原来matrix 的大小为x*y， 那么
+就要写入x*y个数。 所以for loop 一共要走
+x*y 次。
+
+这个模拟的顺序很简单。在for loop 中， 朝着
+一个方向走。 走不了了就换成下一个方向走
+
+那么什么时候专项呢？ 出界和走到已经走过的元素上
+的时候就换成下一个方向走。
+时间复杂度为O(x*y)
+*/
+
+class Solution {
+    public List<Integer> spiralOrder(int[][] matrix) {
+        List<Integer> ans = new ArrayList<>();
+        int y = matrix.length;
+        if(y == 0) return ans;
+        int x = matrix[0].length;
+        boolean[][] seen = new boolean[y][x];
+        int[] dx = {1,0,-1,0};
+        int[] dy = {0,1,0,-1};
+        int cx = 0;
+        int cy = 0;
+        int di = 0;
+        for(int i = 0; i< x * y; i++) {
+            ans.add(matrix[cy][cx]);
+            seen[cy][cx] = true;
+            int nx = cx + dx[di];
+            int ny = cy + dy[di];
+            if(nx >=0 && nx < x && ny >=0 && ny < y && !seen[ny][nx]) {
+                cx = nx;
+                cy = ny;
+            } else {
+                di = (di + 1) % 4;
+                cx += dx[di];
+                cy += dy[di];
+            }
+        }
+        return ans;
+
+    }
+}

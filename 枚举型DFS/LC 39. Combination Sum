@@ -1,0 +1,32 @@
+/*
+LC 39. Combination Sum
+这道题基本上就套用枚举型dfs 模版做就可以
+只不过这里有个特殊的问题就是枚举不能有重复的组合
+也就是说： 求的事不同的combination 而不是permutation
+
+那么怎么样移除重复的permutation呢？ 这个问题的关键
+就是数组不往回找。 那么怎么才能不往回找呢？ 在dfs 中加一个
+参数start。 每次for loop 的时候从start 开始。 然后把现在的
+i 传到下一个dfs 的start 中就好了
+*/
+class Solution {
+    int[] pool;
+    List<List<Integer>> ans;
+    public List<List<Integer>> combinationSum(int[] candidates, int target) {
+        pool = candidates;
+        ans = new ArrayList<>();
+        List<Integer> temp = new ArrayList<>();
+        dfs(temp, target, 0);
+        return ans;
+    }
+
+    private void dfs(List<Integer> temp, int remain, int start) {
+        if(remain < 0) return;
+        if(remain == 0) ans.add(new ArrayList<>(temp));
+        for(int i = start; i < pool.length; i++) {
+            temp.add(pool[i]);
+            dfs(temp, remain - pool[i], i);
+            temp.remove(temp.size() - 1);
+        }
+    }
+}

@@ -1,0 +1,18 @@
+/*
+LC 561. Array Partition I
+这道题非常简单。 要想min(ai, bi) 和最大， 只要
+把array 排序， 然后把偶数位上的数字加起来就好了。
+因为要想不浪费大数， 就把大数和比自己小以为的数求min 是最好的
+*/
+class Solution {
+    public int arrayPairSum(int[] nums) {
+        Arrays.sort(nums);
+        if(nums == null) return 0;
+        int len = nums.length;
+        int sum = 0;
+        for(int i = 0; i < len - 1; i+=2) {
+            sum += nums[i];
+        }
+        return sum;
+    }
+}

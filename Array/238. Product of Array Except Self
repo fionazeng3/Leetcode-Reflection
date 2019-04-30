@@ -1,0 +1,24 @@
+/*
+238. Product of Array Except Self
+这道题不让全部乘起来再除以当前数字， 而且要求复杂度为O(n)
+那么这个大体的思路就是pass两遍。 第一遍ans 里面的数字是
+当前数字前面所有数字的乘积。 第二遍的时候ans 再乘上当前数字后面
+所有数字的乘积就好了
+*/
+class Solution {
+    public int[] productExceptSelf(int[] nums) {
+        if(nums == null) return new int[]{};
+        int len = nums.length;
+        int[] ans = new int[len];
+        ans[0] = 1;
+        for(int i = 1; i < len; i++) {
+            ans[i] = ans[i - 1] * nums[i - 1];
+        }
+        int right = 1;
+        for(int i = len - 1; i >=0; i--) {
+            ans[i] *= right;
+            right *= nums[i];
+        }
+        return ans;
+    }
+}
