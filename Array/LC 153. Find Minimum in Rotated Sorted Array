@@ -1,0 +1,30 @@
+/*
+LC 153. Find Minimum in Rotated Sorted Array
+这道题跟 LC 33 的想法是一样的。首先visualize rotated
+array 长什么样？ 一根比较高的增长线， 和一条比较低的增长线。
+我们要找的是比较低的增长线的最左边。 所以， 先检查mid 是不是
+在比较高的增长线上。 如果是， low = mid; 如果mid 在比较低的
+增长线上， 那么high = mid
+
+最后还要考虑array 根本没有rotate 的情况， 把答案和nums【0】
+取最小就行了
+*/
+class Solution {
+    public int findMin(int[] nums) {
+        if(nums == null) return 0;
+        int len = nums.length;
+        int low = 0;
+        int high = len - 1;
+        while(low + 1 < high) {
+            int mid = (low + high) / 2;
+            if(nums[low] <= nums[mid]) {
+                low = mid;
+            } else {
+                high = mid;
+            }
+        }
+        int ans = Math.min(nums[high], nums[low]);
+        ans = Math.min(nums[0], ans);
+        return ans;
+    }
+}

@@ -1,0 +1,26 @@
+/*
+LC 35. Search Insert Position
+非常简单。 用二分法模版就行。 注意讨论结果最后return 的值
+*/
+class Solution {
+    public int searchInsert(int[] nums, int target) {
+        if(nums == null) return 0;
+        int len = nums.length;
+        if(len == 0) return 0;
+        int low = 0;
+        int high = len - 1;
+        while(low + 1 < high) {
+            int mid = (low + high) / 2;
+            int current = nums[mid];
+            if(current == target) return mid;
+            if(current > target) {
+                high = mid;
+            } else {
+                low = mid;
+            }
+        }
+        if(nums[low] == target || nums[low] > target) return low;
+        if(nums[high] == target || nums[low] < target && target < nums[high]) return high;
+        return high + 1;
+    }
+}

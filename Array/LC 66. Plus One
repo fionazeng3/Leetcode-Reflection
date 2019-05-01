@@ -1,0 +1,24 @@
+/*
+LC 66. Plus One
+这道题最直观的方法是用carry 来做模拟。不过稍微麻烦一些
+最简洁的方法是： array 从后往前看， 只要看到了小于9 的数，
+那么这个数位+1然后直接return digits。 如果遇到 9 的话，
+当前数位变为1。
+如果reach 到了for loop 结束， 那么肯定之前一个小于9 的
+都没有。 这时候就要建一个比原来长度多1 的数组， 让第一位数为1
+*/
+class Solution {
+    public int[] plusOne(int[] digits) {
+        int len = digits.length;
+        for(int i = len-1; i >= 0; i--) {
+            if(digits[i] < 9) {
+                digits[i]++;
+                return digits;
+            }
+            digits[i] = 0;
+        }
+        int[] ans = new int[len + 1];
+        ans[0] = 1;
+        return ans;
+    }
+}
