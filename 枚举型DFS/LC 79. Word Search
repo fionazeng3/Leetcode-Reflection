@@ -1,0 +1,58 @@
+/*
+LC 79. Word Search
+这道题跟word search II 思路一样
+dfs 加visited。 唯一不同的是dfs 要return boolean
+注意一下boolean dfs 要用 if
+if(dfs(index + 1, visited, nx, ny)) return true;
+
+如果直接return dfs(index + 1, visited, nx, ny)的话
+下面的 visited[ny][nx] = false； 就写不了了
+
+还有一个boolean dfs 和void dfs 的不同。 boolean dfs
+只要找到了结果不用每个branch 都跑。 而void dfs 基本是
+每个branch 都跑的。所以说向这种找到一个合格的就return 的
+题目， boolean dfs 要比void 快很多
+*/
+class Solution {
+    char[][] input;
+    String target;
+    int[] dx = {0, 0, -1, 1};
+    int[] dy = {-1, 1, 0, 0};
+    int x;
+    int y;
+    public boolean exist(char[][] board, String word) {
+        input = board;
+        target = word;
+        y = board.length;
+        x = board[0].length;
+        boolean[][] visited = new boolean[y][x];
+        for(int i = 0; i < x;i++) {
+            for (int j = 0; j < y; j++) {
+                if(board[j][i] == word.charAt(0)) {
+                    visited[j][i] = true;
+                    boolean found = dfs(1, visited, i, j);
+                    if(found) return true;
+                    visited[j][i] = false;
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean dfs(int index, boolean[][] visited, int cx, int cy) {
+        if(index == target.length())  {
+            return true;
+        }
+        char next = target.charAt(index);
+        for(int i = 0; i < 4; i++) {
+            int nx = cx + dx[i];
+            int ny = cy + dy[i];
+            if(nx >= 0 && nx < x && ny >= 0 && ny < y && !visited[ny][nx] && next == input[ny][nx]) {
+                visited[ny][nx] = true;
+                if(dfs(index + 1, visited, nx, ny)) return true;
+                visited[ny][nx] = false;
+            }
+        }
+        return false;
+    }
+}

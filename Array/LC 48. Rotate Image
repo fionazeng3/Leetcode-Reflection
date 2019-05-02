@@ -1,0 +1,33 @@
+/*
+LC 48. Rotate Image
+这道题最直观的方法就是把matrix transpose 之后再把column
+掉个。 transpose 的意思是：1st row 的东西现在变成 1st column
+2nd row 变成2nd column 。。。
+transpose 之后可以看出column 都是反着的。 再反转column 就好了
+时间复杂度为O(N^2)
+*/
+class Solution {
+    public void rotate(int[][] matrix) {
+        int y = matrix.length;
+        int x = matrix[0].length;
+        for(int i = 0; i < x; i++) {
+            for(int j = i; j < y; j++) { // 注意这里不重复
+                int temp = matrix[j][i];
+                matrix[j][i] = matrix[i][j];
+                matrix[i][j] = temp;
+            }
+        }
+        int left = 0;
+        int right = x - 1;
+        while(left < right) {
+            for(int j = 0; j < y; j++) {
+                int temp = matrix[j][left];
+                matrix[j][left] = matrix[j][right];
+                matrix[j][right] = temp;
+            }
+            left++;
+            right--;
+        }
+
+    }
+}

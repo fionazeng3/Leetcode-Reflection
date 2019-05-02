@@ -1,0 +1,15 @@
+/*
+LC 169. Majority Element
+这道题最简单的方法是用hashmap 记录， 然后return
+出现次数大于n/2的元素。
+但是观察可得知， majority element 的定义是：
+the element that appears more than ⌊ n/2 ⌋ times
+所以如果给array 排好序， 那么排在n/2位置上的一定是majority
+element
+*/
+class Solution {
+    public int majorityElement(int[] nums) {
+        Arrays.sort(nums);
+        return nums[nums.length / 2];
+    }
+}
