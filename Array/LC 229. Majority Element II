@@ -1,0 +1,60 @@
+/*
+LC 229. Majority Element II
+这道题用到的是一种特殊的算法--摩尔投票法。
+具体的文章介绍在这里 http://goo.gl/64Nams
+
+文章里讲的是找到出现大于n/2次数字的方法
+大体思路就是在第一次遍历数组的时候有一个候选人A
+有一个候选人出现的次数countA。 如果当前元素是A
+那么countA++ 如果不是， countA--。 如果当前
+countA是0 就换元素。 其实这个算法很好理解
+如果一个数出现多余n/2 次， 那它的出现次数
+肯定是其它所有元素都抵不住的
+
+这道题求的是出现多余n/ 3 的元素。 这个
+候选人只可能有两个。 算法是照搬摩尔投票法的
+*/
+class Solution {
+    public List<Integer> majorityElement(int[] nums) {
+        List<Integer> ans = new ArrayList<>();
+        if(nums == null || nums.length == 0) return ans;
+        int A = nums[0];
+        int B = nums[0];
+        int countA = 0;
+        int countB = 0;
+        for(int num: nums) {
+            if(num == A) {
+                countA++;
+                continue;
+            }
+            if(num == B) {
+                countB++;
+                continue;
+            }
+            // is not A nor B, and there is zero
+            if(countA == 0) {
+                A = num;
+                countA++;
+                continue;
+            }
+            if(countB == 0) {
+                B = num;
+                countB++;
+                continue;
+            }
+            // is not A nor B. No zero found
+            countA--;
+            countB--;
+        }
+        countA = 0;
+        countB = 0;
+        // check if A and B qualify
+        for(int num: nums) {
+            if(A == num) countA++;
+            if(B == num) countB++;
+        }
+        if(countA > nums.length / 3) ans.add(A);
+        if(countB > nums.length / 3 && A != B) ans.add(B);
+        return ans;
+    }
+}

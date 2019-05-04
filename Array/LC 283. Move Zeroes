@@ -1,0 +1,29 @@
+/*
+LC 283. Move Zeroes
+这道题要求移动完0以后non-zero element 顺序不能动
+所以每一个0 只能跟他后面第一个不为0的数去换
+具体实现方法是设置快慢指针。 快指针如果是0 就一直
+往后走。 慢指针如果是0 就跟快指针换。 如果快指针<= 慢指针
+了， 那么 high = low + 1
+时间复杂度O(n)
+*/
+class Solution {
+    public void moveZeroes(int[] nums) {
+        if(nums == null || nums.length < 2) return;
+        int low = 0;
+        int high = 1;
+        int len = nums.length;
+        while(high < len) {
+            while(high < len && nums[high] == 0) high++;
+            if(high < len && nums[low] == 0) swap(nums, low, high);
+            low++;
+            if(low >= high) high = low + 1;
+        }
+    }
+
+    private void swap(int[] nums, int a, int b) {
+        int temp = nums[a];
+        nums[a] = nums[b];
+        nums[b] = temp;
+    }
+}

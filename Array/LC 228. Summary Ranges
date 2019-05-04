@@ -1,0 +1,30 @@
+/*
+LC 228. Summary Ranges
+很简单的模拟题目， 指针从头到尾过一遍
+每次都检查一下后面有没有连续的数字就好了
+*/
+class Solution {
+    public List<String> summaryRanges(int[] nums) {
+        List<String> ans = new ArrayList<>();
+        if(nums == null || nums.length == 0) return ans;
+        int p = 0;
+        int len = nums.length;
+        while(p < len) {
+            int start = nums[p];
+            int current = nums[p];
+            int end = nums[p];
+            while(p + 1 < len && nums[p + 1] == current + 1) {
+                p++;
+                current = nums[p];
+                end = nums[p];
+            }
+            if(end > start) {
+                ans.add(start + "->" + end);
+            } else {
+                ans.add(start + "");
+            }
+            p++;
+        }
+        return ans;
+    }
+}

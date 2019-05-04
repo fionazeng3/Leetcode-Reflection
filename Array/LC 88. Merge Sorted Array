@@ -1,0 +1,30 @@
+/*
+LC 88. Merge Sorted Array
+这道题我最开始的想法是开一个新的array，
+然后用两个指针指着两个array。哪个指针指的
+元素小， 就把哪个元素放到新的array 里。 但是这个
+方法就用到了extra space， 没有用到 nums1 有足够大的
+空间这个条件。
+
+其实如果想不用extra space， 只需要在nums1 m + n - 1
+处多加一个指针。 然后p1 指向nums1【m - 1】 p2指向nums2[n - 1]
+然后p1 和p2 谁指的元素大， p 就放哪个元素
+这样时间复杂度为O(n) 空间复杂度为 O(1)
+*/
+class Solution {
+    public void merge(int[] nums1, int m, int[] nums2, int n) {
+        int p = m + n - 1;
+        int p1 = m - 1;
+        int p2 = n - 1;
+        while(p2 >= 0) {
+            if(p1 < 0 || nums2[p2] >= nums1[p1]) {
+                nums1[p] = nums2[p2];
+                p2--;
+            } else  {
+                nums1[p] = nums1[p1];
+                p1 --;
+            }
+            p--;
+        }
+    }
+}
