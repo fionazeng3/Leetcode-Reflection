@@ -1,0 +1,37 @@
+/*
+LC 280. Wiggle Sort
+这道题最简单的方法是先把array sort 了， 然后每一个偶数位跟后一个
+数字换。 这样的时间复杂度为O（nlogn）
+其实这道题最简洁的方法不用sort。 只要把每个元素跟后面元素的大小比较
+如果不对就换。 为什么这个做法是对的呢？换完以后会不会打乱其它组合的顺序呢？
+其实不会的。 比如说一个偶数位元素比下一个大了， 那么交换以后自己本身就比上一个小
+换了元素以后该位置上的元素比上一个更小了。没问题
+如果一个偶数元素比下一个小。 因为前面那个元素已经比自己小了， 所以换过来以后前面
+元素还是比这个位置上现在这个元素小。 下一个位置的话因为变的更小了， 所以也没关系。
+这个算法因为只用过一遍， 所以时间复杂度为O（n）
+*/
+class Solution {
+    int[] input;
+    public void wiggleSort(int[] nums) {
+        input = nums;
+        for(int i = 0; i < nums.length - 1; i++) {
+            // index is even
+            if(i % 2 == 0) {
+                if(nums[i] > nums[i+1]) {
+                    swap(i, i+1);
+                }
+            // index is even
+            } else {
+                if(nums[i] < nums[i + 1]) {
+                    swap(i, i+ 1);
+                }
+            }
+        }
+    }
+
+    private void swap(int a, int b) {
+        int temp = input[a];
+        input[a] = input[b];
+        input[b] = temp;
+    }
+}
