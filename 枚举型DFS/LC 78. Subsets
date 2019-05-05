@@ -1,0 +1,39 @@
+/*
+LC 78. Subsets
+这是一道有一点特殊情况的枚举型dfs。
+特殊点一在于不能重复。这个只要在dfs 加一个startIndex参数
+然后每次只往后看就可以了
+
+特殊点二在于在枚举的时候， 结果长度不一样。这个也是
+加一个长度的index 就好。 我一开始的时候想的是枚举
+当前这个元素在答案里和当前这个元素不在答案里。
+其实根本不用。 一般的枚举型dfs for loop 都
+枚举的是同一个位置上的可能性。 而这次就枚举了不同位置。
+其实， 看一看总体的iteration 顺序， 都是一样的
+*/
+class Solution {
+    List<List<Integer>> ans = new ArrayList<>();
+    int[] input;
+    public List<List<Integer>> subsets(int[] nums) {
+        input = nums;
+        List<Integer> eachAns = new ArrayList<>();
+        for(int i = 0; i <= nums.length; i++) {
+            eachAns.clear();
+            dfs(i, 0, 0, eachAns);
+        }
+        return ans;
+    }
+
+    private void dfs(int totalSize, int currentSize, int startIndex, List<Integer> eachAns) {
+        if(currentSize == totalSize) {
+            ans.add(new ArrayList(eachAns));
+            return;
+        }
+        for(int i = startIndex; i < input.length; i++) {
+            eachAns.add(input[i]);
+            dfs(totalSize, currentSize + 1, i + 1, eachAns);
+            eachAns.remove(eachAns.size() - 1);
+
+        }
+    }
+}
