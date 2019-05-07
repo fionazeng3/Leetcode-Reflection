@@ -1,0 +1,19 @@
+/*
+LC 151. Reverse Words in a String
+这道题很简单， 用一个split 就解决了一切
+需要注意的是split 完 array 是没有“ ” 的
+但是有空字符串。for loop 里面， 因为给每个
+array 里的东西都加了“ ”， 所以需要判断一下
+*/
+class Solution {
+    public String reverseWords(String s) {
+        String[] bank = s.split(" ");
+        System.out.println(Arrays.toString(bank));
+        String result = "";
+        for(int i = bank.length - 1; i >= 0; i--) {
+            if(bank[i].length() != 0)result += bank[i] + " ";
+        }
+        if(result.length() > 0) result = result.substring(0, result.length() - 1);
+        return result;
+    }
+}

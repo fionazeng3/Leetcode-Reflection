@@ -1,0 +1,51 @@
+/*
+LC 6. ZigZag Conversion
+这道题我一开始的想法是： 比如说row 是
+4， 我让一个number 从0 走到3， 再走回来
+0123210123210123.。。。
+让后我建立一个map， key 是number， value 是一个
+list。 每次number 走到0 就让0 对应的list 加上s 现在的character
+这个想法时间复杂度是O（n）， 空间复杂度也是O（n）。
+
+其实， 根本不用开一个空间来储存来存所有的字母。 我们反而可以看一看
+这道题的数字规律。 这道题的dynamic 很像一个wave， 上下走，
+每次wave 碰到一个指定的行， 那个字母就要加到指定行的list 里面
+那我们其实可以先找到第一行的所有字母， 再找出第二行的所有字母， 以此类推。
+那怎么确定一个字母是不是那一行的字母呢？刚才我们又说到， 这道题的路径有点像
+wave。 wave 会向下走和向上走。 那我们就求出， 当前这一行， 向下走多久
+能碰到自己这一行， 向上走多久能碰到自己这一行。 这样就能算出该行下一个
+index在哪里了。
+
+根据上面这个思路， 我们可以找到每一行的character， 最后 1 - n-1 行
+加到一起， 就是最终答案
+*/
+class Solution {
+    public String convert(String s, int numRows) {
+        String result = "";
+        int len = s.length();
+        if(len == 0) return result;
+        if(numRows == 1) return s;
+        for(int i = 0; i < numRows; i++) {
+            if(i >= len) break;
+            boolean dir = false; // down false up true
+            int down = (numRows - 1 - i) * 2;
+            int up = (numRows - 1) * 2 - down;
+            int index = i;
+            result += s.charAt(i);
+            int distance = down;
+            while(index < len) {
+                if(!dir) {
+                    distance = down;
+                } else {
+                    distance = up;
+                }
+                if(distance != 0) {
+                    index += distance;
+                    if(index < len) result += s.charAt(index);
+                }
+                dir = !dir;
+            }
+        }
+        return result;
+    }
+}

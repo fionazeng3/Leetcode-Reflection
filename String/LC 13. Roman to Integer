@@ -1,0 +1,33 @@
+/*
+LC 13. Roman to Integer
+很简单的一道题。 我的做法是从后往前iterate array。
+如果前一个值比现在的小，result 就加number - previous
+如果前一个值比现在的大， 就最正常 result 加number 就好了
+*/
+class Solution {
+    public int romanToInt(String s) {
+        Map<Character, Integer> map = new HashMap<>();
+        map.put('I', 1);
+        map.put('V', 5);
+        map.put('X', 10);
+        map.put('L', 50);
+        map.put('C', 100);
+        map.put('D', 500);
+        map.put('M', 1000);
+        int result = 0;
+        int len = s.length();
+        for(int i = len - 1; i >= 0; i--) {
+            int number = map.get(s.charAt(i));
+            if(i - 1 >= 0) {
+                int previous = map.get(s.charAt(i - 1));
+                if(number > previous) {
+                    result += (number - previous);
+                    i--;
+                    continue;
+                }
+            }
+            result += number;
+        }
+        return result;
+    }
+}
