@@ -1,0 +1,26 @@
+/*
+LC 14. Longest Common Prefix
+很简单的一道题。让result 一开始等于第一个
+字符， 然后后面每检查一个字符就更新一下
+result 就好了
+*/
+class Solution {
+    public String longestCommonPrefix(String[] strs) {
+        String result = "";
+        if(strs == null || strs.length== 0) return result;
+        int len = strs.length;
+        result = strs[0];
+        for(int i = 1; i < len; i++) {
+            int resultLen = result.length();
+            String current = strs[i];
+            int minLen = Math.min(current.length(), resultLen);
+            int index = 0;
+            while(index < minLen) {
+                if(result.charAt(index) != current.charAt(index)) break;
+                index++;
+            }
+            result = result.substring(0, index);
+        }
+        return result;
+     }
+}

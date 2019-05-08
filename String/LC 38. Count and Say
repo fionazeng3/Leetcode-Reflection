@@ -1,0 +1,26 @@
+/*
+LC 38. Count and Say
+这也是一道简单的模拟题。 只要
+在代码中模拟题目规则就好了
+*/
+class Solution {
+    public String countAndSay(int n) {
+        String current = "1";
+        String newString = "";
+        for(int i = 1; i < n; i++) {
+            int len = current.length();
+            for(int j = 0; j < len; j++) {
+                int count = 1;
+                int num = current.charAt(j) - '0';
+                while(j + 1 < len && current.charAt(j + 1) - '0' == num) {
+                    count++;
+                    j++;
+                 }
+                newString += count + "" + num;
+            }
+            current = newString;
+            newString = "";
+        }
+        return current;
+    }
+}

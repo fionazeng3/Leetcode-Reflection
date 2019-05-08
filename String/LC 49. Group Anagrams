@@ -1,0 +1,26 @@
+/*
+LC 49. Group Anagrams
+这道题用到array as hashmap
+记录每个字符串字母出现的次数。
+然后把array 变成string， 成为map
+里面的key。 value 是一个list，
+储存这个array 对应的anagram
+最后return value 就好了
+*/
+class Solution {
+    public List<List<String>> groupAnagrams(String[] strs) {
+        Map<String, List<String>> map = new HashMap<>();
+        for(String s: strs) {
+            int[] count = new int[26];
+            for(int i = 0; i < s.length(); i++) {
+                char c = s.charAt(i);
+                count[c - 'a']++;
+            }
+            String key = Arrays.toString(count);
+            map.putIfAbsent(key, new ArrayList<>());
+            map.get(key).add(s);
+        }
+        return new ArrayList<>(map.values());
+    }
+
+}

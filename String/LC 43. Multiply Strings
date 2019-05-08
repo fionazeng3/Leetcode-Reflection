@@ -1,0 +1,44 @@
+/*
+LC 43. Multiply Strings
+这道题我一开始的想法是模拟乘法，
+用数字来做。 但是后来发现绝对不行。
+一般这种 string模拟数字的题都不要转换成
+数字直接做。 注意题目中的条件
+The length of both num1 and num2 is < 110.
+110 位的数字是连long 都表示不了的。
+所以。 这道题要建一个array， 然后逐步演算
+在array 每一位发生了什么。 如果一个len1
+位数和一个len2 位数相乘， 结果最多为
+len1 + len2 位。 所以数组就开成len1 + len2
+这么大。
+
+接着num1 和num2 都从右往左看， 模拟两个
+数字真实相乘的情景， int product = n1 * n2 + helper[posLow];
+注意low 的位置直接写数， 而high 的位置因为是禁进位， 所以是+=
+最后检查一下trailing zero， 形成答案就好了
+*/
+class Solution {
+    public String multiply(String num1, String num2) {
+        int len1 = num1.length();
+        int len2 = num2.length();
+        int[] helper = new int[len1 + len2];
+        for(int i = len1 - 1; i >= 0; i--) {
+            for (int j = len2 - 1; j>= 0; j--) {
+                int posHigh = i + j;
+                int posLow = i + j + 1;
+                int n1 = num1.charAt(i) - '0';
+                int n2 = num2.charAt(j) - '0';
+                int product = n1 * n2 + helper[posLow];
+                helper[posHigh] += product / 10;
+                helper[posLow] = product % 10;
+            }
+        }
+        int index = 0;
+        while(index < helper.length && helper[index] == 0) index ++;
+        String result = "";
+        for(int i = index; i < helper.length; i++) {
+            result += helper[i];
+        }
+        return result.length() == 0 ? "0" : result;
+    }
+}
