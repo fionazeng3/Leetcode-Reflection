@@ -1,0 +1,31 @@
+/*
+LC 609. Find Duplicate File in System
+这道题其实很简单。 用一个map 记录
+把content 当key， 把路径加到content
+相对应的list里面。最后注意一下只有
+list 的size 大于1 才加入到final answer 里面
+因为答案只要deplicate 的路径
+*/
+class Solution {
+    public List<List<String>> findDuplicate(String[] paths) {
+        Map<String, List<String>> map = new HashMap<>();
+        for(String path: paths) {
+            String[] elements = path.split(" ");
+            String root = elements[0];
+            for(int i = 1; i < elements.length; i++) {
+                String current = elements[i];
+                int index = current.indexOf('(');
+                String fileName = current.substring(0, index);
+                fileName = root + "/" + fileName;
+                String content = current.substring(index + 1, current.length() - 1);
+                map.putIfAbsent(content, new ArrayList<>());
+                map.get(content).add(fileName);
+            }
+        }
+        List<List<String>> ans = new ArrayList<>();
+        for(List<String> eachList: map.values()) {
+            if(eachList.size() >1) ans.add(eachList);
+        }
+        return ans;
+    }
+}
