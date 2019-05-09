@@ -1,0 +1,48 @@
+/*
+LC 93. Restore IP Addresses
+这道题的难点就在于string 细节的处理和
+怎样枚举的问题。
+首先， 什么样的string 是一个valid ip address
+首先要有4 个block a.b.c.d
+每一个block 都要满足 a>= 0 a <= 255
+在枚举的时候基本就是给一个start index
+枚举从这个start index 开始， 在当前这个block
+写多少位数的问题
+注意加一个isValid 会跳过不少路径， 加快runtime
+
+*/
+class Solution {
+    List<String> ans = new ArrayList<>();
+    char[] input;
+    public List<String> restoreIpAddresses(String s) {
+        input = s.toCharArray();
+        String currentAns = "";
+        dfs(0, 0, currentAns);
+        return ans;
+    }
+
+    private void dfs(int start, int block, String currentAns) {
+        if(start == input.length) {
+            if(block == 4) ans.add(currentAns.substring(0, currentAns.length() - 1));
+            return;
+        }
+        if(!isValid(start, block)) return;
+        int sum = 0;
+        for(int i = start; i < start + 3; i++) {
+            if(i >= input.length) break;
+            if(sum == 0 && i - start > 0) break;
+            sum = sum * 10 + (input[i] - '0');
+            if(sum >= 0 && sum <= 255) {
+                String extra = Integer.toString(sum) + ".";
+                currentAns += extra;
+                dfs(i + 1, block + 1, currentAns);
+                currentAns = currentAns.substring(0, currentAns.length() - extra.length());
+            }
+        }
+    }
+
+    private boolean isValid(int start, int block) {
+        return !(block == 4 || block == 3 && input.length - start > 3);
+
+    }
+}

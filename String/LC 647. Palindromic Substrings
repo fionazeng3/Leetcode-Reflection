@@ -1,0 +1,51 @@
+/*
+LC 647. Palindromic Substrings
+回文串的题目最笨的方法是以每一个character 为中心
+向两边扩展。 这样的时间复杂度是O（n^ 2）。
+然而有一个算法Manacher's algorithm
+利用到了回文串重复的地方， 将时间复杂度减少到了
+O（n）这里献上一篇讲的很清楚的文章https://segmentfault.com/a/1190000003914228
+算法基本是照着这里面的思路写的
+*/
+class Solution {
+    public int countSubstrings(String s) {
+        char[] input = new char[s.length() * 2 + 1];
+        int len = input.length;
+        int index = 0;
+        for(int i = 0; i < len; i++) {
+            if(i % 2 == 0) {
+              input[i] = '#';
+            } else {
+                input[i] = s.charAt(index);
+                index++;
+            }
+        }
+        int pos = 0;
+        int maxRight = 0;
+        int[] count = new int[len];
+        for(int i = 0; i < len; i++) {
+            int known = 1;
+            if(i < maxRight) {
+                known = Math.min(maxRight - i, count[2 * pos - i]);
+            }
+            int left = i - known;
+            int right = i + known;
+            while(left >= 0 && right < len && input[left] == input[right]) {
+                if(right > maxRight) {
+                    maxRight = right;
+                    pos = i;
+                }
+                left--;
+                right++;
+                known++;
+            }
+            count[i] = known;
+        }
+        System.out.println(Arrays.toString(count));
+        int result = 0;
+        for(int i = 0; i < len; i++) {
+            result += count[i] / 2;
+        }
+        return result;
+    }
+}

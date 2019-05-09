@@ -1,0 +1,48 @@
+/*
+LC 67. Add Binary
+这道题有一点像multiply strings 但是比
+它简单很多。 也是创建一个数组， 然后在数组
+的每一位做运算。
+
+注意一下最后return 的时候检查一下
+ans 是不是empty。 如果是empty 的话
+代表结果是0. return 0 就行了
+*/
+class Solution {
+    public String addBinary(String a, String b) {
+        char[] A = a.toCharArray();
+        char[] B = b.toCharArray();
+        char[] result = new char[Math.max(A.length, B.length) + 1];
+        int i = A.length - 1;
+        int j = B.length - 1;
+        int k = result.length - 1;
+        Arrays.fill(result, '0');
+        while(i >= 0 || j >= 0) {
+            int sum = result[k] - '0';
+            if(i >=0) {
+                sum += A[i] - '0';
+            }
+            if(j >= 0) {
+                sum += B[j] - '0';
+            }
+            if(sum == 1 || sum == 3) {
+                result[k] = '1';
+            } else {
+                 result[k] = '0';
+            }
+            if(sum == 2 || sum == 3) {
+                result[k - 1] = '1';
+            }
+            i--;
+            j--;
+            k--;
+        }
+        String ans = "";
+        int index = 0;
+        while(index < result.length && result[index] == '0') index ++;
+        for(int z = index; z < result.length; z++) {
+            ans += result[z];
+        }
+        return ans.length() == 0 ? "0" : ans;
+    }
+}
