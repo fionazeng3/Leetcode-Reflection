@@ -1,0 +1,59 @@
+/*
+LC 173. Binary Search Tree Iterator
+这道题我最初的想法是中根遍历， 然后把元素存到一个queue
+里面一个一个往外挤出去。 但是， 题目要求
+space complexity 要为 O(h)
+
+其实在遍历tree 的时候， 用stack 是一个很常见的
+方法。 这道题tree 本身是个bst。 左边元素小，
+右边元素大。 所以我们就先左边走到底。 没pop（）
+出一个元素。 检查他有没有right child。
+如果有， 把right branch 往左走到底这样就保证了
+每次看到的元素是最小的
+*/
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class BSTIterator {
+    Stack<TreeNode> stk;
+    public BSTIterator(TreeNode root) {
+        stk = new Stack<>();
+        TreeNode current = root;
+        while(current != null) {
+            stk.push(current);
+            current = current.left;
+        }
+    }
+
+    /** @return the next smallest number */
+    public int next() {
+        TreeNode ans = stk.pop();
+        TreeNode node = ans;
+        if(node.right != null) {
+            node = node.right;
+            while(node != null) {
+                stk.push(node);
+                node = node.left;
+            }
+        }
+        return ans.val;
+    }
+
+    /** @return whether we have a next smallest number */
+    public boolean hasNext() {
+        return !stk.isEmpty();
+    }
+}
+
+/**
+ * Your BSTIterator object will be instantiated and called as such:
+ * BSTIterator obj = new BSTIterator(root);
+ * int param_1 = obj.next();
+ * boolean param_2 = obj.hasNext();
+ */

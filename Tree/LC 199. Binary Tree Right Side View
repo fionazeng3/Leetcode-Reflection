@@ -1,0 +1,36 @@
+/*
+LC 199. Binary Tree Right Side View
+这种跟树的左右有关系的题目一般都是用bfs 解决的
+很简单。 找出每一层的最后一个元素就行了
+用null 来隔行
+*/
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public List<Integer> rightSideView(TreeNode root) {
+        Queue<TreeNode> q = new LinkedList<>();
+        if(root != null) {
+            q.offer(root);
+            q.offer(null);
+        }
+        List<Integer> ans = new ArrayList<>();
+        while(!q.isEmpty()) {
+            TreeNode current = q.poll();
+            if(current == null) {
+                if (!q.isEmpty()) q.offer(null);
+                continue;
+            }
+            if(q.peek() == null) ans.add(current.val);
+            if(current.left != null) q.add(current.left);
+            if(current.right != null) q.add(current.right);
+        }
+        return ans;
+    }
+}

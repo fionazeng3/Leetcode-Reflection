@@ -1,0 +1,19 @@
+/*
+LC 804. Unique Morse Code Words
+非常简单， set 里面加入每一个摩斯码
+随后return set 的size（） 就行了
+*/
+class Solution {
+    public int uniqueMorseRepresentations(String[] words) {
+        String[] bank = {".-","-...","-.-.","-..",".","..-.","--.","....","..",".---","-.-",".-..","--","-.","---",".--.","--.-",".-.","...","-","..-","...-",".--","-..-","-.--","--.."};
+        Set<String> set = new HashSet<>();
+        for(String word : words) {
+            String code = "";
+            for(int i = 0; i < word.length(); i++) {
+                code += bank[word.charAt(i) - 'a'];
+            }
+            set.add(code);
+        }
+        return set.size();
+    }
+}
