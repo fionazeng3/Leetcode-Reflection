@@ -1,0 +1,52 @@
+/*
+LC 138. Copy List with Random Pointer
+这道题的难点在于在处理每个node 的时候
+要花O（n）的时间复杂度去找它的random
+在哪。 （因为它的random 是一个copy）
+所以在第一次iterate 之后建立一个hashmap 使得
+老node 指向新node。 这样在第二次iterate
+找random node 时候就很方便了
+*/
+/*
+// Definition for a Node.
+class Node {
+    public int val;
+    public Node next;
+    public Node random;
+
+    public Node() {}
+
+    public Node(int _val,Node _next,Node _random) {
+        val = _val;
+        next = _next;
+        random = _random;
+    }
+};
+*/
+class Solution {
+    public Node copyRandomList(Node head) {
+        Map<Node, Node> map = new HashMap<>();
+        if(head == null) return null;
+        Node ans = new Node();
+        Node currentAns = ans;
+        Node current = head;
+        while(current != null) {
+            currentAns.val = current.val;
+            map.put(current, currentAns);
+            if(current.next != null) {
+                currentAns.next = new Node();
+            }
+            current = current.next;
+            currentAns = currentAns.next;
+        }
+        currentAns = ans;
+        current = head;
+        while(current != null) {
+            Node rand = map.get(current.random);
+            currentAns.random = rand;
+            currentAns = currentAns.next;
+            current = current.next;
+        }
+        return ans;
+    }
+}

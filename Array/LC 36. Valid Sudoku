@@ -1,0 +1,40 @@
+/*
+LC 36. Valid Sudoku
+这道题column 建 9 个hashmap
+row 建9 个hashmap
+box 建9 个hashmap
+整个sudoku iterate 一次。
+每个位置计算出row， column， box 的index
+这里的难点是计算 box index
+公式是 (row / 3) * 3 + col / 3
+这里的图看一下答案。
+
+最后检查一下hashmap 中有没有已经出现过这个数字就好了
+*/
+class Solution {
+    public boolean isValidSudoku(char[][] board) {
+        HashMap<Integer, Integer>[] row = new HashMap[9];
+        HashMap<Integer, Integer>[] column = new HashMap[9];
+        HashMap<Integer, Integer>[] box = new HashMap[9];
+        int y = board.length;
+        int x = board[0].length;
+        for(int i = 0; i < 9; i++) {
+            row[i] = new HashMap<>();
+            column[i] = new HashMap<>();
+            box[i] = new HashMap<>();
+        }
+        for(int i = 0; i < x; i++) {
+            for (int j = 0; j < y; j++) {
+                char target = board[j][i];
+                if(target == '.')continue;
+                int boxNum = (j / 3) * 3 + i / 3;
+                int digit = target - '0';
+                if(row[j].containsKey(digit) || column[i].containsKey(digit) || box[boxNum].containsKey(digit))return false;
+                row[j].put(digit, 1);
+                column[i].put(digit, 1);
+                box[boxNum].put(digit, 1);
+            }
+        }
+        return true;
+    }
+}

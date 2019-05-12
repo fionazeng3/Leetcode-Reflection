@@ -1,0 +1,22 @@
+/*
+LC 136. Single Number
+这道题我最初的想法是利用hashmap，
+但是这样就用到了extra space。 其实这道题最简洁的
+做法是用xor。 xor 的定义是
+gives a true (1 or HIGH) output when the number of true inputs is odd.
+它的logic table 是这样的
+0 0 0
+0 1 1
+1 0 1
+1 1 0
+所以说， 0^N = N          N^N = 0
+因为array 里面其它元素出现2 遍， 只有一个元素出现一遍
+所以把array 里面所有元素都xor 起来就是那个single element
+*/
+class Solution {
+    public int singleNumber(int[] nums) {
+        int ans = 0;
+        for(int num: nums) ans ^= num;
+        return ans;
+    }
+}

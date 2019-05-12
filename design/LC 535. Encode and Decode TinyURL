@@ -1,0 +1,60 @@
+/*
+LC 535. Encode and Decode TinyURL
+这道题其实有很多design 的方法
+方法一： counter
+给遇到的longUrl 编号。 这个设计的容量首先与Integer.MAX_VALUE
+2^32
+方法二： hashcode
+给每一个longUrl 编一个hashCode
+公式为s[0]∗31^(n−1)+s[1]∗31^(n−2) +...+s[n−1]
+Performance Analysis
+
+The number of URLs that can be encoded is limited by the range of \text{int}int, since \text{hashCode}hashCode uses integer calculations.
+
+The average length of the encoded URL isn't directly related to the incoming \text{longURL}longURL length.
+
+The \text{hashCode()}hashCode() doesn't generate unique codes for different string. This property of getting the same code for two different inputs is called collision. Thus, as the number of encoded URLs increases, the probability of collisions increases, which leads to failure.
+
+The following figure demonstrates the mapping of different objects to the same hashcode and the increasing probability of collisions with increasing number of objects.
+方法三： random number
+每次生成一个任意integer。 同样受限于max——value
+方法四： Random fixed-length encoding
+固定了tinyurl 的length 是 6
+然后每一个character从0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ选一个
+这样所有可能性为62^6. 这个数比2^31 大很多。 本题答案记录的就是这个解法
+*/
+public class Codec {
+    String pool = "1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    Map<String, String> hashTable = new HashMap<>();
+    Random rand = new Random();
+
+    // Encodes a URL to a shortened URL.
+    public String encode(String longUrl) {
+        String key = getRand();
+        while(hashTable.containsKey(key)) {
+            key = getRand();
+        }
+        hashTable.put(key, longUrl);
+        return "http://tinyurl.com/" + key;
+    }
+
+    // generate random string
+    public String getRand() {
+        String result = "";
+        for(int i = 0; i < 6; i++) {
+            result += pool.charAt(rand.nextInt(62));
+        }
+        return result;
+    }
+
+    // Decodes a shortened URL to its original URL.
+    public String decode(String shortUrl) {
+        String key = shortUrl.replace("http://tinyurl.com/", "");
+        String longUrl = hashTable.get(key);
+        return longUrl;
+    }
+}
+
+// Your Codec object will be instantiated and called as such:
+// Codec codec = new Codec();
+// codec.decode(codec.encode(url));

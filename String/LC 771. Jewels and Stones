@@ -1,0 +1,23 @@
+/*
+LC 771. Jewels and Stones
+很简单的一道题， 把J里出现的character
+放到hashset里， 再traverse 一遍 S
+来找元素就好了
+*/
+class Solution {
+    public int numJewelsInStones(String J, String S) {
+        Set<Character> bank = new HashSet<>();
+        char[] charJ = J.toCharArray();
+        char[] charS = S.toCharArray();
+        int JLen = charJ.length;
+        int SLen = charS.length;
+        int ans = 0;
+        for(char c: charJ) {
+            bank.add(c);
+        }
+        for(char s : charS) {
+            if(bank.contains(s)) ans++;
+        }
+        return ans;
+    }
+}
