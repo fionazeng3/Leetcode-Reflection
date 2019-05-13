@@ -1,0 +1,31 @@
+/*
+LC 463. Island Perimeter
+这道题我一开始的想法是把所有1 的位置全存到
+hashset 里， 然后每新家一个island 就看
+有多少跟它重合的点。 其实这道题最简单的做法就是
+每次加入元素的时候：
+如果左边没岛， 贡献一条边
+如果右边没岛， 贡献一条边
+      。。。。
+*/
+class Solution {
+    int[] dx = {0, 0, -1, 1};
+    int[] dy = {-1, 1, 0, 0};
+    public int islandPerimeter(int[][] grid) {
+        int total = 0;
+        int y = grid.length;
+        int x = grid[0].length;
+        for(int i = 0; i < x; i++) {
+            for(int j = 0; j < y; j++) {
+                if(grid[j][i] == 1) {
+                    for(int k = 0; k < 4; k++) {
+                        int nx = i + dx[k];
+                        int ny = j + dy[k];
+                        if(nx < 0 || nx >= x || ny < 0 || ny >= y || grid[ny][nx] == 0) total++;
+                    }
+                }
+            }
+        }
+        return total;
+    }
+}

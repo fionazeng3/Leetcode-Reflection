@@ -1,0 +1,27 @@
+/*
+LC 739. Daily Temperatures
+寻找数组里面第一个比自己大的数。
+这个听的是不是很耳熟。。
+很经典的单调栈问题。 因为是找第一个比自己大
+所以建立的是单调递减栈
+*/
+class Solution {
+    public int[] dailyTemperatures(int[] T) {
+        // decreasing stack
+        Stack<Integer> stack = new Stack<>();
+        int len = T.length;
+        int[] ans = new int[len];
+        for(int i = 0; i < len; i++) {
+            while(!stack.isEmpty() && T[stack.peek()] < T[i]) {
+                int lastIndex = stack.pop();
+                ans[lastIndex] = i - lastIndex;
+            }
+            stack.push(i);
+        }
+        while(!stack.isEmpty()) {
+            int index = stack.pop();
+            ans[index] = 0;
+        }
+        return ans;
+    }
+}

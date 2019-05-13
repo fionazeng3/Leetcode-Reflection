@@ -1,0 +1,31 @@
+/*
+LC 347. Top K Frequent Elements
+这道题的思路本身很简单。 无非就是
+用hashmap 俩记录frequency， 再用heap
+来根据frequency 排序。 其中的写法有几点要注意
+1. map 的getOrDefault：
+getOrDefault(Object key, V defaultValue)
+Returns the value to which the specified key is mapped, or defaultValue if this map contains no mapping for the key.
+2. priorityQueue 的排序顺序是 number 的 natural ordering（从小到大排）
+3. 写comparator 的时候思路不要仅限于object 本身。 也可以借助
+其它可以access 到的元素
+
+这个答案的time comprexity O(nlogn) 主要来自于把每个元素放进heap
+*/
+class Solution {
+    public List<Integer> topKFrequent(int[] nums, int k) {
+        Map<Integer, Integer> map = new HashMap<>();
+        for(int num: nums) {
+            map.put(num, map.getOrDefault(num, 0) + 1);
+        }
+        PriorityQueue<Integer> pq = new PriorityQueue<>((n1, n2) -> {return map.get(n2) - map.get(n1);});
+        for(int num: map.keySet()) {
+            pq.offer(num);
+        }
+        List<Integer> ans = new ArrayList<>();
+        for(int i = 0; i < k; i++) {
+            ans.add(pq.poll());
+        }
+        return ans;
+    }
+}

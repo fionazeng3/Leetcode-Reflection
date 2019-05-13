@@ -1,0 +1,31 @@
+/*
+LC 202. Happy Number
+很简单的一道题。用一个hashset 记录出现过
+的数字。 然后while loop 的条件是
+当前数字不为0， 并且当前这个数字没有在
+hashset 中出现过
+*/
+class Solution {
+    public boolean isHappy(int n) {
+        Set<Integer> set = new HashSet<>();
+        set.add(n);
+        int current = calculate(n);
+        while(current != 1 && !set.contains(current)) {
+            set.add(current);
+            current = calculate(current);
+        }
+        return current == 1;
+
+    }
+
+    private int calculate(int n) {
+        int result = 0;
+        int input = n;
+        while(input != 0) {
+            int current = input % 10;
+            result += current * current;
+            input /= 10;
+        }
+        return result;
+    }
+}
