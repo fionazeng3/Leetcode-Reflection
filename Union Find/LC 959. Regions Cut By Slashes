@@ -1,0 +1,78 @@
+/*
+LC 959. Regions Cut By Slashes
+https://www.youtube.com/watch?v=n3s9Q7GtfB4
+这道题的思路我是跟着花花酱这个视频做的。
+首先应该把这道题的细节图画出来。 每一个格子分出4 个三角形
+上0 右 1 下 2 左 3. 根据每一个格子的字符， 来进行格子内的
+union find. 然后再做格子之间的union find
+
+这道题还有一个点就是讲一下怎么给2D matrix 的element 编号
+使得每一个element 有个unique index 答案就是 j * N + i
+这道题因为每一个格子里还有4 个三角。 于是再把所有数乘以 4 来拉开
+差距
+*/
+class Solution {
+    public int regionsBySlashes(String[] grid) {
+        int N = grid.length;
+        DSU dsu = new DSU(N);
+        for(int i = 0; i < N; i++) {
+            for(int j = 0; j < N; j++) {
+                int current = 4*(j * N + i);
+                char c = grid[j].charAt(i);
+                if(c == '/') {
+                    dsu.union(current + 0, current + 3);
+                    dsu.union(current + 1, current + 2);
+                } else if(c == '\\') {
+                    dsu.union(current + 0, current + 1);
+                    dsu.union(current + 2, current + 3);
+                } else {
+                    dsu.union(current + 0, current + 1);
+                    dsu.union(current + 2, current + 3);
+                    dsu.union(current + 0, current + 3);
+                }
+                if(i + 1 < N) {
+                    dsu.union(current + 1, current + 4 + 3);
+                }
+                if(j + 1 < N) {
+                    dsu.union(current + 2, current + 4*N);
+                }
+            }
+        }
+
+        int count = 0;
+        for(int i = 0; i < N*N*4; i++) {
+            if(dsu.fathers[i] == i) count++;
+        }
+            return count;
+    }
+}
+
+class DSU {
+    int[] fathers;
+    public DSU (int N) {
+        fathers = new int[N * N * 4];
+        for(int i = 0; i <N*N * 4; i++) {
+            fathers[i] = i;
+        }
+    }
+
+    public void union(int a, int b) {
+        int fatherB = find(b);
+        int fatherA = find(a);
+        fathers[fatherB] = fatherA;
+    }
+
+    public int find(int a) {
+        int boss = a;
+        while(fathers[boss] != boss) {
+            boss = fathers[boss];
+        }
+        // path compression
+        while(a != boss) {
+            int temp = fathers[a];
+            fathers[a] = boss;
+            a = temp;
+        }
+        return boss;
+    }
+}

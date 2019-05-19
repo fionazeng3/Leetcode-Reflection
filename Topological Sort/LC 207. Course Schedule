@@ -1,0 +1,58 @@
+/*
+LC 207. Course Schedule
+这道题是一道典型的topological sort 题目
+
+topological sort 的意义在于把一个ordered graph
+的排序写出来。而一个有环的ordered graph 是
+没有办法有topological sort 的。 这道题其实就是
+让我们找graph 里面是否存在环。
+
+topological sort 一般有两种解法： dfs 和bfs
+这道题我们用的是dfs 的解法。 一般的解法是：开两个
+数组： visited 和visiting。 拿出一个元素， 先用dfs
+看它的neighbors。 neighbors 看完以后把自己 visited
+的array 的对应值改为true， 并加入最终的order list里
+order list 应该是倒着加入的。 用stack 可以实现。 注意
+每一个元素进到dfs 里面的时候如果它的visiting 是true， 就
+说明这个graph 当前是存在环的。 而对于这道题来讲， 我们的
+首要任务也是看这个图有没有环
+
+一般top sort的时间复杂度为O（E+V） 因为graph里的每一个
+edge 和vertex 都要访问
+*/
+class Solution {
+    public boolean canFinish(int numCourses, int[][] prerequisites) {
+        // build the graph
+        ArrayList<Integer>[] graph = new ArrayList[numCourses];
+        for(int i = 0; i < numCourses; i++) {
+            graph[i] = new ArrayList<>();
+        }
+        for(int[] edge: prerequisites) {
+            graph[edge[0]].add(edge[1]);
+        }
+        boolean[] visited = new boolean[numCourses];
+        boolean[] visiting = new boolean[numCourses];
+        // visit each class
+        for(int i = 0; i < numCourses; i++) {
+            if(!dfs(graph, visited, visiting, i)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private boolean dfs(ArrayList[] graph, boolean[] visited, boolean[] visiting, int course) {
+        if(visited[course]) {
+            return true;
+        } else if(visiting[course]) {
+            return false;
+        }
+        visiting[course] = true;
+        for(int i = 0; i < graph[course].size(); i++) {
+            int neighbor = (int) graph[course].get(i);
+            if(!dfs(graph, visited, visiting, neighbor)) return false;
+        }
+        visited[course] = true;
+        return true;
+    }
+}

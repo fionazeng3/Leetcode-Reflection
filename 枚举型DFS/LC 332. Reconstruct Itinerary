@@ -1,0 +1,38 @@
+/*
+LC 332. Reconstruct Itinerary
+这道题首先注意一下一定不是topological sort
+ts 类的题是 a 是 b 的prerequisite。
+而这道题的地点之间没有依赖关系，只是
+从一个点到另一个点。
+
+这道题还有一个大坑是不能用普通的for
+loop 枚举型dfs 来做。 因为这个graph
+可能会有环。会重复的回到一个节点。 所以说，
+储存一个地点的邻居的时候要用queue， 走一次
+pop 一个邻居。 又因为这道题答案要求
+按字母顺序排列， 所以用到priorityQueue
+*/
+class Solution {
+    List<String> ans = new ArrayList<>();
+    public List<String> findItinerary(List<List<String>> tickets) {
+        Map<String, PriorityQueue<String>> graph = new HashMap<>();
+        // build graph
+        for(List<String> eachTicket : tickets) {
+            String from = eachTicket.get(0);
+            String to = eachTicket.get(1);
+            graph.putIfAbsent(from, new PriorityQueue<>());
+            graph.putIfAbsent(to, new PriorityQueue<>());
+            graph.get(from).offer(to);
+        }
+        dfs("JFK", graph);
+        Collections.reverse(ans);
+        return ans;
+    }
+
+    private void dfs(String current, Map<String, PriorityQueue<String>> graph) {
+        while(graph.containsKey(current) && !graph.get(current).isEmpty()) {
+            dfs(graph.get(current).poll(), graph);
+        }
+        ans.add(current);
+    }
+}

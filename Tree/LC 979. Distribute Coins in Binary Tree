@@ -1,0 +1,37 @@
+/*
+LC 979. Distribute Coins in Binary Tree
+这道题代码很简单。 但是题目的意思却比较难理解
+首先审好题。 一共有n 个coin，n 个node， 每个
+move 只能移动一个coin。 所以最后每个node
+上的coin 应该都是1 才对。
+
+我们随便拿出一个node， 它跟它的children 之间
+的move 肯定是abs(dfs(node.left)) + abs(dfs(node.right))
+然后它move 完以后 多出来， 或者少了的coin 的个数一定是
+node.val + dfs(node.left) + dfs(node.right) - 1 （因为最后自己这个位置金币数为1）
+然后当前这个node欠的值肯定就是再由它的爸爸来处理了
+*/
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    int ans = 0;
+    public int distributeCoins(TreeNode root) {
+        dfs(root);
+        return ans;
+    }
+
+    private int dfs(TreeNode current) {
+        if(current == null) return 0;
+        int left = dfs(current.left);
+        int right = dfs(current.right);
+        ans += Math.abs(left) + Math.abs(right);
+        return current.val - 1 + left + right;
+    }
+}

@@ -1,0 +1,50 @@
+/*
+LC 500. Keyboard Row
+这道题我用的方法就是把每一行的
+字母都写成一个string， 然后
+用string 的indexOf 来解决这个问题
+这里要说一下怎么把arrayList 转化成array
+arrayList 里面有两个toArray（） 的方法
+一个是Object[] toArray()， 一个是<T> T[] toArray(T[] a)
+第一种 Object[] toArray() 不论list 的type 是什么， 返回的
+array type 永远是object 超类。 第二种的描述是
+Returns an array containing all of the elements in this list in proper sequence
+(from first to last element); the runtime type of the returned array is that of
+the specified array. If the list fits in the specified array, it is returned therein.
+Otherwise, a new array is allocated with the runtime type of the specified array and the size of this list.
+这个 return array 的type 会根据参数的type 决定。 所以题目中一般就是用第二种
+*/
+class Solution {
+    public String[] findWords(String[] words) {
+        String s1 = "QWERTYUIOPqwertyuiop";
+        String s2 = "ASDFGHJKLasdfghjkl";
+        String s3 = "ZXCVBNMzxcvbnm";
+        String[] bank = {s1, s2, s3};
+        List<String> list = new ArrayList<>();
+
+        for(String word : words) {
+            int row = -1;
+            for(int i = 0; i < word.length(); i++) {
+                char c = word.charAt(i);
+                boolean found = false;
+                int index = 0;
+                while(!found) {
+                    found = bank[index].indexOf(c) != -1;
+                    index++;
+                }
+                index --;
+                if(row == -1) {
+                    row = index;
+                } else if(row != index) {
+                    break;
+                }
+                if (i == word.length() - 1) {
+                    list.add(word);
+                }
+            }
+        }
+
+        String[] ans = list.toArray(new String[0]);
+        return ans;
+    }
+}

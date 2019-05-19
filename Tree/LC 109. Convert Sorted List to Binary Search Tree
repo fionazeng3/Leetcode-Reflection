@@ -1,0 +1,45 @@
+/*
+LC 109. Convert Sorted List to Binary Search Tree
+这道题很简单， 直接用类似二分法的dfs 建起一个树
+时间复杂度 O(N)
+*/
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode(int x) { val = x; }
+ * }
+ */
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    List<Integer> list;
+    public TreeNode sortedListToBST(ListNode head) {
+        list = new ArrayList<>();
+        ListNode current = head;
+        while(current != null) {
+            list.add(current.val);
+            current = current.next;
+        }
+        TreeNode ans = dfs(0, list.size() - 1);
+        return ans;
+    }
+
+    private TreeNode dfs(int low, int high) {
+        if(low > high) return null;
+        int mid = (low + high) / 2;
+        TreeNode ans = new TreeNode(list.get(mid));
+        if(low == high) return ans;
+        ans.left = dfs(low, mid - 1);
+        ans.right = dfs(mid+ 1, high);
+        return ans;
+    }
+}

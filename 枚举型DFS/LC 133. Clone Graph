@@ -1,0 +1,39 @@
+/*
+LC 133. Clone Graph
+这是一道非常经典的题。 一定要学会的
+首先想要求deep copy， 一定要有一个map
+来记录新老Node。 这一道题我用的traversal 顺序是dfs
+给每一个node 生成副本。 然后dfs traversal 他们的neighbors
+得到邻居的副本以后加入到自己的neighbor 序列里面。
+这道题一定多回来看看
+*/
+/*
+// Definition for a Node.
+class Node {
+    public int val;
+    public List<Node> neighbors;
+
+    public Node() {}
+
+    public Node(int _val,List<Node> _neighbors) {
+        val = _val;
+        neighbors = _neighbors;
+    }
+};
+*/
+class Solution {
+    Map<Node, Node> map = new HashMap<>();
+    public Node cloneGraph(Node node) {
+        if(node == null) return node;
+        if(map.containsKey(node)) return map.get(node);
+        Node dup = new Node(node.val, new ArrayList<>());
+        map.put(node, dup);
+        for(Node neighbor: node.neighbors) {
+            Node neighborDup = cloneGraph(neighbor);
+            dup.neighbors.add(neighborDup);
+        }
+        return dup;
+
+    }
+
+}

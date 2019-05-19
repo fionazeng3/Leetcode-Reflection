@@ -1,0 +1,38 @@
+/*
+LC 257. Binary Tree Paths
+这道题很简单。 注意在dfs 里面如果每一回只是加上
+自己的话就不用做backtracking了
+时间复杂度O(n)
+*/
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    List<String> ans = new ArrayList<>();
+    public List<String> binaryTreePaths(TreeNode root) {
+        dfs("", root);
+        return ans;
+    }
+
+    private void dfs(String currentString, TreeNode currentNode) {
+        if(currentNode == null) return;
+        if(currentNode.left == null && currentNode.right == null) {
+            currentString += currentNode.val;
+            ans.add(currentString);
+            return;
+        }
+        currentString = currentString + currentNode.val + "->";
+        if(currentNode.left != null) {
+            dfs(currentString, currentNode.left);
+        }
+        if(currentNode.right != null) {
+            dfs(currentString, currentNode.right);
+        }
+    }
+}

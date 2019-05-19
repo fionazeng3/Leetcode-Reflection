@@ -1,0 +1,37 @@
+/*
+LC 547. Friend Circles
+这道题这里记录的这个dfs 解法
+等于说用dfs 做了一个union find
+开一个boolean数组size 为N（人数）
+没看一个人， 如果它visited 是false，
+就用dfs 扩展所有跟它相连的人。 没碰到一个
+visited 是false 的人， count++
+
+其实这题的思路跟island 类的题是一模一样的
+这一类题一般都有三种解法。 dfs， bfs， union find
+三种思路都无非是扩展
+*/
+public int findCircleNum(int[][] M) {
+    input = M;
+    int size = M.length;
+    visited = new boolean[size];
+    int count = 0;
+    for(int i = 0; i < size; i++) {
+        if(!visited[i]) {
+            count++;
+            dfs(i);
+        }
+    }
+    return count;
+}
+
+private void dfs(int friend) {
+    visited[friend] = true;
+    for(int i = 0; i < input.length; i++) {
+        if(!visited[i] && input[friend][i] == 1) {
+            dfs(i);
+        }
+    }
+}
+
+}
