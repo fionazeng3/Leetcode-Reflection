@@ -1,0 +1,57 @@
+/*
+LC 417. Pacific Atlantic Water Flow
+这道题的大体思路就是从边边开始注水， 然后
+用dfs 向内部流水。 因为pacific 和atlantic
+注水是不同的。 所以开两个数组 pacific 和atlantic
+*/
+class Solution {
+    int y;
+    int x;
+    int[][] pacific;
+    int[][] atlantic;
+    int[] dx = {-1, 1, 0, 0};
+    int[] dy = {0, 0, -1, 1};
+    int[][] input;
+    public List<int[]> pacificAtlantic(int[][] matrix) {
+        List<int[]> ans = new ArrayList<>();
+        input = matrix;
+        y = matrix.length;
+        if(y == 0) return ans;
+        x = matrix[0].length;
+        pacific = new int[y][x];
+        atlantic = new int[y][x];
+
+        for(int i = 0; i < x; i++) {
+            dfs(i, 0, pacific);
+            dfs(i, y - 1, atlantic);
+        }
+
+        for(int j = 0; j < y; j++) {
+            dfs(0, j, pacific);
+            dfs(x - 1, j, atlantic);
+        }
+
+        // final check
+        for(int i = 0; i < x; i++) {
+            for(int j = 0; j < y; j++) {
+                if(pacific[j][i] == -1 && atlantic[j][i] == -1) {
+                    ans.add(new int[] {j, i});
+                }
+            }
+        }
+        return ans;
+    }
+
+    public void dfs(int cx, int cy, int[][] ocean) {
+        ocean[cy][cx] = -1;
+        for(int i = 0; i < 4; i++) {
+            int nx = cx + dx[i];
+            int ny = cy + dy[i];
+            if(nx >= 0 && nx < x && ny >= 0 && ny < y && ocean[ny][nx] == 0 && input[ny][nx] >= input[cy][cx]) {
+                ocean[ny][nx] = -1;
+                dfs(nx, ny, ocean);
+            }
+        }
+
+    }
+}

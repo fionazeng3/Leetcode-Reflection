@@ -1,0 +1,48 @@
+/*
+LC 743. Network Delay Time
+这道题求最短路径是一道经典的Dijkstra's Algorithm 的题目。
+这道题为什么不是minimum spanning tree 呢？
+minimum spanning tree 解决的问题叫做
+is a subset of the edges of a connected, edge-weighted
+undirected graph that connects all the vertices together,
+without any cycles and with the minimum possible total edge weight.
+MST 是没有方向的， 而且求的是所有edge 和的最小值
+
+而Dijkstra's Algorithm 解决的问题是最短路径， 符合这道题的
+题意。 这道题的implementation 方法是一个和很经典的heap 的方法
+这个做法的time complexity 是 O(ElogE)因为每个edge 都会
+加到heap 里面一遍。 每加一遍又会sort 一下
+*/
+class Solution {
+    public int networkDelayTime(int[][] times, int N, int K) {
+        // build the graph map
+        Map<Integer, List<int[]>> graph = new HashMap<>();
+        for(int[] edge: times) {
+            graph.putIfAbsent(edge[0], new ArrayList<>());
+            // from -> [to, weight]
+            graph.get(edge[0]).add(new int[]{edge[1], edge[2]});
+        }
+
+        PriorityQueue<int[]> heap = new PriorityQueue<>((d1, d2) ->{return d1[1] - d2[1];});
+        heap.offer(new int[]{K, 0});
+        Map<Integer, Integer> dist = new HashMap<>();
+        while(!heap.isEmpty()) {
+            int[] current = heap.poll();
+            int node = current[0];
+            int d = current[1];
+            if(dist.containsKey(node)) continue;
+            dist.put(node, d);
+            if(graph.containsKey(node)) {
+                for(int[] edge: graph.get(node)) {
+                    int neighbor = edge[0];
+                    int d1 = edge[1];
+                    heap.offer(new int[] {neighbor, d + d1});
+                }
+            }
+        }
+        if(dist.keySet().size() != N) return -1;
+        int ans = 0;
+        for(int cand : dist.values()) {
+            ans = Math.max(ans, cand);
+        }
+        return ans;

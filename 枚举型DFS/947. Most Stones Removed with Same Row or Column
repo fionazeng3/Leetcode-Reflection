@@ -1,0 +1,42 @@
+/*
+947. Most Stones Removed with Same Row or Column
+首先要把题目理解对了stones 里面装的是石头的input。
+可以想像一下， n 个石头因为row 相同或者column 相同
+连在一起， 那我们可以拿走n-1 块石头。 所以说
+我们只要求出每一坨有几个石头， 再把它减1， 加起来就行了
+具体实现方法用的是dfs。 time complexity O(n^2)
+*/
+class Solution {
+    boolean[] seen;
+    int N;
+    int[][] input;
+    public int removeStones(int[][] stones)  {
+        input = stones;
+        N = stones.length;
+        seen = new boolean[N];
+        int ans = 0;
+        for(int i = 0; i < N; i++) {
+            if(!seen[i]) {
+                seen[i] = true;
+                int elements = dfs(i);
+                ans += elements - 1;
+            }
+        }
+         return ans;
+    }
+
+    private int dfs(int index) {
+        int sum = 1;
+        int[] current = input[index];
+        int x = current[0];
+        int y = current[1];
+        for(int j = 0; j < N; j++) {
+            if(!seen[j] && (x == input[j][0] || y == input[j][1])) {
+                seen[j] = true;
+                sum += dfs(j);
+            }
+        }
+        return sum;
+    }
+
+}

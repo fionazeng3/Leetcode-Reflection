@@ -1,0 +1,49 @@
+/*
+LC 542. 01 Matrix
+这道题的思路基本上跟 LC286 是一模一样的
+首先挑出所有0 从0 开始注水。一遇到1 就说明
+最近的0 碰到了1。 这里为了区别matrix 本身值
+为1 和0 到一个点的距离为1， 我距离都用的是负数
+
+注意只有遇到 1 的时候才要更新值并往queue 里面加
+遇到0 的时候是不用加的。 因为想象一下， 如果
+遇到了一个0， 它本身已经是一个注水点了。 肯定
+比当前这个注水点再流到下一个注水点的距离要近的
+*/
+class Solution {
+    public int[][] updateMatrix(int[][] matrix) {
+        int y = matrix.length;
+        int x = matrix[0].length;
+        Queue<Integer> qx = new LinkedList<>();
+        Queue<Integer> qy = new LinkedList<>();
+        int[] dx = {-1, 1, 0, 0};
+        int[] dy = {0, 0, -1, 1};
+        for(int i = 0; i < x; i++) {
+            for(int j = 0; j < y; j++) {
+                if(matrix[j][i] == 0) {
+                    qx.offer(i);
+                    qy.offer(j);
+                }
+            }
+        }
+        while(!qx.isEmpty()) {
+            int cx = qx.poll();
+            int cy = qy.poll();
+            for(int i = 0; i < 4; i++) {
+                int nx = cx + dx[i];
+                int ny = cy + dy[i];
+                if(nx >= 0 && nx < x && ny >= 0 && ny < y && matrix[ny][nx] == 1) {
+                    matrix[ny][nx] = matrix[cy][cx] - 1;
+                    qx.offer(nx);
+                    qy.offer(ny);
+                }
+            }
+        }
+        for(int i = 0; i < x;i++) {
+            for(int j = 0; j < y; j++) {
+                matrix[j][i] = Math.abs(matrix[j][i]);
+            }
+        }
+        return matrix;
+    }
+}
