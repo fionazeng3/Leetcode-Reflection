@@ -1,0 +1,31 @@
+/*
+LC 973. K Closest Points to Origin
+很简单的问题。 第k大问题直接用heap
+*/
+class WeightedPoint {
+    int x;
+    int y;
+    int weight;
+    public WeightedPoint(int x, int y, int weight) {
+        this.x = x;
+        this.y = y;
+        this.weight = weight;
+    }
+}
+class Solution {
+    public int[][] kClosest(int[][] points, int K) {
+        PriorityQueue<WeightedPoint> pq = new PriorityQueue<WeightedPoint>((p1, p2) -> {return p1.weight - p2.weight;});
+        for(int[] eachPoint : points) {
+            int x = eachPoint[0];
+            int y = eachPoint[1];
+            WeightedPoint p = new WeightedPoint(x, y, x*x + y*y);
+            pq.offer(p);
+        }
+        int[][] ans = new int[K][2];
+        for(int i = 0; i < K; i++) {
+            WeightedPoint currentAns = pq.poll();
+            ans[i] = new int[]{currentAns.x, currentAns.y};
+        }
+        return ans;
+    }
+}

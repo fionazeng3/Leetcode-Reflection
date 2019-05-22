@@ -1,0 +1,40 @@
+/*
+LC 2. Add Two Numbers
+很简单的问题。 traverse 两个list 一遍， 然后
+用一个carry 来进位。 注意最后这一步如果还有carry 的话
+要多一个node
+*/
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
+        ListNode ans = new ListNode(-1);
+        int carry = 0;
+        ListNode currentAns = ans;
+        ListNode current1 = l1;
+        ListNode current2 = l2;
+        while(current1 != null || current2 != null) {
+            int digit = carry;
+            if(current1 != null) {
+                digit += current1.val;
+                current1 = current1.next;
+            }
+            if(current2 != null) {
+                digit += current2.val;
+                current2 = current2.next;
+            }
+            carry = digit >= 10 ? 1 : 0;
+            digit %= 10;
+            currentAns.next = new ListNode(digit);
+            currentAns = currentAns.next;
+        }
+        if(carry == 1) currentAns.next = new ListNode(1);
+        return ans.next;
+    }
+}

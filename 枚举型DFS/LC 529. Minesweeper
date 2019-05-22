@@ -1,0 +1,57 @@
+/*
+LC 529. Minesweeper
+这道题很简单 dfs 里面先看自己周围有没有
+炸弹。 如果有， 直接更新成一个数字return
+如果没有， 用dfs 连痛快的思想把周围的E 全都
+改变了就好了
+*/
+class Solution {
+    int[] dx = {0, 0, -1, 1, -1, -1, 1, 1};
+    int[] dy = {-1, 1, 0, 0, -1, 1, -1, 1};
+    int sizeX;
+    int sizeY;
+    char[][] input;
+    public char[][] updateBoard(char[][] board, int[] click) {
+        sizeY = board.length;
+        sizeX = board[0].length;
+        input = board;
+        int x = click[1];
+        int y = click[0];
+        char c = input[y][x];
+        if(c == 'M') {
+            input[y][x] = 'X';
+            return input;
+        } else {
+            dfs(x, y);
+        }
+        return input;
+    }
+
+    private void dfs(int cx, int cy) {
+        // count bom
+        int bom = 0;
+        for(int i = 0; i < 8; i++) {
+            int nx = cx + dx[i];
+            int ny = cy + dy[i];
+            if(nx >= 0 && nx < sizeX && ny >= 0 && ny < sizeY) {
+                if(input[ny][nx] == 'M') bom++;
+            }
+        }
+        if(bom != 0) {
+            input[cy][cx] = (char)('0' + bom);
+            return;
+        }
+        input[cy][cx] = 'B';
+        // revursively explore surrounding
+        for(int i = 0; i < 8; i++) {
+            int nx = cx + dx[i];
+            int ny = cy + dy[i];
+            if(nx >= 0 && nx < sizeX && ny >= 0 && ny < sizeY) {
+                if(input[ny][nx] == 'E') {
+                    dfs(nx, ny);
+                }
+            }
+        }
+
+    }
+}

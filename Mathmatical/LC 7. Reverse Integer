@@ -1,0 +1,25 @@
+/*
+LC 7. Reverse Integer
+这道题最省memory 的做法是直接用数字
+用long 来操作。 每加一个数检查一下overflow
+注意取绝对值的时候容易 - 2^31 取成 2^31
+这样就overflow 了。 所以最安全的办法是从头
+就把input 弄成long
+
+*/
+class Solution {
+    public int reverse(int x) {
+        boolean isNegative = x < 0;
+        long input = (long) x;
+        input = Math.abs(input);
+        long ans = 0;
+        while(input != 0) {
+            long current = input % 10;
+            input /= 10;
+            ans = ans * 10 + current;
+            if(isNegative && -1 * ans < Integer.MIN_VALUE || !isNegative && ans > Integer.MAX_VALUE) return 0;
+
+        }
+        return isNegative ? -1 * (int)ans : (int)ans;
+    }
+}

@@ -1,0 +1,39 @@
+/*
+LC 638. Shopping Offers
+这道题我一开始的想法是把单价也像special offer 那样
+加到offer list 里面。 然后用枚举型dfs 把所有offer
+一起枚举。 这样做是超时的因为specialOffer 的size 变得太大了
+
+这个solution 的解法是： 再递归方法里先求出目前需求
+全用单价买的钱。 再遍历specialoffer list，
+枚举每一个offer， 如果这个offer 能用。 在Math.max 里面
+看是单价买的便宜， 还是用当前offer， 再向下递归便宜。
+最后return ans
+
+这道题是非典型的枚举型dfs。 多回来看
+*/
+class Solution {
+    public int shoppingOffers(List<Integer> price, List<List<Integer>> special, List<Integer> needs) {
+        // calculate the cost of buying with original price
+        int ans = 0;
+        for(int i = 0; i < price.size(); i++) {
+            ans += price.get(i) * needs.get(i);
+        }
+        for(List<Integer> eachOffer : special) {
+            List<Integer> clone = new ArrayList<>(needs);
+            boolean canTake = true;
+            for(int i = 0; i< clone.size(); i++) {
+                clone.set(i, clone.get(i) - eachOffer.get(i));
+                if(clone.get(i) < 0) {
+                    canTake = false;
+                    break;
+                }
+            }
+            if(canTake) {
+                ans = Math.min(ans, eachOffer.get(eachOffer.size() - 1) + shoppingOffers(price, special, clone));
+            }
+        }
+        return ans;
+
+    }
+}
