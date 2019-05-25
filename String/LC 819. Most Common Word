@@ -1,0 +1,43 @@
+/*
+LC 819. Most Common Word
+这道题的题目叙述有点问题
+意思应该是除了字母之外的一切符号
+都能把word 隔开。 所以用到的方法
+只能是一个一个character看。 如果
+是字母，加上。 如果不是字母，处理。
+注意有的paragraph 是没有特殊字符的
+这样的paragraph 就永远不会处理。
+这种情况就应该在paragraph 后加一个特殊字符
+*/
+class Solution {
+    public String mostCommonWord(String paragraph, String[] banned) {
+        Set<String> bannedSet = new HashSet<>();
+        Map<String, Integer> map = new HashMap<>();
+        for(String bannedWord: banned) {
+            bannedSet.add(bannedWord);
+        }
+        paragraph = paragraph.toLowerCase();
+        paragraph += ".";
+        String ans = "";
+        int maxCount = 0;
+        String current = "";
+        for(char c : paragraph.toCharArray()) {
+            if(Character.isLetter(c)) {
+                current += c;
+            } else {
+                if(current.length() > 0) {
+                    if(!bannedSet.contains(current)) {
+                         map.put(current, map.getOrDefault(current, 0) + 1);
+                        if(map.get(current) > maxCount) {
+                            ans = current;
+                            maxCount = map.get(current);
+                        }
+                    }
+                }
+                current = "";
+            }
+        }
+
+        return ans;
+    }
+}

@@ -1,0 +1,29 @@
+/*
+LC 937. Reorder Log Files
+这道题的答案直接用了一个很巧妙的方法， 用
+题的逻辑写了一个comparator。
+这里面有一个小细节： 如果两个letter-Log
+是tie， 就用他们的identifier 来break
+这个tie。 解决办法是把identifier append
+到content 的最后
+*/
+class Solution {
+    public String[] reorderLogFiles(String[] logs) {
+        Arrays.sort(logs, (log1, log2) -> {
+            String[] sp1 = log1.split(" ", 2);
+            String[] sp2 = log2.split(" ", 2);
+            char c1 = sp1[1].charAt(0);
+            char c2 = sp2[1].charAt(0);
+            if(Character.isDigit(c1) && Character.isDigit(c2)) {
+                return 0;
+            } else if(Character.isDigit(c1)) {
+                return 1;
+            } else if(Character.isDigit(c2)) {
+                return -1;
+            } else {
+                return (sp1[1] + sp1[0]).compareTo(sp2[1] + sp2[0]);
+            }
+        });
+        return logs;
+    }
+}

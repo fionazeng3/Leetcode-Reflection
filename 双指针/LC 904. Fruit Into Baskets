@@ -1,0 +1,29 @@
+/*
+LC 904. Fruit Into Baskets
+这道题的第二个规定决定了它不能不能跳着选
+Move to the next tree to the right of the current tree.  If there is no tree to the right, stop.
+所以这道题是一道典型的双指针问题。 直接套用模版就行了
+*/
+class Solution {
+    public int totalFruit(int[] tree) {
+        Map<Integer, Integer> map = new HashMap<>();
+        int total = 0;
+        int max = 0;
+        int l = 0;
+        int r = 0;
+        int len = tree.length;
+        while(l < len) {
+            while(r < len && (map.keySet().size() < 2 || map.containsKey(tree[r]))) {
+                total++;
+                map.put(tree[r], map.getOrDefault(tree[r], 0) + 1);
+                r++;
+            }
+            max = Math.max(max, total);
+            map.put(tree[l], map.get(tree[l]) - 1);
+            if(map.get(tree[l]) == 0) map.remove(tree[l]);
+            l++;
+            total--;
+        }
+        return max;
+    }
+}
