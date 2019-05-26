@@ -1,0 +1,38 @@
+/*
+LC 9. Palindrome Number
+这道题首先想到把这个数字变成string
+然后用string 找回文的方法做。 但是这样就会占用extra space
+再来就想到把整个数字倒过来。 但是这样的话如果x 是
+maxInt， 倒过来就overflow 了
+其实最好的办法是把x 的一半倒过来， 然后跟上一半
+比是不是一样的。 这样就一定不会有overflow 的问题
+
+注意： 求一个数字有几位数用(int) Math.log10(x) + 1
+还有就是用counter 来记录当前处理了几位数。 因为如果每次都用
+log 的话， 如果数字结尾是0 的话会少几位
+
+这道题的时间复杂度为O(log10x);
+*/
+class Solution {
+    public boolean isPalindrome(int x) {
+        if(x < 0) return false;
+        if(x / 10 == 0) return true;
+        int powerX = (int) Math.log10(x) + 1;
+        int powerHelper = 0;
+        int helperNum = 0;
+        while(powerX > powerHelper) {
+            if(powerX == powerHelper + 1) {
+                x /= 10;
+                break;
+            }
+            int digit = x % 10;
+            x/= 10;
+            helperNum = helperNum * 10 + digit;
+            powerX--;
+            powerHelper++;
+        }
+
+        return helperNum == x;
+
+    }
+}

@@ -1,0 +1,30 @@
+/*
+LC 811. Subdomain Visit Count
+这是一道简单的模拟题。 记住split 的时候
+要escape “.”
+*/
+class Solution {
+    public List<String> subdomainVisits(String[] cpdomains) {
+        Map<String, Integer> map = new HashMap<>();
+        for(String eachVisit: cpdomains) {
+            String[] numberWord = eachVisit.split(" ");
+            int count = Integer.parseInt(numberWord[0]);
+            String[] elements = numberWord[1].split("\\.");
+            String eachDomain = "";
+            for(int i = elements.length - 1; i >= 0; i--) {
+                if(i == elements.length - 1) {
+                    eachDomain = elements[i] + eachDomain;
+                } else {
+                    eachDomain = elements[i] + "." + eachDomain;
+                }
+                map.put(eachDomain, map.getOrDefault(eachDomain, 0) + count);
+            }
+        }
+        // combine
+        List<String> ans = new ArrayList<>();
+        for(String eachKey: map.keySet()) {
+            ans.add(map.get(eachKey) + " " + eachKey);
+        }
+        return ans;
+    }
+}

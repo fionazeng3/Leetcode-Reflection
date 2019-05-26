@@ -1,0 +1,30 @@
+/*
+LC 206. Reverse Linked List
+很简单的一道linkedlist 问题。 注意 second.next = first
+以后second 后面的node 会loose reference。 所以要
+有一个third pointer
+*/
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public ListNode reverseList(ListNode head) {
+        ListNode first = head;
+        if(head == null) return null;
+        ListNode second = first.next;
+        while(second != null) {
+            ListNode third = second.next;
+            second.next = first;
+            first = second;
+            second = third;
+        }
+        head.next = null;
+        return first;
+
+    }
+}

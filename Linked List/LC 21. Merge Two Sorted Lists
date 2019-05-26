@@ -1,0 +1,35 @@
+/*
+LC 21. Merge Two Sorted Lists
+两个linked list 如果不想出现一个走完了另一个
+还没走完的情况下就用 input1 != null || input2 != null
+while loop 里面肯定有东西没走完。 所以只写一个的情况
+另一种情况用else 就好了
+*/
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public ListNode mergeTwoLists(ListNode l1, ListNode l2) {
+        ListNode dummy = new ListNode(-1);
+        ListNode current = dummy;
+        ListNode input1 = l1;
+        ListNode input2 = l2;
+        while(input1 != null || input2 != null) {
+            if(input1 != null && input2 != null && input1.val <= input2.val || input2 == null) {
+                current.next = input1;
+                input1 = input1.next;
+            } else {
+                current.next = input2;
+                input2 = input2.next;
+           }
+            current = current.next;
+        }
+        return dummy.next;
+
+    }
+}
