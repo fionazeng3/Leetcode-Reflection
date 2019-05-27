@@ -1,0 +1,31 @@
+/*
+LC 240. Search a 2D Matrix II
+这道题如果用二分法的话时间复杂度为O（nlogm）
+这道题最简单的方法是从左下角出发， 如果
+当前值比target 大， 往上移一位。 如果
+当前值比target 小， 往右移一位。
+比如说值比target 小， 不用往下看。因为下面那一行的第一个
+已经比target 大了。 第一个元素的后面会比target 更大
+
+第一个元素只能选左下角和右上角。
+因为它能移动的方向一个方向会变小， 另一个方向会变大
+*/
+class Solution {
+    public boolean searchMatrix(int[][] matrix, int target) {
+        int y = matrix.length;
+        if(y == 0) return false;
+        int x = matrix[0].length;
+        int posX = 0;
+        int posY = y - 1;
+        while(posY >= 0 && posX < x) {
+            if(matrix[posY][posX] > target) {
+                posY--;
+            } else if (matrix[posY][posX] < target) {
+                posX++;
+            } else {
+                return true;
+            }
+        }
+        return false;
+    }
+}

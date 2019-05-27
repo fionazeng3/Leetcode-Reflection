@@ -1,0 +1,28 @@
+/*
+LC 74. Search a 2D Matrix
+这道题因为
+The first integer of each row is greater than the last integer of the previous row.
+所以可以给2D array 按顺序标号。假装只有一个array。 标号的公式是
+j * y + i
+*/
+class Solution {
+    public boolean searchMatrix(int[][] matrix, int target) {
+        int y = matrix.length;
+        if(y == 0) return false;
+        int x = matrix[0].length;
+        if(x == 0) return false;
+        int l = 0;
+        int h = x * y - 1;
+        while(l + 1 < h) {
+            int mid = (l + h) / 2;
+            if(matrix[mid / x][mid % x] > target) {
+                h = mid;
+            } else if(matrix[mid / x][mid % x] < target) {
+                l = mid;
+            } else {
+                return true;
+            }
+        }
+        return (matrix[h / x][h % x] == target || matrix[l / x][l % x] == target) ;
+    }
+}

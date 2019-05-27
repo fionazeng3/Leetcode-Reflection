@@ -1,0 +1,41 @@
+/*
+LC 81. Search in Rotated Sorted Array II
+这道题大体思路跟Search in Rotated Sorted Array
+思路一样。 讨论一个元素是在左半部分还是右半部分， 然后两种情况里面
+再讨论。 不过这道题可能有重复的元素。 所以当nums【mid】 == nums【0】
+的时候， 可能在左边也可能在右边。 要用recursion 讨论一下
+*/
+class Solution {
+    public boolean search(int[] nums, int target) {
+        int len = nums.length;
+        if(len == 0) return false;
+        int l = 0;
+        int h = len - 1;
+        return helper(nums, l, h, target);
+    }
+
+    boolean helper(int[] nums, int l, int h, int target) {
+        while(l + 1 < h) {
+            int mid = (l + h) / 2;
+            if(target == nums[mid]) return true;
+            // higher part
+            if(nums[0] < nums[mid]) {
+                if(target >= nums[l] && target < nums[mid]) {
+                    return helper(nums, l, mid, target);
+                } else {
+                    return helper(nums, mid, h, target);
+                }
+            // lower part
+            } else if (nums[0] > nums[mid]) {
+                if(target > nums[mid] && target <= nums[h]) {
+                    return helper(nums, mid, h, target);
+                } else {
+                    return helper(nums, l, mid, target);
+                }
+            } else {
+                return helper(nums, l, mid, target) || helper(nums, mid, h, target);
+            }
+        }
+       return (nums[l] == target || nums[h] == target);
+    }
+}
