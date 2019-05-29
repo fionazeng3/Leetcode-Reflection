@@ -1,0 +1,35 @@
+/*
+LC 350. Intersection of Two Arrays II
+这道题我一开始的做法是在nums1 里面一个一个
+的看， 找nums2 有没有相同的元素。 这样的做法是
+O（m * n） 这种题一般都会有更好的做法。
+
+先把两个array sort 了一后， 用双指针解决。
+注意ans 的构建方法： 先开一个足够大的
+array， 最后Arrays.copyOf(array, length)
+来return
+*/
+class Solution {
+    public int[] intersect(int[] nums1, int[] nums2) {
+        Arrays.sort(nums1);
+        Arrays.sort(nums2);
+        int len1 = nums1.length;
+        int len2 = nums2.length;
+        int index1 = 0;
+        int index2 = 0;
+        int[] ans = new int[Math.max(len1, len2)];
+        int count = 0;
+        while(index1 < len1 && index2 < len2) {
+            while(index2 < len2 && nums2[index2] < nums1[index1]) {
+                index2++;
+            }
+            if(index2 < len2 && nums1[index1] == nums2[index2]) {
+                ans[count] = nums1[index1];
+                index2++;
+                count++;
+            }
+            index1++;
+        }
+        return Arrays.copyOf(ans, count);
+    }
+}
