@@ -1,0 +1,32 @@
+/*
+LC 974. Subarray Sums Divisible by K
+首先这道题求的是subarray sum。 所以立刻想到prefix sum
+不过这次的这个 prefix sum 有些特殊。 我们用到的方法是
+求prefixSum % k。如果后面有sum mod 出来是一样的数，
+那么就算一个合格的subarray 因为如果一个数a % k = c
+那么a 加一个k 的整数倍后的 b % k = c
+注意记录的data structure 要用hashmap 而不是set。
+因为要求现在mod 的结果跟前面几个subarray 的结果相同
+
+最后如果mod 的数如果是负数。 要把这个modNum转回来
+modNum = K + modNum; 因为mod 的visual 是在一个
+从0 - k-1 的轮子上转的。 不包括负数
+*/
+class Solution {
+    public int subarraysDivByK(int[] A, int K) {
+        int preSum = 0;
+        HashMap<Integer, Integer> map = new HashMap<>();
+        map.put(0, 1);
+        int count = 0;
+        for(int i = 0; i < A.length; i++) {
+            preSum += A[i];
+            int modNum = preSum % K;
+            if(modNum < 0) modNum = K + modNum;
+            if(map.containsKey(modNum)) {
+                count+= map.get(modNum);
+            }
+            map.put(modNum, map.getOrDefault(modNum, 0) + 1);
+        }
+        return count;
+    }
+}

@@ -1,0 +1,45 @@
+/*
+LC 139. Word Break
+这道题的思路感觉跟正常的枚举型dfs 有点不同。枚举过程如下
+leetcode
+/\
+l&wb(eetcode)                                    le&wb(etcode)                            lee&wb(tcode)        leet&wb(code) ...
+/\                                                  /\
+e&wb(etcode) ee&wb(tcode)...                     e&wb(tcode) ee&wb(code)...
+我们可以看出这中间会出现很多重复的操作。
+所以用一个memo 数组来记录startIndex 是多少的wb（） 是true， startIndex 是多少的wb（） 是false
+这样如果重复call 一个function 以后就不用再求一遍了
+
+Time complexity : O(n^2)For every starting index, the search can continue till the end of the given string.
+这道题一定多回来看看
+*/
+
+class Solution {
+    String input;
+    Set<String> set;
+    Boolean[] memo;
+    public boolean wordBreak(String s, List<String> wordDict) {
+        input = s;
+        set = new HashSet<>(wordDict);
+        memo = new Boolean[s.length()];
+        return wb(0);
+    }
+
+    private boolean wb(int startIndex) {
+        if(startIndex == input.length()) {
+            return true;
+        }
+        if(memo[startIndex] != null) {
+            return memo[startIndex];
+        }
+
+        for(int end = startIndex + 1; end <= input.length(); end++) {
+            if(set.contains(input.substring(startIndex, end)) && wb(end)) {
+                memo[startIndex] = true;
+                return true;
+            }
+        }
+        memo[startIndex] = false;
+        return false;
+    }
+}

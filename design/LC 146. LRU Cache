@@ -1,0 +1,134 @@
+/*
+LC 146. LRU Cache
+这道题最简单的办法是用linkedHashMap。 这个
+object 可以定义key 的顺序， 也可以改写removeEldestElement
+来删除没有用到的element。
+这个constructor 用到的是这个
+public LinkedHashMap(int initialCapacity,
+                     float loadFactor,
+                     boolean accessOrder)
+Constructs an empty LinkedHashMap instance with the specified initial capacity, load factor and ordering mode.
+Parameters:
+initialCapacity - the initial capacity
+loadFactor - the load factor
+accessOrder - the ordering mode - true for access-order, false for insertion-order
+Throws:
+IllegalArgumentException - if the initial capacity is negative or the load factor is nonpositive
+*/
+
+class LRUCache extends LinkedHashMap<Integer, Integer> {
+    private int capacity;
+
+    public LRUCache(int capacity) {
+        super(capacity, 0.75F, true);
+        this.capacity = capacity;
+    }
+
+    public int get(int key) {
+        return super.getOrDefault(key, -1);
+
+    }
+
+    public void put(int key, int value) {
+        super.put(key, value);
+    }
+
+    @Override
+    protected boolean removeEldestEntry(Map.Entry<Integer, Integer> eldest) {
+        return size() > capacity;
+    }
+}
+
+/**
+ * Your LRUCache object will be instantiated and called as such:
+ * LRUCache obj = new LRUCache(capacity);
+ * int param_1 = obj.get(key);
+ * obj.put(key,value);
+ */
+
+ /*
+ 还有一种更原始的方法就是用一个hashMap 和一个double LinkedList
+ Map 的key-value pair 是 key -> （key, value）node
+ 因为这样方便于删除某个Node
+
+ 首先在头和尾建立两个dummy node。 这样不容易有null 的情况
+ 在get 方法中， 把list 里面雨来的node 删了， 再在头的后面新加一个Node
+ 在put 方法中如果需要set， 则把原来的node 删除
+ 最后在头后面多加一个node。 如果超过了capacity， 那么把尾前面的一个删掉
+ */
+
+ class ListNode {
+    int key;
+    int val;
+    ListNode prev;
+    ListNode next;
+
+    ListNode(int key, int val) {
+        this.key = key;
+        this.val = val;
+    }
+}
+
+class LRUCache {
+    ListNode head;
+    ListNode tail;
+    int capacity;
+    int currentSize;
+    Map<Integer, ListNode> map;
+
+    public LRUCache(int capacity) {
+        this.head = new ListNode(-1, -1);
+        this.tail = new ListNode(-1, -1);
+        this.capacity = capacity;
+        this.head.next = tail;
+        this.tail.prev = head;
+        this.map = new HashMap<>();
+        this.currentSize = 0;
+    }
+
+    public int get(int key) {
+        ListNode result = map.get(key);
+        if(result == null) return -1;
+        if(key == 1) System.out.println("reach");
+        removeNode(result);
+        addNode(result);
+        return result.val;
+    }
+
+    public void put(int key, int value) {
+        if(map.containsKey(key)) {
+            removeNode(map.get(key));
+            currentSize--;
+        }
+        currentSize++;
+        ListNode input = new ListNode(key, value);
+        addNode(input);
+        if(currentSize > capacity) {
+            removeNode(tail.prev);
+            currentSize--;
+        }
+    }
+
+    private void addNode(ListNode input) {
+        input.next = head.next;
+        head.next = input;
+        input.prev = head;
+        input.next.prev= input;
+        map.put(input.key, input);
+    }
+
+    private void removeNode(ListNode target) {
+        target.next.prev = target.prev;
+        target.prev.next = target.next;
+        target.prev = null;
+        target.next = null;
+        map.remove(target.key);
+    }
+}
+
+/**
+ * Your LRUCache object will be instantiated and called as such:
+ * LRUCache obj = new LRUCache(capacity);
+ * int param_1 = obj.get(key);
+ * obj.put(key,value);
+ */
