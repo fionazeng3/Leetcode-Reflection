@@ -1,0 +1,45 @@
+/*
+LC 348. Design Tic-Tac-Toe
+这道题的难点在于检查有没有winner。
+如果每下一步都要全局查一遍的话， 时间复杂度为O（n^2）
+这个答案的方法是记录每个player 自己的行， 列， 和斜对角线
+这样的时间复杂度只有o（1）
+*/
+class TicTacToe {
+    int[][] horizontal;
+    int[][] column;
+    int[][] diag;
+    int size;
+
+    /** Initialize your data structure here. */
+    public TicTacToe(int n) {
+        horizontal = new int[2][n];
+        column = new int[2][n];
+        diag = new int[2][2];
+        this.size = n;
+    }
+
+    /** Player {player} makes a move at ({row}, {col}).
+        @param row The row of the board.
+        @param col The column of the board.
+        @param player The player, can be either 1 or 2.
+        @return The current winning condition, can be either:
+                0: No one wins.
+                1: Player 1 wins.
+                2: Player 2 wins. */
+    public int move(int row, int col, int player) {
+        horizontal[player - 1][row]++;
+        column[player - 1][col]++;
+        if(row == col) diag[player - 1][0]++;
+        if(row + col == size - 1) diag[player -1][1]++;
+        if(horizontal[player - 1][row] == size || column[player - 1][col] == size || diag[player - 1][0] ==  size || diag[player - 1][1] == size) return player;
+        return 0;
+
+    }
+}
+
+/**
+ * Your TicTacToe object will be instantiated and called as such:
+ * TicTacToe obj = new TicTacToe(n);
+ * int param_1 = obj.move(row,col,player);
+ */

@@ -1,0 +1,59 @@
+/*
+LC 981. Time Based Key-Value Store
+key-value 想到hashmap， 然后查找的话
+用二分法效果最好
+*/
+class TimeMap {
+    Map<String, List<ValueTime>> map;
+    /** Initialize your data structure here. */
+    public TimeMap() {
+        map = new HashMap<>();
+    }
+
+    public void set(String key, String value, int timestamp) {
+        map.putIfAbsent(key, new ArrayList<>());
+        ValueTime newObject = new ValueTime(value, timestamp);
+        map.get(key).add(newObject);
+    }
+
+    public String get(String key, int timestamp) {
+        return binarySearch(map.get(key), timestamp);
+    }
+
+    private String binarySearch(List<ValueTime> list, int target) {
+        int l = 0;
+        int h = list.size() - 1;
+        while(l + 1 < h) {
+            int mid = (l + h) / 2;
+            if(list.get(mid).time == target) return list.get(mid).value;
+            if(list.get(mid).time < target) {
+                l = mid;
+            } else {
+                h = mid;
+            }
+        }
+        if(target == 19) System.out.println(list.size() - 1);
+        if(list.get(h).time <= target) {
+            return list.get(h).value;
+        } else if (list.get(l).time <= target) {
+            return list.get(l).value;
+        }
+        return "";
+    }
+}
+
+class ValueTime {
+    String value;
+    int time;
+    public ValueTime(String value, int time) {
+        this.value = value;
+        this.time = time;
+    }
+}
+
+/**
+ * Your TimeMap object will be instantiated and called as such:
+ * TimeMap obj = new TimeMap();
+ * obj.set(key,value,timestamp);
+ * String param_2 = obj.get(key,timestamp);
+ */
