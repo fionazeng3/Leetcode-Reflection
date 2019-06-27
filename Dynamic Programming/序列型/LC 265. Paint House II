@@ -1,0 +1,56 @@
+/*
+LC 265. Paint House II
+这道题大体思路跟paint house I 是一样的
+唯一不同的是复杂度有点高， 要用一个求最小和求其次小的
+方法降低时间复杂度。
+这道题的转移方程是
+f[i][j] = mink≠j {f[i-1][k]} + cost[i-1][j]
+时间复杂度为O（NK^2）
+i 0-n
+j 0-k
+k 0-k
+我们减少时间复杂度的方法是 求出f[i-1][k] 中最小
+和第二小。 如果要除掉的元素是最小， 那么用第二小
+如果除掉元素不是最小， 就用最小
+*/
+class Solution {
+    public int minCostII(int[][] costs) {
+        int n = costs.length;
+        if(n == 0) return 0;
+        int k = costs[0].length;
+        int[][] f = new int[n+1][k];
+        int min1, min2;
+        int id1 = 0, id2 = 0;
+        for(int i = 0; i<k ; i++) {
+            f[0][i] = 0;
+        }
+        for(int i = 1; i<=n; i++) {
+            min1 = min2 = Integer.MAX_VALUE;
+            for(int j = 0; j<k; j++) {
+                if(f[i - 1][j] < min1) {
+                    min2 = min1;
+                    id2 = id1;
+                    min1 = f[i - 1][j];
+                    id1 = j;
+                } else if(f[i - 1][j] < min2) {
+                    min2 = f[i - 1][j];
+                    id2 = j;
+                }
+            }
+            for(int j = 0; j< k; j++) {
+                f[i][j] = costs[i - 1][j];
+                if(j != id1 || k == 1) {
+                    f[i][j] += min1;
+                } else {
+                    f[i][j] += min2;
+                }
+            }
+
+        }
+        int min = Integer.MAX_VALUE;
+        for(int j = 0; j < k; j++) {
+            min = Math.min(min, f[n][j]);
+        }
+        return min;
+    }
+}

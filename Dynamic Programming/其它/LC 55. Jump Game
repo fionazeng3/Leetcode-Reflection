@@ -1,0 +1,25 @@
+/*
+LC 55. Jump Game
+1. 确定状态： 最后一步假设是从石头i 跳过来的
+这要满足两个条件： 青蛙可以跳到石头i，n-1 - i <= ai
+2. 转移方程f[j] = OR(0=<i <j)(f[i] && a[i] + i >= j)
+3.初始条件f[0] = true
+时间复杂度O（N^2）
+*/
+class Solution {
+    public boolean canJump(int[] nums) {
+        int n = nums.length;
+        boolean[] f = new boolean[n];
+        f[0] = true;
+        for(int i = 1; i < n; i++) {
+            for(int j = 0; j < i; j++) {
+                if(f[j] && j + nums[j] >= i) {
+                    f[i] = true;
+                    break;
+                }
+            }
+
+        }
+        return f[n - 1];
+    }
+}

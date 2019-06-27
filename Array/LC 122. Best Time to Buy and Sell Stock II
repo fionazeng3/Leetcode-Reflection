@@ -2,6 +2,10 @@
 LC 122. Best Time to Buy and Sell Stock II
 这道题很简单。 只要股票上升了就进行买卖。 注意同一天
 可以先卖了再买
+为什么下一天比上一天大就一定买卖呢？
+首先如果下一天比上一天低， 那么完全可以下一天再买入
+而且这道题不限制买卖次数每次增长都买的话是肯定比最低点买入， 最高点
+卖出相等或更高的
 */
 class Solution {
     public int maxProfit(int[] prices) {

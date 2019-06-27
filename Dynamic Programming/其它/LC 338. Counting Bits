@@ -1,0 +1,22 @@
+/*
+LC 338. Counting Bits
+这道题最暴力的方法就是从0 到n 每一个数都去求有几个1
+这样的时间复杂度是O(NlogN)
+动态规划写法：
+1. 确定状态： 最后一步： 去掉二进制最后一位看前面有几个1， 再加上当前这位有没有1
+2. 转移方程 f[i] = f[i/2] + (i mod 2)
+3. 计算顺序和初始条件
+f【0】 = 0
+f[0], f[1], f[2], ..., f[N]
+时间复杂度 O（N）
+*/
+class Solution {
+    public int[] countBits(int num) {
+        int[] ans = new int[num + 1];
+        ans[0] = 0;
+        for(int i = 1; i <= num; i++) {
+            ans[i] = (i % 2) + ans[i / 2];
+        }
+        return ans;
+    }
+}

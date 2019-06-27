@@ -1,0 +1,30 @@
+/*
+LC 674. Longest Continuous Increasing Subsequence
+1. 确定状态：
+最后一步肯定有一个A【i】
+􏰠􏰤􏰼􏲀􏰃􏰙􏰋􏰫􏰬􏰭􏰵􏰋􏱛􏰳第一种情况： 子数组只有这么一个元素。 答案是1
+第二种情况： 子数组长度大于1， 那么a[i] 前面肯定有一个a[i - 1] a[i - 1] < a[i]
+设f[i] 为以a[i]为结尾的最长上升数组长度
+2. 转移方程
+f[j] = max{ 1, f[j–1]+1| j>0 and a[j-1] < a[j]}
+3. 计算顺序
+f[0], f[1], f[2], ..., f[n-1]
+（注意坐标型动态规划数组长度为n 而不是n+1）
+*/
+class Solution {
+    public int findLengthOfLCIS(int[] nums) {
+        int n = nums.length;
+        int[] f = new int[n];
+        int ans = 0;
+         for(int i = 0; i < n; i++) {
+             f[i] = 1;
+             if(i > 0 && nums[i - 1] < nums[i]) {
+                 f[i] = f[i - 1] + 1;
+             }
+             ans = Math.max(ans, f[i]);
+         }
+        return ans;
+
+    }
+
+}
