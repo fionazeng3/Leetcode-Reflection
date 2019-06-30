@@ -1,0 +1,48 @@
+/*
+LIN 563. Backpack V
+首先这是一道背包问题。 背包问题的数组长度肯定跟限定的重量有关
+1. 确定状态：
+最后一步：第N 个物品要不要放入背包
+f[i][w] 表示用前i 个物品有多少种方式能拼出重量w
+2.转移方程
+一般这种求有多少种的转移方恒都是要用加法
+f[i][w] = f[i - 1][w] + f[i - 1][w - Ai-1]
+       前i-1个数已经         前i-1 个数拼出了w - Ai-1
+       拼出了 w
+3. 初始条件与计算顺序
+f[0][0] = 1 0个物品有1 种情况拼出重量0
+f[0][M] = 0 0 个物品不可能拼出非 0 的状态
+计算顺序
+f[0][0] f[0][1] ...f[0][target]
+f[1][0] f[1][1] ...
+.
+.
+.
+时间复杂度O（N* Target）
+*/
+public class Solution {
+    /**
+     * @param nums: an integer array and all positive numbers
+     * @param target: An integer
+     * @return: An integer
+     */
+    public int backPackV(int[] nums, int target) {
+        // write your code here
+        int n = nums.length;
+        if(n == 0) return 0;
+        int[][] f = new int[n+1][target + 1];
+        f[0][0] = 1;
+        for(int i = 1; i <= target; i++) {
+            f[0][i] = 0;
+        }
+        for(int i = 1; i <= n; i++) {
+            for(int j = 0; j <= target; j++) {
+                f[i][j] = f[i - 1][j];
+                if(j >= nums[i - 1]) {
+                    f[i][j] += f[i - 1][j - nums[i - 1]];
+                }
+            }
+        }
+        return f[n][target];
+    }
+}

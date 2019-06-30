@@ -1,0 +1,38 @@
+/*
+LC 213. House Robber II
+这道题主要思路和house robber 1 是一样的
+唯一不同的是要多出一个破环的步骤。
+枚举两个数组， 第一个没有头
+第二个没有尾。 然后做两遍
+house robberI
+*/
+class Solution {
+    public int rob(int[] nums) {
+        int len = nums.length;
+        if(len == 0) return 0;
+        if(len == 1) return nums[0];
+        int[] subarray = new int[len - 1];
+        for(int i = 0; i< len - 1; i++) {
+            subarray[i] = nums[i];
+        }
+        int firstRes = cal(subarray);
+        for(int i = 1; i < len; i++) {
+            subarray[i - 1] = nums[i];
+        }
+        int secondRes = cal(subarray);
+        return Math.max(firstRes, secondRes);
+    }
+    private int cal(int[] A) {
+        int n = A.length;
+        if (n == 0)
+            return 0;
+        int []res = new int[n+1];
+
+        res[0] = 0;
+        res[1] = A[0];
+        for (int i = 2; i <= n; i++) {
+            res[i] = Math.max(res[i-1], res[i-2] + A[i-1]);
+        }
+        return res[n];
+    }
+}

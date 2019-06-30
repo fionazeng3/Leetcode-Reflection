@@ -1,0 +1,56 @@
+/*
+LC 132. Palindrome Partitioning II
+这是一道典型的划分型动态规划
+1. 确定状态：
+最优策略中肯定有一个最后一段回文串s[j... n-1]
+这就需要知道S 前j 个字符串最少可以划分成多少个回文串
+我们可以用一个辅助数组isPalin[i][j]表示S[i...j] 是否是回文串
+设f[i]为前i 个字母最少可以划分成几个回文串
+2. 转移方程 f[i] = minj=0,...,i-1{f[j] + 1| isPalin[j][i-1] = True}
+注意找回文串的时候要考虑奇数回文串和偶数回文串
+3. 初始条件与计算顺序
+f【0】 = 0
+时间复杂度： O（N^3）因此对于一个长度为n的字符串，共有n^2个子串。这些子串的平均长度大约是n/2 空间复杂度 O（N^2）
+*/
+class Solution {
+    public int minCut(String ss) {
+        char[] s = ss.toCharArray();
+        int n = s.length;
+        if(n == 0) return 0;
+        boolean[][] isPalin = calcPalin(s);
+        int[] f = new int[n + 1];
+        f[0] = 0;
+        for(int i = 1; i <= n; i++) {
+            f[i] = Integer.MAX_VALUE;
+            for(int j = 0; j < i; j++) {
+                if(isPalin[j][i - 1]) f[i] = Math.min(f[i], f[j] + 1);
+            }
+        }
+        return f[n] - 1;
+    }
+    private boolean[][] calcPalin(char[] s) {
+        int n = s.length;
+        boolean[][] isPalin = new boolean[n][n];
+        // odd
+        for(int c = 0; c < n; c++) {
+            int i = c;
+            int j = c;
+            while(i >= 0 && j < n && s[i] == s[j]) {
+                isPalin[i][j] = true;
+                i--;
+                j++;
+            }
+        }
+        // even
+        for(int c = 0; c < n - 1; c++) {
+            int i = c;
+            int j = c+1;
+            while(i >= 0 && j < n && s[i] == s[j]) {
+                isPalin[i][j] = true;
+                i--;
+                j++;
+            }
+        }
+        return isPalin;
+    }
+}

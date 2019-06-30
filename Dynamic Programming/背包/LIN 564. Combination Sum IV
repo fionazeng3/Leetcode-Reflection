@@ -1,0 +1,33 @@
+/*
+LIN 564. Combination Sum IV
+这道题跟backpack V 最大的不同是这里每个物品可以用无限次
+所以这道题的物品就没有了顺序
+1. 确定状态：
+这里的最后一步就不是最后一个物品入不入背包了
+而是 有多少种组合能拼出重量i
+f[i]= 有多少种组合能拼出重量i
+2. 转移方程
+f[i] = f[i - A0] + f[i - A1] ... f[i - AN-1]
+3. 初始状态
+f[0] = 1
+*/
+public class Solution {
+    /**
+     * @param nums: an integer array and all positive numbers, no duplicates
+     * @param target: An integer
+     * @return: An integer
+     */
+    public int backPackVI(int[] nums, int target) {
+        // write your code here
+        int[] f = new int[target + 1];
+        f[0] = 1;
+        for(int i = 1; i <= target; i++) {
+            for(int j = 0; j < nums.length; j++) {
+                if(i >= nums[j]) {
+                    f[i] +=  f[i - nums[j]];
+                }
+            }
+        }
+        return f[target];
+    }
+}

@@ -1,0 +1,62 @@
+/*
+LC 188. Best Time to Buy and Sell Stock IV
+这道题思路跟Best Time to Buy and Sell Stock III 一样
+只不过把5 变成了一个变量k。如果k > n/2， 那么基本上就相当于
+随便买卖了。 直接用Best Time to Buy and Sell Stock II 做
+可以节省不少时间
+*/
+class Solution {
+    /**
+     * @param prices: Given an integer array
+     * @return: Maximum profit
+     */
+
+    public int maxProfit(int K, int[] prices) {
+        int n = prices.length;
+        if (n == 0) {
+            return 0;
+        }
+
+        int i, j, k;
+        if (K > n / 2) {
+            // best time to buy and sell stock ii
+            int tmp = 0;
+            for (i = 0; i < n - 1; ++i) {
+                tmp += Math.max(0, prices[i + 1] - prices[i]);
+            }
+
+            return tmp;
+        }
+
+        int[][] f = new int[n + 1][2 * K + 1 + 1];
+        for (k = 1; k <= 2 * K + 1; ++k) {
+            f[0][k] = Integer.MIN_VALUE; // impossible
+        }
+
+        f[0][1] = 0;
+        for (i = 1; i <= n; ++i) {
+            // 阶段1, 3, .. 2 * K + 1: f[i][j] = max{f[i-1][j], f[i-1][j-1] + Pi-1 – Pi-2}
+            for (j = 1; j <= 2 * K + 1; j += 2) {
+                f[i][j] = f[i - 1][j];
+                if (j > 1 && i > 1 && f[i - 1][j - 1] != Integer.MIN_VALUE) {
+                    f[i][j] = Math.max(f[i][j], f[i - 1][j - 1] + prices[i - 1] - prices[i - 2]);
+                }
+            }
+
+            // 阶段2, 4.., 2K: f[i][j] = max{f[i-1][j] + Pi-1 – Pi-2, f[i-1][j-1]}
+            for (j = 2; j <= 2 * K + 1; j += 2) {
+                f[i][j] = f[i - 1][j - 1];
+                if (i > 1 && f[i - 1][j] != Integer.MIN_VALUE) {
+                    f[i][j] = Math.max(f[i][j], f[i - 1][j] + prices[i - 1] - prices[i - 2]);
+                }
+            }
+        }
+
+        int res = 0;
+        for (j = 1; j <= 2 * K + 1; j += 2) {
+            res = Math.max(res, f[n][j]);
+        }
+
+        return res;
+    }
+}
