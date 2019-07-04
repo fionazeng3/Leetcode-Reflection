@@ -15,6 +15,7 @@ OR{f[i][j+k-w][w] AND f[i+w][j][k-w]}
 计算顺序：k 从小到大（区间型dp 常见计算顺序）
 最后返回f【0】【0】【N】
 就行了。 f 的第三维用的是从1 到 N 的数。 所以大小开成 N + 1
+时间复杂度为O（N^4） (开了三维数组， 还要枚举w)
 */
 class Solution {
     public boolean isScramble(String s1, String s2) {

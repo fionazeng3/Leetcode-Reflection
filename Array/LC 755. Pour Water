@@ -1,0 +1,43 @@
+/*
+LC 755. Pour Water
+这道题的难点在于题目没叙述清楚
+水往左走的时候应该是在可能的情况下要在左边走到最矮的那个点
+右边同理
+剩下的就模拟就行了
+*/
+class Solution {
+    public int[] pourWater(int[] heights, int V, int K) {
+        for(int v = 1; v <= V; v++) {
+            int l = K;
+            int minVal = heights[l];
+            int minIndex = l;
+            while(l > 0 && heights[l - 1] <= heights[l]) {
+                l--;
+                if(heights[l] < minVal) {
+                    minVal = heights[l];
+                    minIndex = l;
+                }
+            }
+            if(minVal < heights[K]) {
+                heights[minIndex]++;
+                continue;
+            }
+            int r = K;
+            minVal = heights[r];
+            minIndex = r;
+            while(r < heights.length - 1 && heights[r+1] <= heights[r]) {
+                r++;
+                if(heights[r] < minVal) {
+                    minVal = heights[r];
+                    minIndex = r;
+                }
+            }
+            if(minVal < heights[K]) {
+                heights[minIndex]++;
+                continue;
+            }
+            heights[K]++;
+        }
+        return heights;
+    }
+}

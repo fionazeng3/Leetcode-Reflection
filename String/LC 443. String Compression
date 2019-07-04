@@ -1,0 +1,41 @@
+/*
+LC 443. String Compression
+简单的string 模拟题。 注意观察规律的细节。想好了再写
+首先字母如果只有一个不用压缩， 只有两个或者两个以上采用压缩
+其次注意处理多位数
+*/
+class Solution {
+    public int compress(char[] chars) {
+        int len = chars.length;
+        if(len <= 1) return len;
+        char lastChar = chars[0];
+        int count = 1;
+        int index = 0;
+        for(int i = 1; i < len; i++) {
+            char c = chars[i];
+            if(c == lastChar) {
+                count++;
+            } else {
+                index = setIndex(chars, index, count, lastChar);
+                count = 1;
+                lastChar = c;
+            }
+        }
+        index = setIndex(chars, index, count, lastChar);
+        return index;
+
+    }
+
+    private int setIndex(char[] chars, int index, int count, char lastChar) {
+        char[] countArray = ("" + count).toCharArray();
+        chars[index] = lastChar;
+        if(count > 1) {
+            for(int i = 0; i < countArray.length; i++) {
+                index++;
+                chars[index] = countArray[i];
+            }
+        }
+        index++;
+        return index;
+    }
+}
