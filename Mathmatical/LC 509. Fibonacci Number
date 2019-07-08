@@ -1,0 +1,20 @@
+/*
+LC 509. Fibonacci Number
+很简单的一道小数学问题。 我一开始想的用arraylist
+记录从0 - N 所有的斐波那契 数
+但是用两个数字优化一下就可以实现了
+*/
+class Solution {
+    public int fib(int N) {
+        if(N < 2) return N;
+        int oldNum = 0;
+        int newNum = 1;
+        int ans = 0;
+        for(int i = 2; i <= N; i++) {
+            ans = oldNum + newNum;
+            oldNum = newNum;
+            newNum = ans;
+        }
+        return ans;
+    }
+}

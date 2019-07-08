@@ -1,0 +1,36 @@
+/*
+LC 24. Swap Nodes in Pairs
+很简单的linked list 题
+思路很想reverse linkedList
+不过要注意的是要有一个oldCurrent
+来记录上一次谁该指向这次swap 过后的头
+*/
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public ListNode swapPairs(ListNode head) {
+        if(head == null) return head;
+        ListNode current = head;
+        ListNode nextNode = current.next;
+        if(nextNode == null) return head;
+        ListNode front = nextNode;
+        ListNode oldCurrent = null;
+        while(nextNode != null) {
+            ListNode temp = nextNode.next;
+            nextNode.next = current;
+            current.next = temp;
+            if(oldCurrent!= null) oldCurrent.next = nextNode;
+            oldCurrent = current;
+            if(temp == null) break;
+            current = temp;
+            nextNode = current.next;
+        }
+        return front;
+    }
+}

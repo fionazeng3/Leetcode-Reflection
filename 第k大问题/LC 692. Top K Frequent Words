@@ -1,0 +1,39 @@
+/*
+LC 692. Top K Frequent Words
+这道题很简单。用hashmap 记录frequency
+然后用priority queue 和一个customize
+的comparator 就解决了
+*/
+class WordFrequency {
+    String word;
+    int frequency;
+    public WordFrequency(String word, int frequency) {
+        this.word = word;
+        this.frequency = frequency;
+    }
+}
+
+class Solution {
+    public List<String> topKFrequent(String[] words, int k) {
+        Map<String, Integer> map = new HashMap<>();
+        for(String word: words) {
+            map.put(word, map.getOrDefault(word, 0) + 1);
+        }
+        PriorityQueue<WordFrequency> pq = new PriorityQueue<>((wf1, wf2) -> {
+           if(wf1.frequency != wf2.frequency) {
+               return wf2.frequency - wf1.frequency;
+           } else {
+               return wf1.word.compareTo(wf2.word);
+           }
+        });
+        for(String key: map.keySet()) {
+            WordFrequency current = new WordFrequency(key, map.get(key));
+            pq.add(current);
+        }
+        List<String> ans = new ArrayList<>();
+        for(int i = 0; i < k; i++) {
+            ans.add(pq.poll().word);
+        }
+        return ans;
+    }
+}

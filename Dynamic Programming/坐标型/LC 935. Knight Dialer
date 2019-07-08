@@ -1,0 +1,52 @@
+/*
+LC 935. Knight Dialer
+这是一道坐标型的动态规划题
+1. 确定状态
+每个数的最后一位可能是从六个不同的方向调过来的
+设置f[k][i][j] 为 跳k步以后落在（j, i）位置上
+一共有几个数字
+2. 转移方程
+f[k][i][j] = sum(f[k - 1][i'][j'])
+3. 初始条件
+f[0][*][*] = 1 (除了两个invalid 的地方)
+*/
+class Solution {
+    public int knightDialer(int N) {
+        int[][][] f = new int[N][3][4];
+        int[] dy = {-2, -2, -1, -1,  1, 1,  2, 2};
+        int[] dx = {-1,  1, -2,  2, -2, 2, -1, 1};
+        int modNum =(int) Math.pow(10, 9) + 7;
+        for(int k = 0; k < N; k++) {
+            for(int i = 0; i < 3; i++) {
+                for(int j = 0; j < 4; j++) {
+                    if(k == 0) {
+                        if(j == 3 && (i == 0 || i == 2)) {
+                            f[k][i][j] = 0;
+                        } else {
+                            f[k][i][j] = 1;
+                        }
+                        continue;
+                    }
+                    if(j == 3 && (i == 0 || i == 2)) continue;
+                    f[k][i][j]= 0;
+                    for(int d = 0; d < 8; d++) {
+                        int li = i+ dx[d];
+                        int lj = j + dy[d];
+                        if(li >=0 && li <3 && lj >= 0 && lj < 4) {
+                            f[k][i][j] = (f[k - 1][li][lj] + f[k][i][j]) % modNum;
+                        }
+                    }
+
+                }
+            }
+        }
+        int ans = 0;
+        for(int i = 0; i < 3; i++) {
+            for(int j = 0; j < 4; j++) {
+                ans = (ans + f[N-1][i][j]) % modNum;
+            }
+        }
+        return ans;
+
+    }
+}

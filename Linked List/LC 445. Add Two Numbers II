@@ -1,0 +1,63 @@
+/*
+LC 445. Add Two Numbers II
+这道题因为要做加法， 所以要把两个linkedlist
+都先反着掉一下个， 再加。 注意reverse 的时候
+别忘了续后 input.next = null;
+不然就变成死循环了
+*/
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
+        l1 = reverseNode(l1);
+        l2 = reverseNode(l2);
+        int carry = 0;
+        ListNode dummy = new ListNode(-1);
+        ListNode current1 = l1;
+        ListNode current2 = l2;
+        ListNode currentAns = dummy;
+        while(current1 != null || current2 != null) {
+            int num = 0;
+            if(current1 != null) {
+                num += current1.val;
+                current1 = current1.next;
+            }
+            if(current2 != null) {
+                num += current2.val;
+                current2 = current2.next;
+            }
+            if(carry == 1) num++;
+            if(num >= 10) {
+                carry = 1;
+                num =  num % 10;
+            } else {
+                carry = 0;
+            }
+            currentAns.next = new ListNode(num);
+            currentAns = currentAns.next;
+        }
+        if(carry == 1) currentAns.next = new ListNode(1);
+        ListNode ans = reverseNode(dummy.next);
+        return ans;
+    }
+
+    private ListNode reverseNode(ListNode input) {
+        if(input == null || input.next == null) return input;
+        ListNode current = input;
+        ListNode nextNode = input.next;
+        while(current != null && nextNode != null) {
+            ListNode temp = nextNode.next;
+            nextNode.next = current;
+            current = nextNode;
+            nextNode = temp;
+        }
+        input.next = null;
+        return current;
+    }
+}

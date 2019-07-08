@@ -1,0 +1,24 @@
+/*
+LC 70. Climbing Stairs
+很简单的一道动态规划题目
+1. 确定状态： 最后一步要不然就是走一步来的， 要不然就是
+走两步来的。 所以设f[n]为上到n 节台阶有几种组合方式
+2. 转移方程
+f[n] = f[n - 1] + f[n - 2];
+3. 初始条件
+f[0] = 1; (想想f[2]用的时候f[0] 应该是什么)
+f[1] = 1;
+*/
+class Solution {
+    public int climbStairs(int n) {
+        if(n == 0) return 1;
+        int[] f = new int[n + 1];
+        f[0] = 1;
+        f[1] = 1;
+        for(int i = 2; i <= n; i++) {
+            f[i] = f[i - 1] + f[i - 2];
+        }
+        return f[n];
+
+    }
+}

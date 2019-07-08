@@ -1,0 +1,24 @@
+/*
+LC 125. Valid Palindrome
+注意枚举palindrome 和检验palindrome 不一样
+枚举的时候要考虑回文串的奇偶性。
+而检查的话只要用双指针检查就行了
+*/
+class Solution {
+    public boolean isPalindrome(String s) {
+        char[] input = s.toCharArray();
+        int l = 0;
+        int h = input.length - 1;
+        while(l < h) {
+            while(l < input.length && !Character.isLetterOrDigit(input[l])) l++;
+            while(h >= 0 && !Character.isLetterOrDigit(input[h])) h--;
+            if(l >= h) break;
+            char lc= Character.toLowerCase(input[l]);
+            char hc = Character.toLowerCase(input[h]);
+            if(lc != hc) return false;
+            l++;
+            h--;
+        }
+        return true;
+    }
+}

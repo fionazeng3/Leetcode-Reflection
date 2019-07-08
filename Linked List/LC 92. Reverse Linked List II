@@ -1,0 +1,40 @@
+/*
+LC 92. Reverse Linked List II
+这道题的难点是： 如果从头reverse，
+写法会非常不一样。 solution 就是在链表前面加一个
+dummy node。 让情况统一
+*/
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public ListNode reverseBetween(ListNode head, int m, int n) {
+        ListNode dummy = new ListNode(-1);
+        dummy.next = head;
+        ListNode current = dummy;
+        int count = 1;
+        while(count < m) {
+            count++;
+            current = current.next;
+        }
+        ListNode front = current;
+        current = current.next;
+        ListNode start = current;
+        ListNode nextNode = current.next;
+        while(count < n) {
+            ListNode temp = nextNode.next;
+            nextNode.next = current;
+            current = nextNode;
+            nextNode = temp;
+            count++;
+        }
+        start.next = nextNode;
+        front.next = current;
+        return dummy.next;
+    }
+}
