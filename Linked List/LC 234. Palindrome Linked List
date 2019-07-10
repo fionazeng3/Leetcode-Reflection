@@ -1,0 +1,64 @@
+/*
+LC 234. Palindrome Linked List
+这道题我一开始的想法是再开一个 reverse linked list
+比较两个linkedList 是不是完全相同。 但是题目要求
+n O(n) time and O(1) space。 其实不用把linkedList
+全反过来。 只要把后半段反过来就好了
+*/
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public boolean isPalindrome(ListNode head) {
+        if(head == null) return true;
+        ListNode mid = findMid(head);
+        mid = reverse(mid);
+        ListNode l1 = head;
+        ListNode l2 = mid;
+        while(l1 != null && l2 != null) {
+            if(l1.val != l2.val) return false;
+            l1 = l1.next;
+            l2 = l2.next;
+        }
+        return true;
+
+
+    }
+
+    private ListNode findMid(ListNode head) {
+        int count = 0;
+        ListNode current = head;
+        while(current != null) {
+            current = current.next;
+            count++;
+        }
+        if(count % 2 == 1) {
+            count++;
+        }
+        count /=2;
+        current = head;
+        for(int i = 0; i < count; i++) {
+            current = current.next;
+        }
+        return current;
+    }
+
+    private ListNode reverse(ListNode head) {
+        if(head == null) return head;
+        ListNode current = head;
+        ListNode next = current.next;
+        while(next != null) {
+            ListNode temp = next.next;
+            next.next = current;
+            current = next;
+            next = temp;
+        }
+        head.next = null;
+        return current;
+    }
+}
