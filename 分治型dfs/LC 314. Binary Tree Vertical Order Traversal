@@ -1,0 +1,54 @@
+/*
+LC 314. Binary Tree Vertical Order Traversal
+这道题我一开始用的是dfs 的方法。 但是这样的问题是因为
+是从左往右traversal， 而不是从上到下。 所以有时候
+底下的node 会先出来
+
+这种自上而下， 而且答案依赖于node 左右关系的还是应该用bfs
+来做。用hashmap 来记录每个index 对应的list
+
+这里map 没有用TreeMap， 而是在最后用了一个很巧妙的方法
+for(int i = Collections.min(map.keySet()); i <= Collections.max(map.keySet()); i++)
+这个方法的前提是从min 到max 每一个index都是在map里面确定存在的
+
+*/
+
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public List<List<Integer>> verticalOrder(TreeNode root) {
+        Map<Integer, List<Integer>> map = new HashMap<>();
+        Queue<Integer> index= new LinkedList<>();
+        Queue<TreeNode> node = new LinkedList<>();
+        List<List<Integer>> ans = new ArrayList<>();
+        if(root == null) return ans;
+        node.offer(root);
+        index.offer(0);
+        while(!node.isEmpty()) {
+            int currentIndex = index.poll();
+            TreeNode currentNode = node.poll();
+            map.putIfAbsent(currentIndex, new ArrayList<>());
+            map.get(currentIndex).add(currentNode.val);
+            if(currentNode.left != null) {
+                node.offer(currentNode.left);
+                index.offer(currentIndex - 1);
+            }
+            if(currentNode.right != null) {
+                node.offer(currentNode.right);
+                index.offer(currentIndex+1);
+            }
+        }
+        for(int i = Collections.min(map.keySet()); i <= Collections.max(map.keySet()); i++) {
+            ans.add(map.get(i));
+        }
+        return ans;
+
+    }
+}

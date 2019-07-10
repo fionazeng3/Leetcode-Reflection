@@ -1,0 +1,54 @@
+/*
+LC 426. Convert Binary Search Tree to Sorted Doubly Linked List
+这道题要用recursion buttom up 的思想来做
+因为是BST， 所以整个树从底下往上看从左到右是从小到大的顺序
+所以recursion 也是从左开始
+基本思路就是算出左边那一坨的linked list， 再把左边的尾巴连到current
+再把current 连到右边的node
+注意如果左边那一坨linked list 是null， 直接return current 就好了， 这也很合乎情理
+*/
+/*
+// Definition for a Node.
+class Node {
+    public int val;
+    public Node left;
+    public Node right;
+
+    public Node() {}
+
+    public Node(int _val,Node _left,Node _right) {
+        val = _val;
+        left = _left;
+        right = _right;
+    }
+};
+*/
+class Solution {
+    public Node treeToDoublyList(Node root) {
+        if(root == null) return root;
+        Node head = manipulate(root);
+        Node tail = head;
+        while(tail.right != null) tail = tail.right;
+        head.left = tail;
+        tail.right = head;
+        return head;
+    }
+    private Node manipulate(Node current) {
+        if(current == null) return current;
+        Node left = manipulate(current.left);
+        Node right = manipulate(current.right);
+        Node head = left;
+        if(head != null) {
+            while(head.right != null) head = head.right;
+            head.right = current;
+            current.left = head;
+        }
+        Node tail = right;
+        if(tail != null) {
+            current.right = tail;
+            tail.left = current;
+        }
+        if(left!= null) return left;
+        return current;
+    }
+}

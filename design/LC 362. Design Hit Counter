@@ -1,0 +1,44 @@
+/*
+LC 362. Design Hit Counter
+这道题很简单。 用一个数记录到当前为止一共有多少个timestamp
+然后用timestamp - 300 来计算这个timestamp 前5 分钟最小的数是多小
+再再array 里面看有几个不符合条件的time， 再ans 里减掉就行了
+*/
+class HitCounter {
+    int currentTotal = 0;
+    List<Integer> time;
+
+    /** Initialize your data structure here. */
+    public HitCounter() {
+        time = new ArrayList<>();
+    }
+
+    /** Record a hit.
+        @param timestamp - The current timestamp (in seconds granularity). */
+    public void hit(int timestamp) {
+        time.add(timestamp);
+        currentTotal++;
+
+    }
+
+    /** Return the number of hits in the past 5 minutes.
+        @param timestamp - The current timestamp (in seconds granularity). */
+    public int getHits(int timestamp) {
+        int ans = currentTotal;
+        int bar = timestamp - 300;
+        int index = 0;
+        while(index < time.size() && time.get(index) <= bar) {
+            index++;
+            ans--;
+        }
+        return ans;
+
+    }
+}
+
+/**
+ * Your HitCounter object will be instantiated and called as such:
+ * HitCounter obj = new HitCounter();
+ * obj.hit(timestamp);
+ * int param_2 = obj.getHits(timestamp);
+ */
