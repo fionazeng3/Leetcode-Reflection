@@ -1,0 +1,61 @@
+/*
+LC 399. Evaluate Division
+这道题理解的时候一定要理解到位
+题目说这个query 可以用所有的equation来解
+不一定是一个两个。 所以应该用dfs的思路
+一层一层跳， 看最后能不能从start 跳到
+destination
+*/
+class Solution {
+    List<List<String>> equations;
+    double[] values;
+    List<List<String>> queries;
+    Map<String, List<Integer>> letterToIndex;
+    public double[] calcEquation(List<List<String>> eqs, double[] vals, List<List<String>> qs) {
+        equations = eqs;
+        values = vals;
+        List<List<String>> queries = qs;
+        letterToIndex = new HashMap<>();
+        for(int i = 0; i < equations.size(); i++) {
+            List<String> eachEquation = equations.get(i);
+            for(int j = 0; j< 2; j++) {
+                letterToIndex.putIfAbsent(eachEquation.get(j), new ArrayList<>());
+                letterToIndex.get(eachEquation.get(j)).add(i);
+            }
+        }
+        double[] ans = new double[queries.size()];
+        Arrays.fill(ans, -1);
+        for(int i = 0; i < queries.size();i++) {
+            List<String> eachQuery = queries.get(i);
+            String start = eachQuery.get(0);
+            String destination = eachQuery.get(1);
+            boolean[] visited = new boolean[equations.size()];
+            dfs(start, destination, visited, ans, i, 1.0);
+        }
+        return ans;
+    }
+
+    private void dfs(String start, String destination, boolean[] visited, double[] ans, int i,
+                    double currentVal) {
+        List<Integer> indexes = letterToIndex.get(start);
+        if(indexes == null) {
+            return;
+        }
+        if(start.equals(destination)) {
+            ans[i] = currentVal;
+            return;
+        }
+        for(int eachIndex : indexes) {
+            if(!visited[eachIndex]) {
+                List<String> targetEquation = equations.get(eachIndex);
+                visited[eachIndex] = true;
+                if(targetEquation.get(0).equals(start)) {
+                    dfs(targetEquation.get(1), destination, visited, ans, i, currentVal * values[eachIndex]);
+                } else {
+                    dfs(targetEquation.get(0), destination, visited, ans, i, currentVal * (1/values[eachIndex]));
+                }
+                visited[eachIndex] = false;
+            }
+        }
+    }
+}

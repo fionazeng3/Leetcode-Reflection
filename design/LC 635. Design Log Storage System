@@ -1,0 +1,58 @@
+/*
+LC 635. Design Log Storage System
+这道题的思路很简单， 直接用treeMap 记录时间
+然后用一个叫subMap 的方法来获取一定范围内的map
+注意这个方法只有TreeMap 有， Map 没有
+所以content 要初始成一个treeMap
+还有就是string 在初始化的时候可以用这个constructor
+String(char[] value)
+Allocates a new String so that it represents the sequence of characters currently contained in the character array argument.
+put 用时 O（log n）
+retrieve 用时 O(logn) 因为treeMap 是用树来实现的。
+在树中找到一个node 用时O（logn）
+*/
+class LogSystem {
+    Map<String, Integer> index;
+    TreeMap<String, Integer> content;
+    public LogSystem() {
+        index = new HashMap<>();
+        index.put("Year", 5);
+        index.put("Month", 8);
+        index.put("Day", 11);
+        index.put("Hour", 14);
+        index.put("Minute", 17);
+        content = new TreeMap<>();
+    }
+
+    public void put(int id, String timestamp) {
+        content.put(timestamp, id);
+    }
+
+    public List<Integer> retrieve(String s, String e, String gra) {
+        if(!gra.equals("Second")) {
+            char[] start = s.toCharArray();
+            for(int i = index.get(gra); i < start.length; i++) {
+                if(start[i] != ':') start[i] = '0';
+            }
+            char[] end = e.toCharArray();
+            for(int i = index.get(gra); i < end.length; i++) {
+                if(end[i] != ':') end[i] = '9';
+            }
+            s = new String(start);
+            e = new String(end);
+        }
+        Map<String, Integer> newMap = content.subMap(s, true,  e, true);
+        List<Integer> ans = new ArrayList<>();
+        for(String key : newMap.keySet()) {
+            ans.add(newMap.get(key));
+        }
+        return ans;
+    }
+}
+
+/**
+ * Your LogSystem object will be instantiated and called as such:
+ * LogSystem obj = new LogSystem();
+ * obj.put(id,timestamp);
+ * List<Integer> param_2 = obj.retrieve(s,e,gra);
+ */

@@ -1,0 +1,62 @@
+/*
+LC 160. Intersection of Two Linked Lists
+这道题最简单的做法是先traverse A， 把途中看到的
+Node 全都加到一个hashSet 里面。 然后traverse B
+return 第一个在hashSet 里面出现的node 就好了
+不过这种做法的空间复杂度为O（n）
+
+如果想让空间变成O（1） 就必须用pointer
+让两个pointer 分别指向A 和 B 的头
+pointer A 走到头了以后回到headB
+pointer B 走到头了以后回到headA
+这样走的话两个pointer 在第二次走完之前肯定会相遇。 为什么呢？
+如果A 和B 相遇前有同样数量的Node， 那就最简单， 第一次就相遇了
+但是如果A 比B 多一个， 那么A pointer 总比B 慢一步
+但是这个在第二次traverse 的时候就纠正过来了
+因为A 第二次走B， 又会快一步
+那如果两个list 根本不相交怎么办呢？
+记录两个list 的最后一个node。 如果两个的最后一个node
+不想等， 那两个list 就肯定不相交
+*/
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode(int x) {
+ *         val = x;
+ *         next = null;
+ *     }
+ * }
+ */
+public class Solution {
+    public ListNode getIntersectionNode(ListNode headA, ListNode headB) {
+        if(headA == null || headB == null) return null;
+        ListNode currentA = headA;
+        ListNode currentB = headB;
+        ListNode tailA = null;
+        ListNode tailB = null;
+        boolean foundTailA = false;
+        boolean foundTailB = false;
+        while(currentA != currentB) {
+            if(currentA.next == null) {
+                tailA = currentA;
+                foundTailA = true;
+                currentA = headB;
+            } else {
+                currentA = currentA.next;
+            }
+            if(currentB.next == null) {
+                tailB = currentB;
+                foundTailB = true;
+                currentB = headA;
+            } else {
+                currentB = currentB.next;
+            }
+            if(foundTailA && foundTailB) {
+                if(tailA != tailB) return null;
+            }
+        }
+        return currentA;
+    }
+}

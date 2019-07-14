@@ -1,0 +1,37 @@
+/*
+LC 150. Evaluate Reverse Polish Notation
+这道题因为是越晚出现的数字越先处理， 所以
+我用了stack
+如果是数字， 直接push
+如果是符号， pop 出两个， 运算了再放回去
+*/
+class Solution {
+    public int evalRPN(String[] tokens) {
+        Stack<Integer> stack = new Stack<>();
+        for(String eachElement : tokens) {
+            if(eachElement.equals("+") || eachElement.equals("-") || eachElement.equals("*") || eachElement.equals("/")) {
+                int op2 = stack.pop();
+                int op1 = stack.pop();
+                int result = 0;
+                switch(eachElement) {
+                    case "+" :
+                        result = op1 + op2;
+                        break;
+                    case "-" :
+                        result = op1 - op2;
+                        break;
+                    case "*":
+                        result = op1 * op2;
+                        break;
+                    case "/":
+                        result = op1 / op2;
+                        break;
+                }
+                stack.push(result);
+            } else {
+                stack.push(Integer.parseInt(eachElement));
+            }
+        }
+        return stack.peek();
+    }
+}

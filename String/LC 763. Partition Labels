@@ -1,0 +1,32 @@
+/*
+LC 763. Partition Labels
+这个答案是solution 里面的。 非常巧妙
+首先在last里面记录每一个字母最后出现的index
+然后在iterate S 的时候， 首先求j。j 是
+未处理的字母中最靠后的一个牵挂。 如果i等于
+j 了， 就代表当前这些字母的牵挂都处理完了。
+anchor 代表的是未处理字母是从哪里开始的
+这道题之所以应该这么做是因为题目要求分的
+越多块越好。 所以只要当前没有牵挂了， 就把当前
+这一块加到ans 里面去
+*/
+class Solution {
+    public List<Integer> partitionLabels(String S) {
+        int[] last = new int[26];
+        char[] input = S.toCharArray();
+        for(int i = 0; i < input.length; i++) {
+            last[input[i] - 'a'] = i;
+        }
+        int j = 0;
+        int anchor = 0;
+        List<Integer> ans = new ArrayList<>();
+        for(int i = 0; i < input.length; i++) {
+            j = Math.max(j, last[input[i] - 'a']);
+            if(i == j) {
+                ans.add(i - anchor + 1);
+                anchor = i+1;
+            }
+        }
+        return ans;
+    }
+}

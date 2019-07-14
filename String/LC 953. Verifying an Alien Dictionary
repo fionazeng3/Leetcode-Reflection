@@ -1,0 +1,35 @@
+/*
+LC 953. Verifying an Alien Dictionary
+这道题要想一想怎么比较两个string 的大小
+一个字母一个字母的看。 如果找到了第一个不一样的
+字母， 那就已经下了定论了。 如果在minLen 范围内
+两个string 的字母都一样， 那么就应该比长短
+这道题就用这种思路， 两个单词两个单词的比较
+就好了
+*/
+class Solution {
+    public boolean isAlienSorted(String[] words, String order) {
+        Map<Character, Integer> map = new HashMap<>();
+        char[] dictionary = order.toCharArray();
+        for(int i = 0; i < dictionary.length; i++) {
+            map.put(dictionary[i], i);
+        }
+        for(int i = 0; i < words.length - 1; i++) {
+            String current = words[i];
+            String next = words[i+1];
+            int minLen = Math.min(current.length(), next.length());
+            boolean isSmaller = false;
+            for(int j = 0; j < minLen; j++) {
+                char c = current.charAt(j);
+                char n = next.charAt(j);
+                if(map.get(c) > map.get(n)) return false;
+                if(map.get(c) < map.get(n)) {
+                    isSmaller = true;
+                    break;
+                }
+            }
+            if(!isSmaller && current.length() > next.length()) return false;
+        }
+        return true;
+    }
+}
