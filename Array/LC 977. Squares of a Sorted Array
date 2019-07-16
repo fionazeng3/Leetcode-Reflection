@@ -1,0 +1,44 @@
+/*
+LC 977. Squares of a Sorted Array
+这道题如果用naive 的方法， 全都求square， 再排序的话
+要用O（nlogn） 的时间复杂度。
+而这道题的时间复杂度可将为O（n）
+因为array之前就已经是sorted了。 所以可以氛围
+negative 部分和positive 部分。 negative 部分平方以后变递减
+positive 部分平方以后变递增。 再用两个pointer 把处理好的数加入到
+ans 里面
+*/
+class Solution {
+    public int[] sortedSquares(int[] A) {
+        int len = A.length;
+        int positive = A.length - 1;
+        while(positive >= 0 && A[positive] > 0) {
+            A[positive] *= A[positive];
+            positive--;
+        }
+        int negative = 0;
+        while(negative < len && A[negative] <= 0) {
+            A[negative] *= A[negative];
+            negative++;
+        }
+        positive++;
+        negative--;
+        int[] ans = new int[len];
+        for(int i = 0; i < len; i++) {
+            if(positive >= len) {
+                ans[i] = A[negative];
+                negative--;
+            } else if(negative < 0) {
+                ans[i] = A[positive];
+                positive++;
+            } else if(A[positive] <= A[negative]) {
+                ans[i] = A[positive];
+                positive++;
+            } else {
+                ans[i] = A[negative];
+                negative--;
+            }
+        }
+        return ans;
+    }
+}

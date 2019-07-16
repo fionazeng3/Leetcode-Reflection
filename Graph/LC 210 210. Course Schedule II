@@ -1,0 +1,59 @@
+/*
+LC 210 210. Course Schedule II
+这道题其实跟Course Schedule 差不多， 也是
+用visiting 数组找环。 为什么可以用visiting 找环呢？
+因为visiting true 代表这个node 的尾巴还没有处理完
+现在如果又回到这个node， 就一定有环。
+
+然后打印路径的方法是用dfs看node。 如果node 的neighbor 都处理完了，
+也就是说visited 变true 了， 就把它加到stack 里面。
+为什么加stack呢？ 因为先加入的是leaf。 leaf 应该是最后要上的课
+
+还有一点注意boolean 的dfs 在for loop 的时候一定要return 东西
+不然就不能层层递进地return上来了
+*/
+class Solution {
+    Stack<Integer> stk = new Stack<>();
+    public int[] findOrder(int numCourses, int[][] prerequisites) {
+        ArrayList<Integer>[] neighbors = new ArrayList[numCourses];
+        for(int[] eachEdge: prerequisites) {
+            int preClass = eachEdge[1];
+            int thisClass = eachEdge[0];
+            if(neighbors[preClass] == null) neighbors[preClass] = new ArrayList<>();
+            neighbors[preClass].add(thisClass);
+        }
+        boolean[] visited = new boolean[numCourses];
+        boolean[] visiting = new boolean[numCourses];
+        for(int i = 0; i < numCourses; i++) {
+            if(!visited[i]) {
+                boolean isValid = dfs(i, visited, visiting, neighbors);
+                System.out.println(isValid);
+                if(!isValid) return new int[0];
+            }
+        }
+        int[] ans = new int[stk.size()];
+        int index = 0;
+        while(!stk.isEmpty()) {
+            ans[index] = stk.pop();
+            index++;
+        }
+        return ans;
+    }
+
+    private boolean dfs(int course, boolean[] visited, boolean[] visiting, ArrayList<Integer>[] neighbors) {
+        if(visiting[course]) {
+            return false;
+        }
+        visiting[course] = true;
+        if(neighbors[course] != null) {
+            for(int newClass : neighbors[course]) {
+                if(!visited[newClass]) {
+                    if(!dfs(newClass, visited, visiting, neighbors)) return false;
+                }
+            }
+        }
+        visited[course] = true;
+        stk.add(course);
+        return true;
+    }
+}

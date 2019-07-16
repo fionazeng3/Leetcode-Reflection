@@ -1,0 +1,41 @@
+/*
+LC 636. Exclusive Time of Functions
+这道题首先题目没有说清楚。 其实end 是只能end
+当前在跑的这个thread， 不能end 之前的thread
+
+最简单的方法是直接做模拟。 用一个stack 装当前在跑
+哪个thread。 然后时间一点一点增加， stack top
+的id 时间++， 这样做是超时的
+
+更好的做法是直接看log， stack top 加两个log 的
+interval。注意处理interval 的细节（start/end）
+*/
+class Solution {
+    public int[] exclusiveTime(int n, List<String> logs) {
+        int[] ans = new int[n];
+        if(logs.isEmpty()) return ans;
+        String first = logs.get(0);
+        Stack<Integer> stk = new Stack<>();
+        String[] elements = first.split(":");
+        int id = Integer.parseInt(elements[0]);
+        stk.push(id);
+        int lastTime = Integer.parseInt(elements[2]);
+        for(int i = 1; i < logs.size(); i++) {
+            String[] currentString = logs.get(i).split(":");
+            int currentId = Integer.parseInt(currentString[0]);
+            int currentTime = Integer.parseInt(currentString[2]);
+            if(currentString[1].equals("end")) {
+                if(!stk.isEmpty()) ans[stk.peek()] += currentTime - lastTime + 1;
+                stk.pop();
+                lastTime = currentTime+1;
+            } else {
+                if(!stk.isEmpty()) ans[stk.peek()] += currentTime - lastTime;
+                stk.push(currentId);
+                lastTime = currentTime;
+            }
+        }
+        return ans;
+
+
+    }
+}

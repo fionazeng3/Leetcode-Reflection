@@ -1,0 +1,80 @@
+/*
+LC 545. Boundary of Binary Tree
+这道题就按照题意把问题分三部分解决就行了
+*/
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public List<Integer> boundaryOfBinaryTree(TreeNode root) {
+        List<TreeNode> leftBound = new ArrayList<>();
+        List<Integer> ans = new ArrayList<>();
+        if(root == null) return ans;
+        leftBound.add(root);
+        if(root.left != null) {
+            findLeft(leftBound, root.left);
+        }
+        List<TreeNode> leaf = new ArrayList<>();
+        findLeaf(root, leaf);
+        if(leaf.get(0) == leftBound.get(leftBound.size() - 1)) leaf.remove(0);
+        Stack<TreeNode> rightBound = new Stack<>();
+        if(root.right != null) {
+            findRight(root.right, rightBound);
+        }
+        if(!leaf.isEmpty() && !rightBound.isEmpty() &&leaf.get(leaf.size() - 1) == rightBound.peek()) {
+            leaf.remove(leaf.size() - 1);
+        }
+        for(int i = 0; i < leftBound.size(); i++) {
+            ans.add(leftBound.get(i).val);
+        }
+        for(int i = 0; i < leaf.size(); i++) {
+            ans.add(leaf.get(i).val);
+        }
+
+        while(!rightBound.isEmpty()) ans.add(rightBound.pop().val);
+        return ans;
+    }
+
+    private void findLeft(List<TreeNode> ans, TreeNode current) {
+        if(current == null) {
+            return;
+        }
+        ans.add(current);
+        if(current.left != null) {
+            findLeft(ans, current.left);
+        } else {
+            findLeft(ans, current.right);
+        }
+    }
+
+    private void findLeaf(TreeNode current, List<TreeNode> leaf) {
+        if(current == null) return;
+        if(current.left == null && current.right == null) {
+            leaf.add(current);
+            return;
+        }
+        if(current.left != null) {
+            findLeaf(current.left, leaf);
+        }
+        if(current.right != null) {
+            findLeaf(current.right, leaf);
+        }
+    }
+
+    private void findRight(TreeNode current, Stack<TreeNode> rightBound) {
+        if(current == null) return;
+        rightBound.push(current);
+        if(current.right != null) {
+            findRight(current.right, rightBound);
+        } else {
+            findRight(current.left, rightBound);
+        }
+    }
+
+}

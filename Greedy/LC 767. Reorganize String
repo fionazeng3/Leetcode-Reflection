@@ -1,0 +1,49 @@
+/*
+LC 767. Reorganize String
+这道题首先判断当前这个string 能不能变成相邻字母
+不相等的字符。 相邻不相等字符的极限就是一个字母很多
+每隔一个就是它比如说ababa。所以如果一个字母出现了多余
+（n+1） / 2 次， 这个string 就肯定不合格
+
+接下来， 如果一个string 合格， 就要看它能组成的答案是什么样的
+这里用到了greedy 的算法。 求结果最麻烦的就是出现比较多的
+字母。 所以用heap 把字母按他们的frequency 排列，
+每次拿出两个， append， 把它们的frequency - 1， 再放回heap 中去
+这里为什么是放两个而不是只放一个呢？ 因为放一个的话， 下一个最大的
+可能还是它。 这就比较麻烦。 如果放两个进去的话， 第一大 和第二大的
+都append 了。 下一个最大的肯定跟上一个是不想等的。
+*/
+class Solution {
+    public String reorganizeString(String S) {
+        int[] count = new int[26];
+        for(char c : S.toCharArray()) {
+            count[c - 'a']++;
+            if(count[c - 'a'] > (S.length() + 1) / 2) return "";
+        }
+        PriorityQueue<CharFrequency> pq = new PriorityQueue<>((c1, c2) -> {return c2.frequency - c1.frequency;});
+        for(int i = 0; i < 26; i++) {
+            if(count[i] > 0) pq.offer(new CharFrequency((char)('a' + i), count[i]));
+        }
+        String ans = "";
+        while(pq.size() > 1) {
+            CharFrequency c1 = pq.poll();
+            CharFrequency c2 = pq.poll();
+            ans += c1.c;
+            ans += c2.c;
+            if(c1.frequency > 1) pq.offer(new CharFrequency(c1.c, c1.frequency - 1));
+            if(c2.frequency > 1) pq.offer(new CharFrequency(c2.c, c2.frequency - 1));
+        }
+        if(!pq.isEmpty()) ans += pq.poll().c;
+        return ans;
+
+    }
+}
+
+class CharFrequency {
+    char c;
+    int frequency;
+    public CharFrequency(char c, int frequency) {
+        this.c = c;
+        this.frequency = frequency;
+    }
+}
