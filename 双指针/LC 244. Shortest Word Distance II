@@ -1,0 +1,46 @@
+/*
+LC 244. Shortest Word Distance II
+这道题首先要把每个单词出现过的index 都在constructor里用map 的形式记录下来
+然后在shortest 里面求两个单词的最近距离。最暴力的方法就是枚举所有的pair
+这样的复杂度是O（n^2) 这种需要用两个for loop 枚举的问题不妨试试用two pointer
+因为l1 和l2 都是sorted
+如果l1.get（i）> l2.get(j)那i肯定不用往下走了， 因为越往下走差距会越大
+同样的如果l1.get（i）< l2.get(j)那j肯定不用往下走了， 因为越往下走差距会越大
+这样的做法只要O（n） 就能做出来了
+*/
+class WordDistance {
+    Map<String, List<Integer>> map;
+
+    public WordDistance(String[] words) {
+        map = new HashMap<>();
+        for(int i = 0; i < words.length; i++) {
+            map.putIfAbsent(words[i], new ArrayList<>());
+            map.get(words[i]).add(i);
+        }
+
+    }
+
+    public int shortest(String word1, String word2) {
+        List<Integer> l1 = map.get(word1);
+        List<Integer> l2 = map.get(word2);
+        int min = Integer.MAX_VALUE;
+        int i = 0;
+        int j = 0;
+        while(i < l1.size() && j < l2.size()) {
+            min = Math.min(min, Math.abs(l1.get(i) - l2.get(j)));
+            if(min == 0) return 0;
+            if(l1.get(i) > l2.get(j)) {
+                j++;
+            } else {
+                i++;
+            }
+        }
+        return min;
+    }
+}
+
+/**
+ * Your WordDistance object will be instantiated and called as such:
+ * WordDistance obj = new WordDistance(words);
+ * int param_1 = obj.shortest(word1,word2);
+ */

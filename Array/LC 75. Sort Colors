@@ -1,0 +1,44 @@
+/*
+LC 75. Sort Colors
+这道题要求one pass constant space complexity
+因为只有三个数字出现， 所以很自然的想到three pointer
+还有3 还有一个性质别忘了， 可以记录首尾
+所以zero 记录0 最多到哪个index
+two 记录2 最低到哪个index
+用一个pointer 从头走到two
+如果当前element 等于0 就跟zero 换
+如果当前等于2 就跟two 换
+
+这里有个小细节如果跟two 换了以后， pointer 不要动
+因为当前换过来的数没见过， 要在处理一下
+而如果跟zero 换， 换完了以后pointer 可以直接看
+下一个。 因为zero 肯定是小于pointer， 所以当前换过来的
+element 都已经看过了
+*/
+class Solution {
+    public void sortColors(int[] nums) {
+        if(nums.length <= 1) return;
+        int zero = 0;
+        int two = nums.length - 1;
+        int index = 0;
+        while(index <= two) {
+            if(nums[index] == 0) {
+               swap(zero, index, nums);
+                zero++;
+                index++;
+            }  else if (nums[index] == 2) {
+                swap(two, index, nums);
+                two--;
+            } else {
+                index++;
+            }
+
+        }
+    }
+
+    private void swap(int a, int b, int[] nums) {
+        int temp = nums[a];
+        nums[a] = nums[b];
+        nums[b] = temp;
+    }
+}
