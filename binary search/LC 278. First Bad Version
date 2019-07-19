@@ -1,0 +1,23 @@
+/*
+LC 278. First Bad Version
+很简单。 用二分法模版
+*/
+/* The isBadVersion API is defined in the parent class VersionControl.
+      boolean isBadVersion(int version); */
+
+public class Solution extends VersionControl {
+    public int firstBadVersion(int n) {
+        double l = 1;
+        double r = n;
+        while (l + 1 < r) {
+            double mid = (l + r) / 2;
+            boolean isBad = isBadVersion((int)mid);
+            if(isBad) {
+                r = mid;
+            } else {
+                l = mid;
+            }
+        }
+        return isBadVersion((int)l) ? (int)l : (int)r;
+    }
+}

@@ -1,0 +1,31 @@
+/*
+LC 141. Linked List Cycle
+这道题是经典的linked list 查环
+做法就是利用快慢指针。
+如果快指针走到null了， 那肯定就是没有环
+如果有环， 快指针一定会追上慢指针跟它重叠
+如果重叠了， 就证明有环
+*/
+/**
+ * Definition for singly-linked list.
+ * class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode(int x) {
+ *         val = x;
+ *         next = null;
+ *     }
+ * }
+ */
+public class Solution {
+    public boolean hasCycle(ListNode head) {
+        ListNode slow = head;
+        ListNode fast = head;
+        while(fast != null && fast.next != null) {
+            slow = slow.next;
+            fast = fast.next.next;
+            if(slow == fast) return true;
+        }
+        return false;
+    }
+}

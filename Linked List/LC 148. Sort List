@@ -1,0 +1,75 @@
+/*
+LC 148. Sort List
+这道题的答案是merge sort
+merge sort 的原理是先把序列分成小块， 然后排序
+再把小的， 排好序的序列merge 到一个大的序列里面
+这道题因为是linked list， 所以split 和merge 里面
+要特殊处理一下。
+这道题先画出图， 再做会很有帮助
+经常回来看
+*/
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public ListNode sortList(ListNode head) {
+        if(head == null || head.next == null) return head;
+        ListNode[] split = splitList(head);
+        ListNode n1 = sortList(split[0]);
+        ListNode n2 = sortList(split[1]);
+        return merge(n1, n2);
+    }
+
+    private ListNode[] splitList(ListNode head) {
+        ListNode[] ans = new ListNode[2];
+        ListNode fast = head;
+        ListNode slow = head;
+        ListNode prev = null;
+        while(fast != null && fast.next != null) {
+            prev = slow;
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+        if(prev != null) {
+            prev.next = null;
+        }
+        ans[0] = head;
+        ans[1] = slow;
+        return ans;
+    }
+
+    private ListNode merge (ListNode n1, ListNode n2) {
+        if(n1 == null && n2 == null) return null;
+        if(n1 == null) return n2;
+        if(n2 == null) return n1;
+        ListNode dummy = new ListNode(-1);
+        ListNode current = dummy;
+        ListNode l1 = n1;
+        ListNode l2 = n2;
+        while(l1 != null || l2 != null) {
+            if(l1 == null && l2 == null) break;
+            if(l1 == null) {
+                current.next = l2;
+                l2 = l2.next;
+            } else if(l2 == null) {
+                current.next = l1;
+                l1 = l1.next;
+            } else {
+                if(l1.val <= l2.val) {
+                    current.next = l1;
+                    l1 = l1.next;
+                } else {
+                    current.next = l2;
+                    l2 = l2.next;
+                }
+            }
+            current = current.next;
+        }
+        return dummy.next;
+    }
+}

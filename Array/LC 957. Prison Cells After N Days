@@ -1,0 +1,69 @@
+/*
+LC 957. Prison Cells After N Days
+这道题最暴力的方法就是每一天都做一次模拟。
+但是如果观察题目信息， 其实可以得到一些优化
+首先cells 的长度只有8 ， 而1 <= N <= 10^9
+我们知道， cell 的组合一共只有 2^8 种
+所以如果N > 2^8, 那么一定会出现循环。
+也就是说， 在走N 的时候， 如果发现了循环，
+直接跳到相应的数字就好了， 不用把N 走完
+这题的时间复杂度为O(2^N) N 是cell 的长度
+*/
+class Solution {
+    public int[] prisonAfterNDays(int[] cells, int N) {
+        List<Integer> seen = new ArrayList<>();
+        int index = 0;
+        int value = simplify(cells);
+        while(index < N) {
+            if(!seen.contains(value)) {
+                seen.add(value);
+                nextState(cells);
+                value = simplify(cells);
+                index++;
+            } else {
+                int startIndex = seen.indexOf(value);
+                int cycle = index - startIndex;
+                int finalIndex = (N - index) % cycle + startIndex;
+                value = seen.get(finalIndex);
+                break;
+            }
+        }
+        int[] ans = new int[8];
+        int i = 7;
+        while(i >= 0) {
+            ans[i] = value % 2;
+            value /= 2;
+            i--;
+        }
+        return ans;
+
+
+    }
+
+    private void nextState(int[] cells) {
+        int lastElement = cells[0];
+        for(int i = 0; i < cells.length; i++) {
+            if(i == 0 || i == cells.length - 1) {
+                cells[i] = 0;
+            } else {
+                int temp = cells[i];
+                if(lastElement == cells[i + 1]) {
+                    cells[i] = 1;
+                } else {
+                    cells[i] = 0;
+                }
+                lastElement = temp;
+            }
+        }
+    }
+
+    private int simplify(int[] cells) {
+        int p = 0;
+        int sum = 0;
+        for(int i = cells.length - 1; i >= 0; i--) {
+           if(cells[i] == 1) sum += Math.pow(2, p);
+            p++;
+        }
+        return sum;
+    }
+}
