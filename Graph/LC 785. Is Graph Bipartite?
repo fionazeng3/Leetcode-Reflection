@@ -1,0 +1,39 @@
+/*
+LC 785. Is Graph Bipartite?
+这道题答题思路应该是给所有的node 上颜色
+如果一个node 是红色， 那它的所有邻居应该是蓝色，
+然后这样找矛盾点。 traverse 所有edge 的时候应该用到
+bfs 或者dfs。 为什么呢？因为node跟node 之间存在着逻辑关系
+用dfs 或者dfs 可以很有效地把逻辑串连起来。
+而这道题用dfs 而不用bfs 的原因是：有些node
+是disconnected， 要用for loop 一个一个node看
+dfs 会方便很多。
+time complexity O（V + E） 因为每个vertax 和每个edge 都要visit
+*/
+class Solution {
+    public boolean isBipartite(int[][] graph) {
+        int size = graph.length;
+        int[] color = new int[size];
+        for(int i = 0; i < size; i++) {
+            int currentColor = color[i] == 0 ? -1 : color[i];
+            boolean isValid = checkValid(graph, color, i, currentColor);
+            if(!isValid) return false;
+        }
+        return true;
+
+    }
+
+    private boolean checkValid(int[][] graph, int[] color,int index, int currentColor) {
+        if(color[index] != 0) {
+            return color[index] == currentColor;
+        }
+        color[index] = currentColor;
+        for(int eachVertax: graph[index]) {
+            int nextColor = color[index] == -1 ? 1: -1;
+            boolean isNeighborValid = checkValid(graph, color, eachVertax, nextColor);
+            if(!isNeighborValid) return false;
+        }
+        return true;
+
+    }
+}

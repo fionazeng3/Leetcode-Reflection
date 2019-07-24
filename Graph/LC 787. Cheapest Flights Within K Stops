@@ -1,0 +1,39 @@
+/*
+LC 787. Cheapest Flights Within K Stops
+这道题因为是求最短路径，所以自然想到Dijkstra's
+但是因为有个条件是必须在k step 之内， 所以就要分类讨论一下
+dest 永远不到达： heap 空了
+dest 到达， 最短路径就是答案： 直接用Dijkstra's 走到node就停下来
+dest 到达， 最短路径超了step：最短路径走的时候因为step 超了被淘汰了， 长一点的路径反而上位
+首先想一下dijkstra's 怎么写， 先用map 记录从每一个node 出发
+都可以到达哪里。 然后用一个heap 记录到达每个location 需要多少
+weight。 这样就能先处理weight 比较低的edge。
+*/
+class Solution {
+    public int findCheapestPrice(int n, int[][] flights, int src, int dst, int K) {
+        Map<Integer, List<int[]>> graph = new HashMap<>();
+        for(int[] currentEdge : flights) {
+            int from = currentEdge[0];
+            int to = currentEdge[1];
+            int d = currentEdge[2];
+            graph.putIfAbsent(from, new ArrayList<>());
+            graph.get(from).add(new int[] {to, d});
+        }
+        PriorityQueue<int[]> pq = new PriorityQueue<>((e1, e2) -> {return e1[1] - e2[1];});
+        // the int[] format is {dest, distance, step}
+        pq.add(new int[] {src, 0, -1});
+        while(!pq.isEmpty()) {
+            int[] current = pq.poll();
+            int location = current[0];
+            int distance = current[1];
+            int step = current[2];
+            if(step > K) continue;
+            if(location == dst) return distance;
+            if(!graph.containsKey(location)) continue;
+            for(int[] eachEdge : graph.get(location)) {
+                pq.offer(new int[] {eachEdge[0], distance + eachEdge[1], step + 1});
+            }
+        }
+        return -1;
+    }
+}

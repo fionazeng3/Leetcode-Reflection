@@ -1,0 +1,33 @@
+/*
+LC 19. Remove Nth Node From End of List
+这道题唯一的难点就是linked list 必须只走一遍
+只走一遍的话快慢指针是一个很好的工具。 让一个指针
+先走n+1 步。 最后快指针停在null 的时候慢指针
+正好到了要删除的地方。
+*/
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public ListNode removeNthFromEnd(ListNode head, int n) {
+        ListNode dummy = new ListNode(-1);
+        dummy.next = head;
+        ListNode p1 = dummy;
+        ListNode p2 = dummy;
+        for(int i = 0; i <= n; i++) {
+            p1 = p1.next;
+        }
+        while(p1 != null) {
+            p1 = p1.next;
+            p2 = p2.next;
+        }
+        p2.next = p2.next.next;
+        return dummy.next;
+
+    }
+}

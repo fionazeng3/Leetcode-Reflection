@@ -1,0 +1,31 @@
+/*
+LC 415. Add Strings
+很简单的一道题。 从后往前加就好了
+*/
+class Solution {
+    public String addStrings(String num1, String num2) {
+        char[] n1 = num1.toCharArray();
+        char[] n2 = num2.toCharArray();
+        boolean carry = false;
+        int p1 = n1.length - 1;
+        int p2 = n2.length - 1;
+        String result = "";
+        while(p1 >= 0 || p2 >= 0) {
+            int sum = 0;
+            if(p1 >= 0) {
+                sum += n1[p1] - '0';
+                p1--;
+            }
+            if(p2 >= 0) {
+               sum += n2[p2] - '0';
+                p2--;
+            }
+            if(carry) sum++;
+            carry = sum >= 10;
+            result = sum % 10 + result;
+        }
+        if(carry) result = 1 + result;
+        return result;
+
+    }
+}
