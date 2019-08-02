@@ -1,0 +1,41 @@
+/*
+LC Insert into a Cyclic Sorted List
+这道题有三种情况
+第一种： 能找到一个位置。 前面的node 比val 小， 后面node 比val 大
+第二种： val 比list 里面所有node 都大
+第三种： val 比list 里面所有node 都小
+第一种直接找到就好了。 而第二和第三种都是加到最大和最小的连接处
+*/
+/*
+// Definition for a Node.
+class Node {
+    public int val;
+    public Node next;
+
+    public Node() {}
+
+    public Node(int _val,Node _next) {
+        val = _val;
+        next = _next;
+    }
+};
+*/
+class Solution {
+    public Node insert(Node head, int insertVal) {
+        if(head == null) return new Node(insertVal, null);
+        Node current = head;
+        boolean isFirstTime = true;
+        while(isFirstTime || current != head) {
+            isFirstTime = false;
+            if(insertVal >= current.val && insertVal <= current.next.val) {
+                break;
+            }
+            if(current.val > current.next.val && (insertVal > current.val || insertVal < current.next.val)) break;
+            current = current.next;
+        }
+        Node temp = current.next;
+        current.next = new Node(insertVal, temp);
+        return head;
+    }
+
+}

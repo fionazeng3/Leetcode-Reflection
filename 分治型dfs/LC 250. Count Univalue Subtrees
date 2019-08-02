@@ -1,0 +1,38 @@
+/*
+LC 250. Count Univalue Subtrees
+这道题也是一道return value 不直接跟答案联系起来的题
+这道题要想清楚。 当前这个node 是不是一个univalue subtree
+取决于它的子孙们跟它的值一样。 而它return 的值是提供给它的
+parent 参考的。 所以应该return 自己的值跟parent 相不相等
+以及自己的子孙跟自己的值相不相等。
+*/
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    int totalNum = 0;
+    public int countUnivalSubtrees(TreeNode root) {
+        if(root == null) return 0;
+        dfs(root, root.val);
+        return totalNum;
+    }
+
+    private boolean dfs(TreeNode current, int lastVal) {
+        if(current == null) return true;
+        boolean result = true;
+        if(current.val != lastVal) {
+            result = false;
+        }
+        int currentVal = current.val;
+        boolean isLeft = dfs(current.left, currentVal);
+        boolean isRight = dfs(current.right, currentVal);
+        if(isLeft && isRight) totalNum++;
+        return result && isLeft && isRight;
+    }
+}

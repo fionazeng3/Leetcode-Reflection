@@ -1,0 +1,57 @@
+/*
+LC 863. All Nodes Distance K in Binary Tree
+这道题有很明显的bfs 特征。 求水流k次能流到的node
+唯一的难点在于反向流怎么处理
+解决方法是用hashmap 记录每个node 的父亲是谁
+*/
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public List<Integer> distanceK(TreeNode root, TreeNode target, int K) {
+        HashSet<TreeNode> seen = new HashSet<>();
+        Map<TreeNode, TreeNode> childToParent = new HashMap<>();
+        childToParent.put(root, null);
+        markParent(childToParent, root);
+        Queue<TreeNode> q = new LinkedList<>();
+        int distance = 0;
+        q.offer(target);
+        q.offer(null);
+        List<Integer> ans = new ArrayList<>();
+        while(!q.isEmpty() && distance <= K) {
+            TreeNode current = q.poll();
+            if(current == null) {
+                if(!q.isEmpty() && q.peek() != null) {
+                    q.offer(null);
+                }
+                distance++;
+            } else {
+                if(distance == K) ans.add(current.val);
+                seen.add(current);
+                if(current.left != null && !seen.contains(current.left)) q.offer(current.left);
+                if(current.right != null && !seen.contains(current.right)) q.offer(current.right);
+                if(childToParent.get(current) != null && !seen.contains(childToParent.get(current))) q.offer(childToParent.get(current));
+            }
+        }
+        return ans;
+
+    }
+
+    private void markParent(Map<TreeNode, TreeNode> map, TreeNode current) {
+        if(current == null) return;
+        if(current.left != null) {
+            map.put(current.left, current);
+            markParent(map, current.left);
+        }
+        if(current.right != null) {
+            map.put(current.right, current);
+            markParent(map, current.right);
+        }
+    }
+}

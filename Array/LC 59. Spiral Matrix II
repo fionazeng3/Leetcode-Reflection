@@ -1,0 +1,34 @@
+/*
+LC 59. Spiral Matrix II
+这道题跟spiral matrix I 几乎是一样的
+定义四个方向。 走出界或者走到已经访问的
+地方就换方向
+*/
+class Solution {
+    public int[][] generateMatrix(int n) {
+        int[] dx = {1,0,-1, 0};
+        int[] dy = {0,1, 0,-1};
+        int[][] result = new int[n][n];
+        boolean[][] visited = new boolean[n][n];
+        int currentNum = 1;
+        int dir = 0;
+        int currentX = 0;
+        int currentY = 0;
+        while(currentNum <= n*n) {
+            result[currentY][currentX] = currentNum;
+            visited[currentY][currentX] = true;
+            int nextX = currentX + dx[dir];
+            int nextY = currentY + dy[dir];
+            if(nextX < 0 || nextX >= n || nextY < 0 || nextY >=n || visited[nextY][nextX]) {
+                dir++;
+                if(dir > 3) dir = 0;
+                nextX = currentX + dx[dir];
+                nextY = currentY + dy[dir];
+            }
+            currentX = nextX;
+            currentY = nextY;
+            currentNum++;
+        }
+        return result;
+    }
+}

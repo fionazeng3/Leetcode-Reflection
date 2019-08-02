@@ -1,0 +1,26 @@
+/*
+LC 1002. Find Common Characters
+这道题很简单。 就用一个array hashmap 记录字母
+出现的次数。 然后看每个单词的时候取一下每个字母出现
+次数的最小值就好了
+*/
+class Solution {
+    public List<String> commonChars(String[] A) {
+        int[] minMap = new int[26];
+        Arrays.fill(minMap, -1);
+        for(String eachString : A) {
+            int[] currentMap = new int[26];
+            for(int i = 0; i < eachString.length(); i++) {
+                currentMap[eachString.charAt(i) - 'a']++;
+            }
+            for(int i = 0; i < 26; i++) {
+                minMap[i] = minMap[i] < 0 ? currentMap[i] : Math.min(currentMap[i], minMap[i]);
+            }
+        }
+        List<String> ans = new ArrayList<>();
+        for(int i = 0; i < 26; i++) {
+            for(int j = 0; j < minMap[i]; j++) ans.add((char)('a' + i) + "");
+        }
+        return ans;
+    }
+}

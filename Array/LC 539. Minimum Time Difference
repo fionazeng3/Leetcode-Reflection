@@ -1,0 +1,32 @@
+/*
+LC 539. Minimum Time Difference
+这道题我的做法是把所有时间转化为min
+h* 60 + min。 注意一点， 这道题让求的是
+时间差。 所以时间可以正着走， 也可以逆着走
+所以给times 排序后， 最后计算一下最后一个
+element 逆着走到第一个element 需要多少时间
+*/
+class Solution {
+    public int findMinDifference(List<String> timePoints) {
+        List<Integer> times = new ArrayList<>();
+        for(String time : timePoints) {
+            String[] elements = time.split(":");
+            int h = Integer.parseInt(elements[0]);
+            int m = Integer.parseInt(elements[1]);
+            times.add(h * 60 + m);
+        }
+        Collections.sort(times);
+        int prev = 0;
+        int current = 1;
+        int diff = Integer.MAX_VALUE;
+        while(current < times.size()) {
+            diff = Math.min(diff, times.get(current) - times.get(prev));
+            if(diff == 0) return 0;
+            prev++;
+            current++;
+        }
+        diff = Math.min(diff, 24 * 60 + (times.get(0) - times.get(times.size() - 1)));
+        return diff;
+
+    }
+}

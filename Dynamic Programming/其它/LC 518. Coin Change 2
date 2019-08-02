@@ -1,0 +1,27 @@
+/*
+LC 518. Coin Change 2
+这道题很明显用dp 会比dfs 简单很多
+但是难点是排除重复用题目中的例子来说，
+5=2+2+1 5 =1+2+2 这两个可能性是算一种的
+所以在dp 的时候， 计算顺序要做调整
+这道题的转移方程是
+f[i] 表示amount 为i 有几种方法
+f[i] = sum(f[i - coins[a]]);
+计算顺序是coins 里面的值一个一个的看
+然后i 从1 算到amount
+*/
+class Solution {
+    int sum = 0;
+    public int change(int amount, int[] coins) {
+        int len = coins.length;
+        int[] f = new int[amount + 1];
+        f[0] = 1;
+        for(int i = 0; i < len; i++) {
+            for(int j = 1; j <= amount; j++) {
+                int diff = j - coins[i];
+                if(diff >= 0) f[j] += f[diff];
+            }
+        }
+        return f[amount];
+    }
+}

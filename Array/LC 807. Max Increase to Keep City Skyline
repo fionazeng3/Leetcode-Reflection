@@ -1,0 +1,36 @@
+/*
+LC 807. Max Increase to Keep City Skyline
+这道题很简单。 求出 top view 和left view 的skyline
+然后看每个元素有多少提高空间
+*/
+class Solution {
+    public int maxIncreaseKeepingSkyline(int[][] grid) {
+        int size = grid.length;
+        if(size == 0) return 0;
+        int ans = 0;
+        int[] top = new int[size];
+        int[] left = new int[size];
+        for(int i = 0; i< size; i++) {
+            int maxHeight = 0;
+            for(int j = 0; j < size; j++) {
+                maxHeight = Math.max(maxHeight, grid[j][i]);
+            }
+            top[i] = maxHeight;
+        }
+        for(int j = 0; j < size; j++) {
+            int maxHeight = 0;
+            for(int i = 0; i < size; i++) {
+                maxHeight = Math.max(maxHeight, grid[j][i]);
+            }
+            left[j] = maxHeight;
+        }
+
+        for(int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                int current = Math.min(top[i], left[j]);
+                if(grid[j][i] < current) ans += current - grid[j][i];
+            }
+        }
+        return ans;
+    }
+}

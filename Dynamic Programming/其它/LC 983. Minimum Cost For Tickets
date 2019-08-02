@@ -1,0 +1,44 @@
+/*
+LC 983. Minimum Cost For Tickets
+这是一道dp 的问题。 转移方程是
+f(i)=min(d(i-1)+costs[0],f(i-7)+costs[1],f(i-30)+costs[2])
+这道题的难点是edge case
+天数少的票不一定是最便宜的。 所以
+1. 从d[i - 1] / d[i - 7] / d[i - 30] 加过来的时候只加上最便宜的票价就行了
+2. 当前天数不满7/30 天的时候也可以买7/ 30 天的票
+*/
+class Solution {
+    public int mincostTickets(int[] days, int[] costs) {
+        Set<Integer> set = new HashSet<>();
+        int maxDay = 0;
+        for(int day: days) {
+            set.add(day);
+            maxDay = Math.max(maxDay, day);
+        }
+        int[] f = new int[maxDay + 1];
+        for(int i = 1; i <= maxDay; i++) {
+            if(!set.contains(i)) {
+                f[i] = f[i - 1];
+                continue;
+            }
+            int cost = f[i - 1];
+            if(set.contains(i)) {
+                cost += Math.min(costs[0], Math.min(costs[1], costs[2]));
+            }
+            if(i - 7 >= 0) {
+                cost = Math.min(cost, f[i - 7] + Math.min(costs[1], costs[2]));
+            } else {
+               cost = Math.min(cost, costs[1]);
+            }
+
+            if(i - 30 >= 0) {
+               cost = Math.min(cost, f[i - 30] + costs[2]);
+            } else {
+                cost = Math.min(cost, costs[2]);
+            }
+            f[i] = cost;
+        }
+        return f[maxDay];
+
+    }
+}
