@@ -1,0 +1,25 @@
+/*
+LC 1004. Max Consecutive Ones III
+这道题用到的是一个双指针的方法， r 一直向后走
+遇到0 就反转成1. 如果反转的个数超过了K，
+那么l 就一直往右走， 跳过第一个0
+这样就explore 了反转0 的所有可能性并记录下了
+最长的长度
+*/
+class Solution {
+    public int longestOnes(int[] A, int K) {
+        int l = 0;
+        int z = 0;
+        int ans = 0;
+        for(int r = 0; r < A.length; r++) {
+            if(A[r] == 0) z++;
+            if(z > K) {
+                while(A[l] != 0) l++;
+                l++;
+                z--;
+            }
+            ans = Math.max(ans, r - l + 1);
+        }
+        return ans;
+    }
+}

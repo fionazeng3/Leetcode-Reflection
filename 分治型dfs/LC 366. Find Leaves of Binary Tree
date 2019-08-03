@@ -1,0 +1,35 @@
+/*
+LC 366. Find Leaves of Binary Tree
+这道题很简单。 只要跟着题目意思模拟就好了
+*/
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    List<List<Integer>> ans = new ArrayList<>();
+    public List<List<Integer>> findLeaves(TreeNode root) {
+        while(root != null) {
+            List<Integer> currentList = new ArrayList<>();
+            root = dfs(root, currentList);
+            ans.add(currentList);
+        }
+        return ans;
+    }
+
+    private TreeNode dfs(TreeNode current, List<Integer> currentList) {
+        if(current == null) return null;
+        if(current.left == null && current.right == null) {
+            currentList.add(current.val);
+            return null;
+        }
+        current.left = dfs(current.left, currentList);
+        current.right = dfs(current.right, currentList);
+        return current;
+    }
+}

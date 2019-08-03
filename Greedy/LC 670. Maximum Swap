@@ -1,0 +1,31 @@
+/*
+LC 670. Maximum Swap
+这道题用到的是greedy 算法
+从高位开始， 只要把高位和后面数字最大的一个数字换就好了
+如果后面最大的数字出现过好几次， 那肯定是跟最后一个出现的位置换
+是最理想的。 所以，用一个数组记录着每一个数字最后出现的位置。
+然后就用模拟把高位和后面最大数字的最后一个位置换就好了
+*/
+class Solution {
+    public int maximumSwap(int num) {
+        char[] number = Integer.toString(num).toCharArray();
+        int[] lastSeen = new int[10];
+        Arrays.fill(lastSeen, Integer.MAX_VALUE);
+        for(int i = 0; i < number.length; i++) {
+            lastSeen[number[i] - '0'] = i;
+        }
+        for(int i = 0; i < number.length - 1; i++) {
+            for(int d = 9; d > number[i] - '0'; d--) {
+                if(lastSeen[d] > i && lastSeen[d] != Integer.MAX_VALUE) {
+                    int index = lastSeen[d];
+                    char temp = number[i];
+                    number[i] = number[index];
+                    number[index] = temp;
+                    String result = new String(number);
+                    return Integer.parseInt(result);
+                }
+            }
+        }
+        return num;
+    }
+}

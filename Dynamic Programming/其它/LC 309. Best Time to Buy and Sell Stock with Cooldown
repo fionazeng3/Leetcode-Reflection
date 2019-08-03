@@ -1,0 +1,33 @@
+/*
+LC 309. Best Time to Buy and Sell Stock with Cooldown
+这是一道dp 的题。
+1. 确定状态： 今天要不就是买， 卖， 或者什么都不干
+设置一个sell[i]数组表示前i天交易，最后一次为卖获得的最大利润。
+设置一个buy[i]数组表示前i天交易，最后一次为买获得的最大利润。
+2. 转移方程为：
+              不干事    昨天买，今天卖
+sell[i]=max(sell[i-1],buy[i-1]+price[i])
+
+            不干事      前天卖的，今天买
+buy[i]=max(buy[i-1],sell[i-2]-price[i])
+*/
+class Solution {
+    public int maxProfit(int[] prices) {
+        int len = prices.length;
+        if(len == 0) return 0;
+        int[] buy = new int[len];
+        int[] sell = new int[len];
+        buy[0] = -prices[0];
+        sell[0] = 0;
+        for(int i = 1; i < len; i++) {
+            sell[i] = Math.max(sell[i - 1], buy[i - 1] + prices[i]);
+            buy[i] = buy[i - 1];
+            if(i > 1) {
+                buy[i] = Math.max(buy[i], sell[i - 2] - prices[i]);
+            } else {
+                buy[i] = Math.max(buy[i], -prices[i]);
+            }
+        }
+        return sell[len - 1];
+    }
+}
