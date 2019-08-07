@@ -1,0 +1,51 @@
+/*
+LC 379. Design Phone Directory
+这道题的思路就是用一个list 记录available 的数字
+另一个set 记录已经用的数字
+*/
+class PhoneDirectory {
+    Queue<Integer> list;
+    Set<Integer> assigned;
+    int current;
+    int max;
+    /** Initialize your data structure here
+        @param maxNumbers - The maximum numbers that can be stored in the phone directory. */
+    public PhoneDirectory(int maxNumbers) {
+        this.list = new LinkedList<>();
+        this.assigned = new HashSet<>();
+        current = 1;
+        max = maxNumbers;
+        list.offer(0);
+    }
+
+    /** Provide a number which is not assigned to anyone.
+        @return - Return an available number. Return -1 if none is available. */
+    public int get() {
+        if(list.isEmpty()) return -1;
+        int number = list.poll();
+        if(current < max) list.offer(current);
+        current++;
+        assigned.add(number);
+        return number;
+    }
+
+    /** Check if a number is available or not. */
+    public boolean check(int number) {
+        return number >= 0 && number < max && !assigned.contains(number);
+    }
+
+    /** Recycle or release a number. */
+    public void release(int number) {
+        if(!assigned.contains(number)) return;
+        assigned.remove(number);
+        list.offer(number);
+    }
+}
+
+/**
+ * Your PhoneDirectory object will be instantiated and called as such:
+ * PhoneDirectory obj = new PhoneDirectory(maxNumbers);
+ * int param_1 = obj.get();
+ * boolean param_2 = obj.check(number);
+ * obj.release(number);
+ */

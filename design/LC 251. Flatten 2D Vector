@@ -1,0 +1,43 @@
+/*
+LC 251. Flatten 2D Vector
+很简单， 用两个pointer 就搞定了。
+注意讨论corner case
+*/
+class Vector2D {
+    int bigIndex;
+    int smallIndex;
+    int[][] v;
+
+    public Vector2D(int[][] v) {
+        bigIndex = 0;
+        smallIndex = 0;
+        while(bigIndex < v.length && v[bigIndex].length == 0) {
+            bigIndex++;
+        }
+        this.v = v;
+    }
+
+    public int next() {
+        int result = v[bigIndex][smallIndex];
+        smallIndex++;
+        if(smallIndex >= v[bigIndex].length) {
+            bigIndex++;
+             while(bigIndex < v.length && v[bigIndex].length == 0) {
+                 bigIndex++;
+             }
+            smallIndex = 0;
+        }
+        return result;
+    }
+
+    public boolean hasNext() {
+        return bigIndex < v.length && smallIndex < v[bigIndex].length;
+    }
+}
+
+/**
+ * Your Vector2D object will be instantiated and called as such:
+ * Vector2D obj = new Vector2D(v);
+ * int param_1 = obj.next();
+ * boolean param_2 = obj.hasNext();
+ */

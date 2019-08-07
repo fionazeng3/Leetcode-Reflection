@@ -1,0 +1,28 @@
+/*
+LC 203. Remove Linked List Elements
+很简单。 注意讨论corner case
+1. head 就是要删除的
+2. 下一个删除完以后， 下下个还是要删除的
+*/
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public ListNode removeElements(ListNode head, int val) {
+        while(head != null && head.val == val) head = head.next;
+        ListNode current = head;
+        while(current != null && current.next != null) {
+            if(current.next.val == val) {
+               current.next = current.next.next;
+            } else {
+                current = current.next;
+            }
+        }
+        return head;
+    }
+}

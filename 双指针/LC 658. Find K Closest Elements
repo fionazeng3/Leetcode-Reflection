@@ -1,0 +1,43 @@
+/*
+LC 658. Find K Closest Elements
+这道题的思路是先用二分查找找到array 里面的位置，
+然后再用双指针把与x 距离较小的元素加到ans 里面去
+*/
+class Solution {
+    public List<Integer> findClosestElements(int[] arr, int k, int x) {
+        int small = 0;
+        int len = arr.length;
+        int big = len - 1;
+        while(small + 1 < big) {
+            int mid = (small + big) / 2;
+            if(arr[mid] == x) {
+                small = mid;
+                big = small+ 1;
+                break;
+            }
+            if(arr[mid] > x) {
+                big = mid;
+            } else {
+                small = mid;
+            }
+        }
+        List<Integer> ans = new ArrayList<>();
+        for(int i = 0; i < k; i++) {
+            if(small < 0) {
+                ans.add(arr[big]);
+                big++;
+            } else if(big >= len) {
+                ans.add(arr[small]);
+                small--;
+            } else if (Math.abs(arr[small] - x) <= Math.abs(arr[big] - x)) {
+                ans.add(arr[small]);
+                small--;
+            } else {
+                ans.add(arr[big]);
+                big++;
+            }
+        }
+        Collections.sort(ans);
+        return ans;
+    }
+}

@@ -1,0 +1,25 @@
+/*
+LC 482. License Key Formatting
+这道题很简单， 把character 全装入stack，
+再用简单的模拟重建result 就好了
+*/
+class Solution {
+    public String licenseKeyFormatting(String S, int K) {
+        Stack<Character> stk = new Stack<>();
+        for(int i = 0; i < S.length(); i++) {
+            char c = S.charAt(i);
+            if(Character.isLetter(c)) c = Character.toUpperCase(c);
+            if(c != '-') stk.push(c);
+        }
+        String result ="";
+        while(!stk.isEmpty()) {
+            int count = K;
+            while(count > 0 && !stk.isEmpty()) {
+                result = stk.pop() + result;
+                count--;
+            }
+            if(!stk.isEmpty()) result = '-' + result;
+        }
+        return result;
+    }
+}
