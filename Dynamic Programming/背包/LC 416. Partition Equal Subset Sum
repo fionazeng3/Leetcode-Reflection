@@ -1,0 +1,35 @@
+/*
+LC 416. Partition Equal Subset Sum
+这其实是一道背包问题。 如果数组和是奇数， 那么直接return false
+因为永远分不开。 求出target = sum / 2
+那么接下来的工作就是求数组里面能不能拼出一个和为target 的subarray
+用经典的背包模版
+设dp[i][v] 为前i 个数能不能拼出和为v
+那么 dp[i][v] = dp[i - 1][v] || dp[i - 1][v - num[i - 1]]
+初始化的时候 dp[0-n][0] 钱多少个数都能拼出和为0
+*/
+class Solution {
+    public boolean canPartition(int[] nums) {
+        int sum = 0;
+        int len = nums.length;
+        for(int i = 0; i < len; i++) {
+            sum += nums[i];
+        }
+        if(sum % 2 == 1) return false;
+        int target = sum / 2;
+        boolean[][] dp = new boolean[len + 1][target + 1];
+        for(int i = 0; i <= len; i++) {
+            dp[i][0] = true;
+        }
+        for(int v = 1; v <= target; v++) {
+            for(int i = 1; i <= len; i++) {
+                dp[i][v] = dp[i - 1][v];
+                if(v >= nums[i - 1]) {
+                    dp[i][v] |= dp[i - 1][v - nums[i - 1]];
+                }
+                if(v == target && dp[i][v]) return true;
+            }
+        }
+        return false;
+    }
+}

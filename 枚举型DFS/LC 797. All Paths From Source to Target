@@ -1,0 +1,31 @@
+/*
+LC 797. All Paths From Source to Target
+这道题很简单， 是个经典的枚举型dfs 题
+因为是acyclic， 所以连visited 都不用
+*/
+class Solution {
+    int[][] connection;
+    int n;
+    List<List<Integer>> ans = new ArrayList<>();
+    public List<List<Integer>> allPathsSourceTarget(int[][] graph) {
+        n = graph.length;
+        connection = graph;
+        List<Integer> currentList = new ArrayList<>();
+        currentList.add(0);
+        dfs(0, currentList);
+        return ans;
+    }
+
+    private void dfs(int currentLocation, List<Integer> currentPath) {
+        if(currentLocation == n-1) {
+            ans.add(new ArrayList<>(currentPath));
+            return;
+        }
+        for(int i = 0; i < connection[currentLocation].length; i++) {
+            int nextStep = connection[currentLocation][i];
+            currentPath.add(nextStep);
+            dfs(nextStep, currentPath);
+            currentPath.remove(currentPath.size() - 1);
+        }
+    }
+}

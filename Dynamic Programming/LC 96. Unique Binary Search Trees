@@ -1,0 +1,31 @@
+/*
+LC 96. Unique Binary Search Trees
+这是一道dp 的题目
+1. 确定状态： 最后一步肯定要想到是以哪个数字作为root
+设G[n] 为长度为n 的数组有几种bst
+设F[n, i]为长度为n 的数组并以i为root有几种bst
+2. 转移方程：
+G[n] 一定是F[n, 1] ... F[n, n] 的和。 因为从1到n 每个数字都可以作为root 出现
+即 G(n)=∑ F(i,n)
+而每个F[n, i] 怎么求呢？
+肯定是 i 左边的可能性 * i 右边的可能性
+F(i,n)=G(i−1)⋅G(n−i)
+所以
+G(n)=∑ G(i−1)⋅G(n−i)(i= 1～n)
+3. 初始条件
+G[0] = 1;
+G[1] = 1;
+*/
+class Solution {
+    public int numTrees(int n) {
+        int[] G = new int[n + 1];
+        G[0] = 1;
+        G[1] = 1;
+        for(int c = 2; c <= n; c++) {
+            for(int i = 1; i <= c; i++) {
+                G[c] += G[i - 1] * G[c - i];
+            }
+        }
+        return G[n];
+    }
+}

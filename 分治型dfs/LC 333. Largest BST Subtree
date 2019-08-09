@@ -1,0 +1,40 @@
+/*
+LC 333. Largest BST Subtree
+因为这道题需要考虑的问题比较多， 所以dfs里面要返回array {count, min, max}
+首先考虑一下怎么样的树是一个合格的bst？ 左树最大值比自己小且右树最小值比自己大
+因为这道题问的是 Largest BST Subtree， 所以如果一个node 发现废掉了， 那它
+所有的祖先都废掉了
+*/
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    int maxNum = 0;
+    public int largestBSTSubtree(TreeNode root) {
+        dfs(root);
+        return maxNum;
+    }
+
+    private int[] dfs(TreeNode current) {
+        if(current == null) return new int[]{0, 0, 0};
+        int[] left = dfs(current.left);
+        int[] right = dfs(current.right);
+        if(current.left != null && current.left.val >= current.val ||
+          current.right != null && current.right.val <= current.val ||
+          left[0] == -1 || right[0] == -1 || left[0] != 0 &&left[2] >= current.val
+          || right[0] != 0 && right[1] <= current.val ) return new int[]{-1, 0, 0};
+        int nodeCount = left[0] + right[0] + 1;
+        maxNum = Math.max(nodeCount, maxNum);
+        int min = current.val;
+        int max = current.val;
+        if(left[0] != 0) min = left[1];
+        if(right[0] != 0) max = right[2];
+        return new int[] {nodeCount, min, max};
+    }
+}

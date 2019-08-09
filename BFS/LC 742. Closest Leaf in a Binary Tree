@@ -1,0 +1,61 @@
+/*
+LC 742. Closest Leaf in a Binary Tree
+这道题因为既可以向上走又可以向下走，
+所以思路是把tree 转化为graph
+再用bfs 来求出leaf
+*/
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    TreeNode target = null;
+    int targetVal;
+    public int findClosestLeaf(TreeNode root, int k) {
+        Set<TreeNode> seen = new HashSet<>();
+        targetVal = k;
+        Map<TreeNode, List<TreeNode>> graph = new HashMap<>();
+        dfs(root, graph);
+        Queue<TreeNode> q = new LinkedList<>();
+        q.offer(target);
+        int result = 0;
+        while(!q.isEmpty()) {
+            TreeNode current = q.poll();
+            seen.add(current);
+            if(current.left == null && current.right == null) {
+                result = current.val;
+                break;
+            }
+            for(TreeNode nextNode : graph.get(current)) {
+                if(!seen.contains(nextNode)) {
+                    q.offer(nextNode);
+                }
+            }
+        }
+        return result;
+    }
+
+
+    private void dfs(TreeNode current, Map<TreeNode, List<TreeNode>> graph) {
+        if(current == null) return;
+        if(current.val == targetVal) target = current;
+        graph.putIfAbsent(current, new ArrayList<>());
+        if(current.left != null) {
+            graph.get(current).add(current.left);
+            graph.putIfAbsent(current.left, new ArrayList<>());
+            graph.get(current.left).add(current);
+            dfs(current.left, graph);
+        }
+        if(current.right != null) {
+            graph.get(current).add(current.right);
+            graph.putIfAbsent(current.right, new ArrayList<>());
+            graph.get(current.right).add(current);
+            dfs(current.right, graph);
+        }
+    }
+}

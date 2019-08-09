@@ -1,0 +1,36 @@
+/*
+LC 40. Combination Sum II
+首先这道题一定是用枚举型dfs 做的。
+问题就是要怎么避免重复。
+1. 避免顺序不同， 但是数字相同的组合： 解决方案是先把数组排序， 然后只允许向后查找
+2. 避免因为数组本身数字重复造成的组合重复：在排序以后， 如果有重复数字，
+那这两个重复的数字肯定是挨着的。 这样的话， 前面数字的组合肯定覆盖后面一样
+数字的组合。 所以如果一个数字不是nums【start】 并且跟前面数字一样的话就跳过就好了
+*/
+class Solution {
+    List<List<Integer>> ans = new ArrayList<>();
+    int[] nums;
+    int goal;
+    public List<List<Integer>> combinationSum2(int[] candidates, int target) {
+        nums = candidates;
+        goal = target;
+        Arrays.sort(nums);
+        dfs(0, new ArrayList<>(), 0);
+        return ans;
+    }
+
+    private void dfs(int start, List<Integer> currentList, int currentSum) {
+        if(currentSum == goal) {
+            ans.add(new ArrayList<>(currentList));
+            return;
+        } else if(currentSum > goal || start >= nums.length) {
+            return;
+        }
+        for(int i = start; i < nums.length; i++) {
+            if(i != start && nums[i] == nums[i - 1]) continue;
+            currentList.add(nums[i]);
+            dfs(i+1, currentList, currentSum + nums[i]);
+            currentList.remove(currentList.size() - 1);
+        }
+    }
+}
