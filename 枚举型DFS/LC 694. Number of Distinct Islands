@@ -1,0 +1,60 @@
+/*
+LC 694. Number of Distinct Islands
+这道题数island 的时候就直接用经典的dfs 做就行了
+难点就在于怎么检查相同的形状。 首先要想起
+matrix 里面每一个位置都有一个独立的number
+这个number 的求法是 j*x + i
+为了让不同位置上相同形状的island 拥有的number相同，
+我们可以把每一个shape 的左上角位移到（0， 0）
+然后用一个hashset 存这个shape 所有的点
+
+还有一个问题， 两个一样的hashset 加到一个hashset 里面，
+大的hashset 会有一个hashset 还是两个？
+hashset 的add function 是这样说的
+adds the specified element e to this set if this set contains no element e2 such that (e==null ? e2==null : e.equals(e2))
+那么hashSet 的equal function 是什么样的呢？
+Compares the specified object with this set for equality. Returns true if the given object is also a set, the two sets
+have the same size, and every member of the given set is contained in this set.
+也就是说， 只要两个hashset 有相同的元素， 那么他们两个就是equal
+
+*/
+class Solution {
+    int[] dx = new int[]{-1, 1, 0, 0};
+    int[] dy = new int[]{0, 0, -1, 1};
+    int[][] input;
+    boolean[][] visited;
+    int x;
+    int y;
+    Set<Set<Integer>> shapes;
+    public int numDistinctIslands(int[][] grid)  {
+        shapes = new HashSet<>();
+        y = grid.length;
+        if(y == 0) return 0;
+        x = grid[0].length;
+        visited = new boolean[y][x];
+        input = grid;
+        for(int i = 0; i < x; i++) {
+            for(int j = 0; j < y; j++) {
+                if(grid[j][i] == 1) {
+                    Set<Integer> shape = new HashSet<>();
+                    dfs(i, j, i, j, shape);
+                    shapes.add(shape);
+                }
+            }
+        }
+        return shapes.size();
+    }
+
+    private void dfs(int x0, int y0, int cx, int cy, Set<Integer> shape) {
+        shape.add((cy - y0) * x + (cx - x0));
+        visited[cy][cx] = true;
+        input[cy][cx] = -1;
+        for(int i = 0; i < 4; i++) {
+            int nx = cx+ dx[i];
+            int ny = cy + dy[i];
+            if(nx >= 0 && nx < x && ny >= 0 && ny < y && !visited[ny][nx] && input[ny][nx] == 1) {
+                    dfs(x0, y0, nx, ny, shape);
+            }
+        }
+    }
+}

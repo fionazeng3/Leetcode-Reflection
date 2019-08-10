@@ -1,0 +1,28 @@
+/*
+LC 189. Rotate Array
+这道题如果用brute force 的话就会超时
+其实rotate k 次之后， 后面的k 个元素 肯定在array 的前k个
+而array 的前len -k 个元素 最后肯定在array 的后len -k
+位置。 所以先把整个array reverse。 然后把前k 个元素reverse 一下
+最后把后面的元素也reverse 一下
+*/
+class Solution {
+    public void rotate(int[] nums, int k) {
+        int len = nums.length;
+        if(len <= 1) return;
+        k %= len;
+        reverse(nums, 0, len -1);
+        reverse(nums, 0, k-1);
+        reverse(nums, k, len - 1);
+    }
+
+    private void reverse(int[] nums, int l, int r) {
+        while(l < r) {
+            int temp = nums[l];
+            nums[l] = nums[r];
+            nums[r] = temp;
+            l++;
+            r--;
+        }
+    }
+}
