@@ -1,0 +1,55 @@
+/*
+LC 430. Flatten a Multilevel Doubly Linked List
+这道题用到的方法是dfs。 在每个recursion 里面iterate
+这一层的list。 如果某个node 有child， 那么就先深度优先
+下到下一个list 里面。 return 结果里面的最后一个node
+*/
+/*
+// Definition for a Node.
+class Node {
+    public int val;
+    public Node prev;
+    public Node next;
+    public Node child;
+
+    public Node() {}
+
+    public Node(int _val,Node _prev,Node _next,Node _child) {
+        val = _val;
+        prev = _prev;
+        next = _next;
+        child = _child;
+    }
+};
+*/
+class Solution {
+    public Node flatten(Node head) {
+        if(head == null) return null;
+        dfs(head);
+        Node current = head;
+        while(current.next != null) {
+            current.next.prev = current;
+            current = current.next;
+        }
+        return head;
+    }
+
+    private Node dfs(Node current) {
+        Node last = null;
+        while(current != null) {
+            if(current.next == null && current.child == null) last = current;
+            if(current.child != null) {
+                Node temp = current.next;
+                current.next = current.child;
+                Node end = dfs(current.child);
+                current.child = null;
+                end.next = temp;
+                current = end;
+            } else {
+                current = current.next;
+            }
+
+        }
+        return last;
+    }
+}

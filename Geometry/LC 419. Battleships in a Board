@@ -1,0 +1,26 @@
+/*
+LC 419. Battleships in a Board
+这道题的难点在于理解题意。 题目说了：
+battleship 必须横着摆或者竖着摆
+并且battleship 不能相连
+所以说， 每找到一个X，如果它横着的一个和竖着的前一个
+是X， 那么说明当前X 所在的battleship 已经算过了
+那么问题就是找出每一个battleship 的头就好了
+*/
+class Solution {
+    public int countBattleships(char[][] board) {
+        int count = 0;
+        int y = board.length;
+        if(y == 0) return 0;
+        int x = board[0].length;
+        for(int i = 0; i < x; i++) {
+            for(int j = 0; j < y; j++) {
+                if(board[j][i] == 'X' && (i - 1 < 0 || board[j][i - 1] != 'X') && (j - 1 < 0 || board[j - 1][i] != 'X')) {
+                    count++;
+                }
+            }
+        }
+        return count;
+
+    }
+}

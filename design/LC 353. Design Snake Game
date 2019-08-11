@@ -1,0 +1,112 @@
+/*
+LC 353. Design Snake Game
+这道题只要看懂了蛇的移动是怎么回事就很好做
+蛇移动的时候其实就是向新的位置接一个头， 然后把尾巴
+删除。 如果吃到了东西就不用删除尾巴。 这种首尾都要处理
+的情况最好就是用deque。 另外， 还要有一个东西记录是否咬到了
+自己的身体。 用一个hashSet 记录当前所有身体所在的位置
+
+另外hashSet 里面如果是自定义object 要怎么处理
+hashSet 种的contains 看的是两个object是不是equal
+这个equal 是浅层次的equal 即 reference 到一个object 上
+要想让hashSet 识别两个object logically equal 需要重写
+equal function。 另外， 如果重写了equal， hashcode函数
+也要重写， 因为必须保证equal 的object hashcode 也想等。
+hashcode 函数里可以用Objects.hash(fields)。 这个hash
+函数会根据当前object 的field 来产生hashcode
+*/
+class Point {
+    int x;
+    int y;
+    public Point(int x, int y) {
+        this.x = x;
+        this.y = y;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        Point p = (Point) o;
+        return p.x == this.x && p.y == this.y;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(x, y);
+    }
+
+}
+
+class SnakeGame {
+    int score;
+    Set<Point> positions;
+    Deque<Point> snake;
+    Queue<Point> foodPositions;
+    int x;
+    int y;
+    /** Initialize your data structure here.
+        @param width - screen width
+        @param height - screen height
+        @param food - A list of food positions
+        E.g food = [[1,1], [1,0]] means the first food is positioned at [1,1], the second is at [1,0]. */
+    public SnakeGame(int width, int height, int[][] food) {
+        this.score = 0;
+        positions = new HashSet<>();
+        snake = new LinkedList<>();
+        foodPositions = new LinkedList<>();
+        for(int[] eachFood: food) {
+            foodPositions.offer(new Point(eachFood[1], eachFood[0]));
+        }
+        positions.add(new Point(0, 0));
+        snake.addFirst(new Point(0, 0));
+        x = width;
+        y = height;
+    }
+
+    /** Moves the snake.
+        @param direction - 'U' = Up, 'L' = Left, 'R' = Right, 'D' = Down
+        @return The game's score after the move. Return -1 if game over.
+        Game over when snake crosses the screen boundary or bites its body. */
+    public int move(String direction) {
+        Point currentHead = snake.getFirst();
+        int cx = currentHead.x;
+        int cy = currentHead.y;
+        if(direction.equals("U")) {
+            cy--;
+        } else if(direction.equals("L")) {
+            cx--;
+        } else if (direction.equals("D")) {
+            cy++;
+        } else if(direction.equals("R")) {
+            cx++;
+        }
+        Point nextHead = new Point(cx, cy);
+        // didn't eat food
+        if(foodPositions.isEmpty() || !nextHead.equals(foodPositions.peek())){
+            Point tail = snake.getLast();
+            snake.pollLast();
+            positions.remove(tail);
+        }
+        if(direction.equals("D") && score == 4) {
+            System.out.println(cx + " " + cy);
+            for(Point p : positions) {
+                System.out.println(p.x + " " + p.y);
+            }
+        }
+
+        if(cx < 0 || cx >= x || cy < 0 || cy >= y || positions.contains(nextHead))return -1;
+        snake.addFirst(nextHead);
+        positions.add(nextHead);
+        // ate food
+        if(!foodPositions.isEmpty() && nextHead.equals(foodPositions.peek())) {
+            foodPositions.poll();
+            score++;
+        }
+        return score;
+    }
+}
+
+/**
+ * Your SnakeGame object will be instantiated and called as such:
+ * SnakeGame obj = new SnakeGame(width, height, food);
+ * int param_1 = obj.move(direction);
+ */

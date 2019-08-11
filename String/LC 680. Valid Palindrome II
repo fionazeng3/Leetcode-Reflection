@@ -1,0 +1,40 @@
+/*
+LC 680. Valid Palindrome II
+这道题虽然看似比较基础， 但是其实陷阱比较多
+首先我的想法是用两个指针， 从一头一尾往中间指
+如果两个char一样了， 那肯定就l++ r--
+如果两个char 不一样。 那么如果input[l + 1]跟 input[r]相等 l++
+如果input[r-1] 跟input[l]相等， 那么r--。
+注意这两种情况可能都成立， 所以要两个都试到尾。
+*/
+class Solution {
+    public boolean validPalindrome(String s) {
+        char[] input = s.toCharArray();
+        int l = 0;
+        int r = input.length - 1;
+        int change = 0;
+        return isValid(input, l, r, 0);
+    }
+    private boolean isValid(char[] input, int l, int r, int change) {
+         while(l < r) {
+            if(input[l] != input[r]) {
+                if(change != 0) {
+                    return false;
+                }
+                if(l + 1 == r) return true;
+                boolean result = false;
+                if(input[l+ 1] == input[r]) {
+                    result |= isValid(input, l+1, r, change+1);
+                }
+                if(input[r-1] == input[l]) {
+                    result |= isValid(input, l, r - 1, change+1);
+                }
+                return result;
+            } else {
+                l++;
+                r--;
+            }
+        }
+        return true;
+    }
+}
