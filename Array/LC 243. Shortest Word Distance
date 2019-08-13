@@ -1,0 +1,24 @@
+/*
+LC 243. Shortest Word Distance
+这道题用两个指针指向 w1, w2 上次出现的位置
+然后array 从头走到尾， 只要发现了word1  或者word2
+就更新w1 或w2. 同时更新一下最小距离
+*/
+class Solution {
+    public int shortestDistance(String[] words, String word1, String word2) {
+        int w1 = -1;
+        int w2 = -1;
+        int d = words.length;
+        for(int i = 0; i < words.length; i++) {
+            if(words[i].equals(word1)) {
+                w1 = i;
+            } else if(words[i].equals(word2)) {
+                w2 = i;
+            }
+            if(w1 >= 0 && w2 >= 0) {
+                d = Math.min(d, Math.abs(w1 - w2));
+            }
+        }
+        return d;
+    }
+}

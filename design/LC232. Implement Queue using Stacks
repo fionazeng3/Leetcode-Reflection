@@ -1,0 +1,56 @@
+/*
+LC232. Implement Queue using Stacks
+这题很简单，用两个stack， 还有一个value 记录front
+pop 的时候先把s1 的element 倒腾到s2 里， s2 pop
+了以后再把element 倒回 s1
+*/
+class MyQueue {
+    Stack<Integer> mainStack;
+    int top;
+    Stack<Integer> helperStack;
+
+    /** Initialize your data structure here. */
+    public MyQueue() {
+        mainStack = new Stack<>();
+        helperStack = new Stack<>();
+    }
+
+    /** Push element x to the back of queue. */
+    public void push(int x) {
+        if(mainStack.isEmpty()) top = x;
+        mainStack.push(x);
+    }
+
+    /** Removes the element from in front of queue and returns that element. */
+    public int pop() {
+        while(!mainStack.isEmpty()) {
+            helperStack.push(mainStack.pop());
+        }
+        int result = helperStack.pop();
+        if(!helperStack.isEmpty()) top = helperStack.peek();
+        while(!helperStack.isEmpty()) {
+            mainStack.push(helperStack.pop());
+        }
+        return result;
+
+    }
+
+    /** Get the front element. */
+    public int peek() {
+        return top;
+    }
+
+    /** Returns whether the queue is empty. */
+    public boolean empty() {
+        return mainStack.isEmpty();
+    }
+}
+
+/**
+ * Your MyQueue object will be instantiated and called as such:
+ * MyQueue obj = new MyQueue();
+ * obj.push(x);
+ * int param_2 = obj.pop();
+ * int param_3 = obj.peek();
+ * boolean param_4 = obj.empty();
+ */

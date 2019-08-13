@@ -1,0 +1,29 @@
+/*
+LC 572. Subtree of Another Tree
+这道题的做法是把s 的每一个node 当作是potential root检查一遍
+*/
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public boolean isSubtree(TreeNode s, TreeNode t) {
+        return traverse(s, t);
+    }
+    private boolean traverse(TreeNode currentS, TreeNode currentT) {
+        if(checkEqual(currentS, currentT)) return true;
+        return currentS != null && (traverse(currentS.left, currentT) || traverse(currentS.right, currentT));
+    }
+
+    private boolean checkEqual(TreeNode s, TreeNode t) {
+        if(s == null && t == null) return true;
+        if(s == null || t == null) return false;
+        if(s.val != t.val) return false;
+        return checkEqual(s.left, t.left) && checkEqual(s.right, t.right);
+    }
+}

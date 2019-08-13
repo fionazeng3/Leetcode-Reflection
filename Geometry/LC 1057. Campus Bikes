@@ -1,0 +1,52 @@
+/*
+LC 1057. Campus Bikes
+这道题注意 0 <= workers[i][j], bikes[i][j] < 1000
+所以bike 与worker 的最大曼哈顿距离也到不了2000
+所以， 我们可以开一个大小为2000 的bucket
+来装每一对pair。 因为加的时候worker Index 从小到大
+并且bikeIndex 从小到达。 所以自然满足了题目
+中说到的曼哈顿距离相等时比较index的条件
+*/
+class Pair {
+    int bIndex;
+    int wIndex;
+    public Pair(int bIndex, int wIndex) {
+        this.bIndex = bIndex;
+        this.wIndex = wIndex;
+    }
+}
+
+class Solution {
+    public int[] assignBikes(int[][] workers, int[][] bikes) {
+        List<Pair>[] bucket = new List[2000];
+        for(int i = 0; i < workers.length; i++) {
+            for(int j = 0; j < bikes.length; j++) {
+                int man = Math.abs(workers[i][0] - bikes[j][0]) + Math.abs(workers[i][1] - bikes[j][1]);
+                if(bucket[man] == null) bucket[man] = new ArrayList<>();
+                bucket[man].add(new Pair(j, i));
+            }
+        }
+        int[] ans = new int[workers.length];
+        Arrays.fill(ans, -1);
+        int totalAns = 0;
+        int currentIndex = 0;
+        HashSet<Integer> usedBikes = new HashSet<>();
+        while(totalAns < ans.length) {
+            while(bucket[currentIndex] == null) {
+                currentIndex++;
+            }
+            List<Pair> currentList = bucket[currentIndex];
+            int innerIndex = 0;
+            for(Pair eachPair : currentList) {
+                if(!usedBikes.contains(eachPair.bIndex) && ans[eachPair.wIndex] == -1) {
+                    ans[eachPair.wIndex] = eachPair.bIndex;
+                    usedBikes.add(eachPair.bIndex);
+                    totalAns++;
+                    if(totalAns == ans.length) break;
+                }
+            }
+            currentIndex++;
+        }
+        return ans;
+    }
+}

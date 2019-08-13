@@ -1,0 +1,44 @@
+/*
+LC 47. Permutations II
+这道题很明显用的是permutation dfs
+可是比较棘手的问题是数组里有重复
+我们设想一下
+在这个数组中，枚举哪个元素当第一个
+那么取第一个3 当第一个枚举出来的情况
+和取别的3枚举出来的情况是一模一样的。
+所以说我们在枚举的时候， 只要这个数枚举过了， 就continue
+就好了
+【3，3，3，0，1】
+*/
+class Solution {
+    List<List<Integer>> ans = new ArrayList<>();
+    int size = 0;
+    public List<List<Integer>> permuteUnique(int[] nums) {
+        size = nums.length;
+        List<Integer> input = new ArrayList<>();
+        for(int num : nums) {
+            input.add(num);
+        }
+        List<Integer> currentAns = new ArrayList<>();
+        dfs(input, currentAns);
+        return ans;
+    }
+
+    private void dfs(List<Integer> input, List<Integer> currentAns) {
+        if(currentAns.size() >= size) {
+            ans.add(new ArrayList<>(currentAns));
+            return;
+        }
+        Set<Integer> usedDigit = new HashSet<>();
+        for(int i = 0; i < input.size(); i++) {
+            if(usedDigit.contains(input.get(i))) continue;
+            usedDigit.add(input.get(i));
+            int digit = input.get(i);
+            currentAns.add(digit);
+            input.remove(i);
+            dfs(input, currentAns);
+            input.add(i, digit);
+            currentAns.remove(currentAns.size() - 1);
+        }
+    }
+}

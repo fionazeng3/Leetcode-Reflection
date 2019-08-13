@@ -1,0 +1,46 @@
+/*
+LC 1048. Longest String Chain
+首先给input 按string 的长短排个序
+设 dp【i】为以 words【i】为结尾的 chain 的最大长度是多少
+转移方程为 dp[i] = max j = 0.. i - 1(dp[i - j](j 和 i 必须是chain))
+*/
+class Solution {
+    public int longestStrChain(String[] words) {
+        Arrays.sort(words, (w1, w2) -> {
+            return w1.length() - w2.length();
+        });
+        int len = words.length;
+        int[] dp = new int[len];
+        int maxAns = 0;
+        for(int i = 0; i < len; i++) {
+            int result = 1;
+            for(int j = 0; j < i; j++) {
+                String front = words[j];
+                String back = words[i];
+                if(front.length() + 1 == back.length() && isValid(front, back)) {
+                    result = Math.max(result, dp[j] + 1);
+                }
+            }
+            dp[i] = result;
+            maxAns = Math.max(maxAns, dp[i]);
+        }
+        return maxAns;
+    }
+
+    private boolean isValid(String front, String back) {
+        int f = 0;
+        int b = 0;
+        int diff = 0;
+        while(f < front.length() && b < back.length()) {
+            if(front.charAt(f) == back.charAt(b)) {
+                f++;
+                b++;
+            } else {
+                diff++;
+                if(diff > 1) return false;
+                b++;
+            }
+        }
+        return true;
+    }
+}

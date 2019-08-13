@@ -1,0 +1,41 @@
+/*
+LC 86. Partition List
+这道题很简单， 就按照题意做模拟就好了
+注意test 边界情况：
+list 没有node， 有一个node， 有两个node
+*/
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public ListNode partition(ListNode head, int x) {
+        if(head == null) return null;
+        ListNode dummy = new ListNode(-1);
+        dummy.next = head;
+        ListNode current = dummy;
+        while(current != null && current.next != null) {
+            if(current.next.val >= x) break;
+            current = current.next;
+        }
+        ListNode beforeBig = current;
+        ListNode firstBig = current.next;
+        current = firstBig;
+        while(current != null && current.next != null) {
+            if(current.next.val < x) {
+                ListNode small = current.next;
+                current.next = current.next.next;
+                beforeBig.next = small;
+                small.next = firstBig;
+                beforeBig = small;
+            } else {
+                current = current.next;
+            }
+        }
+        return dummy.next;
+    }
+}

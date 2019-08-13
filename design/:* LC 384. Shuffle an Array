@@ -1,0 +1,40 @@
+/*
+LC 384. Shuffle an Array
+这道题为了简单， 直接在shuffle 的时候
+用random generate 每一个index 对应原来original 的哪个index
+*/
+class Solution {
+    int[] original;
+    Random rand;
+    public Solution(int[] nums) {
+        original = nums;
+        rand = new Random();
+    }
+
+    /** Resets the array to its original configuration and return it. */
+    public int[] reset() {
+        return original;
+    }
+
+    /** Returns a random shuffling of the array. */
+    public int[] shuffle() {
+        int[] ans = new int[original.length];
+        List<Integer> availableIndexes = new ArrayList<>();
+        for(int i = 0; i < original.length; i++) {
+            availableIndexes.add(i);
+        }
+        for(int i = 0; i < original.length; i++) {
+            int randIndex = rand.nextInt(availableIndexes.size());
+            ans[i] = original[availableIndexes.get(randIndex)];
+            availableIndexes.remove(randIndex);
+        }
+        return ans;
+    }
+}
+
+/**
+ * Your Solution object will be instantiated and called as such:
+ * Solution obj = new Solution(nums);
+ * int[] param_1 = obj.reset();
+ * int[] param_2 = obj.shuffle();
+ */

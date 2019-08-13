@@ -1,0 +1,47 @@
+/*
+LC 166. Fraction to Recurring Decimal
+这道题思路很简单， 就是用hashMap 记录出现过的
+余数， 如果有重复， 就用括号表示循环。
+这道题的细节很多。
+首先， 结果可能是负数。 所以把被除数和除数都转成正数
+转成正数之后可能会overflow， 所以把所有数字改成long
+其次， 往前插入括号的话， 用string 不好插入。 但是用string builder 就简单很多
+
+*/
+class Solution {
+    public String fractionToDecimal(int numerator, int denominator) {
+        if(numerator == 0) return "0";
+        StringBuilder ans = new StringBuilder();
+        if(numerator < 0 ^ denominator < 0) ans.append("-");
+        long n = Math.abs(Long.valueOf(numerator));
+        long d = Math.abs(Long.valueOf(denominator));
+        long bigInt = n / d;
+        ans.append(bigInt);
+        boolean isPoint = false;
+        Map<Long, Integer> numToIndex  = new HashMap<>();
+        n = n - d * bigInt;
+        numToIndex.put(n, 0);
+        int digitCount = 1;
+        while(n != 0) {
+            if(!isPoint) {
+                ans.append(".");
+                isPoint = true;
+            }
+            n *= 10;
+            long digit = n / d;
+            ans.append((char)('0' + digit));
+            long remainder = n - d * digit;
+            if(numToIndex.containsKey(remainder)) {
+                int lastIndex = numToIndex.get(remainder);
+                lastIndex = ans.length() - (digitCount - lastIndex);
+                ans.insert(lastIndex, '(');
+                ans.append(')');
+                break;
+            }
+            numToIndex.put(remainder, digitCount);
+            digitCount++;
+            n = remainder;
+        }
+        return ans.toString();
+    }
+}
