@@ -1,0 +1,42 @@
+/*
+LC 1008. Construct Binary Search Tree from Preorder Traversal
+首先 preorder 的顺序就是一直往左深入， 深不下去了就
+上一层， 往右走。 所以在dfs中，也是先看能不能放左边， 再不行
+放右边。
+dfs 中设置了范围。 如果不在范围内， 就直接return null
+如果中了范围， 再处理
+
+这里用到了一个以前没见过的写法， 就是array index 作global
+variable， 通过dfs来更新它
+*/
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    int[] input;
+    int len;
+    int index = 0;
+    public TreeNode bstFromPreorder(int[] preorder) {
+        input = preorder;
+        len = input.length;
+        return dfs(Integer.MAX_VALUE, Integer.MIN_VALUE);
+    }
+
+    private TreeNode dfs(int upper, int lower) {
+        if(index >= len) return null;
+        int val = input[index];
+        if(val < lower || val > upper) return null;
+        TreeNode result = new TreeNode(val);
+        index++;
+        result.left = dfs(val, lower);
+        result.right = dfs(upper, val);
+        return result;
+
+    }
+}

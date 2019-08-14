@@ -1,0 +1,28 @@
+/*
+LC 1010. Pairs of Songs With Total Durations Divisible by 60
+这道题用暴力的解法会超时
+我们应该想一下， 怎样找到一个数所有的pair 呢？
+如果a 和 b 是pair 那么 a % 60 + b % 60 == 0 或 60
+所以我们可以用一个hashMap 记录每个余数对应有几个数
+这样找pair 的时候只要是加上符合条件的余数个数就行了
+
+运算顺序就是一边更新hashMap， 一边更新ans
+每次更新ans 的时候都算的是pair 的第二个数是当前这个t 的
+对数。 这样做可以做到无遗漏， 无重复。
+*/
+class Solution {
+    public int numPairsDivisibleBy60(int[] time) {
+        int len = time.length;
+        for(int i = 0; i < len; i++) {
+            time[i] %= 60;
+        }
+        Map<Integer, Integer> modToCount = new HashMap<>();
+        int ans = 0;
+        for(int t : time) {
+            int pairMod = (60 - t) % 60;
+            ans += modToCount.getOrDefault(pairMod, 0);
+            modToCount.put(t, modToCount.getOrDefault(t, 0) + 1);
+        }
+        return ans;
+    }
+}

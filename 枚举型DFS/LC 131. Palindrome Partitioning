@@ -1,0 +1,40 @@
+/*
+LC 131. Palindrome Partitioning
+这道题是典型的枚举型dfs 题。
+套用模版就好了
+*/
+class Solution {
+    List<List<String>> ans = new ArrayList<>();
+    String input;
+    public List<List<String>> partition(String s) {
+        input = s;
+        List<String> currentAns = new ArrayList<>();
+        dfs(0, currentAns);
+        return ans;
+    }
+
+    private void dfs(int startIndex, List<String> currentAns) {
+        if(startIndex >= input.length()) {
+            ans.add(new ArrayList<>(currentAns));
+            return;
+        }
+        for(int end = startIndex + 1; end <= input.length(); end++) {
+            String currentString = input.substring(startIndex, end);
+            if(!isValid(currentString)) continue;
+            currentAns.add(currentString);
+            dfs(end, currentAns);
+            currentAns.remove(currentAns.size() - 1);
+        }
+    }
+
+    private boolean isValid(String currentString) {
+        int l = 0;
+        int r = currentString.length() - 1;
+        while(l < r) {
+            if(currentString.charAt(l) != currentString.charAt(r)) return false;
+            l++;
+            r--;
+        }
+        return true;
+    }
+}

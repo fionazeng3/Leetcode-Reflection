@@ -1,0 +1,37 @@
+/*
+LC 247. Strobogrammatic Number II
+这道题很简单， 首先把对称的数字都放在HashMap 里
+然后用枚举型dfs 从string 两头往里面填数
+注意一下edge case
+1. 最中间的数的对称数只能和自己相等
+2. 不能有trailing zero
+*/
+
+class Solution {
+    List<String> ans = new ArrayList<>();
+     Map<Character,Character> pairs = new HashMap<>();
+    public List<String> findStrobogrammatic(int n) {
+        pairs.put('0','0');
+        pairs.put('1','1');
+        pairs.put('6','9');
+        pairs.put('8','8');
+        pairs.put('9','6');
+        char[] currentString = new char[n];
+        dfs(currentString, 0, n - 1);
+        return ans;
+    }
+
+    private void dfs(char[] currentString, int start, int end) {
+        if(end < start) {
+            ans.add(new String(currentString));
+            return;
+        }
+        for(char front : pairs.keySet()) {
+            if(start == end && pairs.get(front) != front) continue;
+            if(start == 0 && end > start && front == '0') continue;
+            currentString[start] = front;
+            currentString[end] = pairs.get(front);
+            dfs(currentString, start + 1, end - 1);
+        }
+    }
+}

@@ -1,0 +1,49 @@
+/*
+LC 698. Partition to K Equal Sum Subsets
+这道题首先求出每个subset 的和应该是多少。
+如果数组总和为sum， 分成k 组， 那么每一组的和为 sum / k
+然后， 用枚举型dfs 枚举每一个数装在不同的subset 里
+看又没有可能走得通
+
+这里有一个很重要的speed up 就是 if(eachSum[i] == 0) break;
+如果当前的subset 的sum 为0 的话就直接放进去就好了， 不用
+再枚举放别的桶的情况， 因为都是重复的
+
+
+Time Complexity: O(k^{N-k} k!)
+*/
+class Solution {
+    int[] eachSum;
+    int[] input;
+    int target;
+    public boolean canPartitionKSubsets(int[] nums, int k) {
+        int len = nums.length;
+        eachSum = new int[k];
+        Arrays.sort(nums);
+        input = nums;
+        int sum = Arrays.stream(nums).sum();
+        if(sum % k != 0) return false;
+        target = sum / k;
+        return dfs(0);
+    }
+
+    private boolean dfs(int index) {
+        if(index >= input.length) {
+            for(int sum : eachSum) {
+                if(sum != target) return false;
+            }
+            return true;
+        }
+        if(input[index] > target) return false;
+        for(int i = 0; i < eachSum.length; i++) {
+            if(eachSum[i] + input[index] <= target) {
+                eachSum[i] += input[index];
+                if(dfs(index + 1)) return true;
+                eachSum[i] -= input[index];
+            }
+            if(eachSum[i] == 0) break;
+        }
+
+        return false;
+    }
+}
