@@ -1,0 +1,39 @@
+/*
+LC 395. Longest Substring with At Least K Repeating Characters
+这道题最基础的方法是dfs 递归
+我们知道， 如果一个字母a 的count < k
+那么最终的子串肯定不能有 a。 也就是说，应该去a 的
+左右两边去找。 这样的话用递归就会很方便了
+*/
+class Solution {
+    int maxLen = Integer.MIN_VALUE;
+    public int longestSubstring(String s, int k) {
+        dfs(s, k);
+        return maxLen == Integer.MIN_VALUE ? 0 : maxLen;
+    }
+
+    private void dfs(String currentString, int k) {
+        int len = currentString.length();
+        int[] map = new int[26];
+        for(int i = 0; i < len; i++) {
+            map[currentString.charAt(i) - 'a']++;
+        }
+        int min = Integer.MAX_VALUE;
+        char target = 'a';
+        for(int i = 0; i < 26; i++) {
+            if(map[i] != 0 && map[i] < min) {
+                min = map[i];
+                target = (char)('a' + i);
+            }
+        }
+        if(min >= k) {
+            maxLen = Math.max(maxLen, len);
+        } else {
+            int start = currentString.indexOf(target);
+            if(start > 0) dfs(currentString.substring(0, start), k);
+            if(start < len - 1) dfs(currentString.substring(start + 1, len), k);
+        }
+    }
+
+
+}

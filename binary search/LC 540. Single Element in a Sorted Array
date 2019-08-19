@@ -1,0 +1,38 @@
+/*
+LC 540. Single Element in a Sorted Array
+这道题很简单。 因为time complexity 要O（logn）
+所以想到要用二分法。 如果一对数的start index 是奇数
+那说明single number 在他们前面
+如果一对数的start index 是偶数
+那说明single number 在他们后面
+
+*/
+class Solution {
+    public int singleNonDuplicate(int[] nums) {
+        int len = nums.length;
+        int l = 0;
+        int r = len - 1;
+        while(l + 1 < r) {
+            int mid = (l + r) / 2;
+            if(isSingle(nums, mid)) {
+                System.out.println(mid);
+                return nums[mid];
+            }
+            int start = mid;
+            if(mid > 0 && nums[mid - 1] == nums[mid]) start --;
+            if(start % 2 == 1) {
+                r = mid;
+            } else {
+                l = mid;
+            }
+        }
+        if(isSingle(nums, l)) {
+           return nums[l];
+        }
+        return nums[r];
+    }
+
+    private boolean isSingle(int[] nums, int index) {
+        return (index == 0 || nums[index - 1] != nums[index]) && (index == nums.length - 1 || nums[index] != nums[index + 1]);
+    }
+}

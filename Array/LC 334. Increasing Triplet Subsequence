@@ -1,0 +1,29 @@
+/*
+LC 334. Increasing Triplet Subsequence
+这道题首先要理解对题意： 这三个increasing 的
+element 不一定是连起来的。
+其实如果没有对time/space complexity 的要求，
+这道题可以用dp 解决。 不过题目要求
+Your algorithm should run in O(n) time complexity and O(1) space complexity
+首先因为题目只是要找triplet。 所以想到可以用两个变量记录
+最小的和中间的数是什么。 换句话说， 只要把最小， 中间， 最大的数字的位置都填满， 就return true
+题目中还有个要求就是 arr[i] < arr[j] < arr[k] given 0 ≤ i < j < k ≤ n-1
+最小的在最前， 最大的在最后
+所以我们要写出一个算法找到一个最小数， 再在最小数后面找一个比它大的， 然后再在
+更后面的位置找到一个更大的
+*/
+class Solution {
+    public boolean increasingTriplet(int[] nums) {
+        int mid = Integer.MAX_VALUE;
+        int min = Integer.MAX_VALUE;
+        for(int num : nums) {
+            if(num > mid) return true;
+            if(num < min) {
+                min = num;
+            } else if (num > min) {
+                mid = num;
+            }
+        }
+        return false;
+    }
+}

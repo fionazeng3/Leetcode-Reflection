@@ -1,0 +1,35 @@
+/*
+LC 567. Permutation in String
+这道题其实说白了就是找到一个substring
+里面的letter。 那这个就是一个典型的双指针问题了
+
+*/
+class Solution {
+    public boolean checkInclusion(String s1, String s2) {
+        int[] letters = new int[26];
+        int totalLetter = s1.length();
+        for(int i = 0; i < s1.length(); i++) {
+            letters[s1.charAt(i) - 'a']++;
+        }
+        int letterCount = 0;
+        int r = 0;
+        char[] input = s2.toCharArray();
+        int len = input.length;
+        for(int l = 0; l < len; l++) {
+            while(r < len && letters[input[r] - 'a'] > 0) {
+                letters[input[r] - 'a']--;
+                r++;
+                letterCount++;
+                if(letterCount == totalLetter) return true;
+            }
+            System.out.println(l + " " + r);
+            if(l == r) {
+                r++;
+            } else {
+                letters[input[l] - 'a']++;
+                letterCount--;
+            }
+        }
+        return false;
+    }
+}

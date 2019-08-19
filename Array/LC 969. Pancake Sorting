@@ -1,0 +1,48 @@
+/*
+LC 969. Pancake Sorting
+这道题的重点在于： flip array 的前i 个element
+那么后面的element 都是不变的。 所以我的策略是：
+每次找array 未处理元素中的最小元素。 先把它跟
+第一个换， 然后再把它换到最后。最后整体flip
+当然了， 每次找最大的元素也是可以的
+*/
+class Solution {
+    int[] input;
+    public List<Integer> pancakeSort(int[] A) {
+        input = A;
+        int len = A.length;
+        int lastIndex = len - 1;
+        List<Integer> ans = new ArrayList<>();
+        while(lastIndex >= 0) {
+            int minIndex = 0;
+            int minVal = Integer.MAX_VALUE;
+            for(int i = 0; i <= lastIndex; i++) {
+                if(input[i] < minVal) {
+                    minVal = input[i];
+                    minIndex = i;
+                }
+            }
+            if(minIndex != lastIndex) {
+                ans.add(minIndex + 1);
+                reverse(minIndex);
+                ans.add(lastIndex + 1);
+                reverse(lastIndex);
+            }
+            lastIndex--;
+        }
+        ans.add(len);
+        return ans;
+    }
+
+    private void reverse(int maxIndex) {
+        int l = 0;
+        int r = maxIndex;
+        while(l < r) {
+            int temp = input[l];
+            input[l] = input[r];
+            input[r] = temp;
+            l++;
+            r--;
+        }
+    }
+}

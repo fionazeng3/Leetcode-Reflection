@@ -1,0 +1,26 @@
+/*
+LC 118. Pascal's Triangle
+这道题很简单。 根据题目要求从左往右做模拟就好了
+*/
+class Solution {
+    public List<List<Integer>> generate(int numRows) {
+        List<List<Integer>> ans = new ArrayList<>();
+        for(int i = 0; i < numRows; i++) {
+            List<Integer> current = new ArrayList<>();
+            current.add(1);
+            if(i >= 1) {
+                int l = 0;
+                int r = 1;
+                List<Integer> lastList = ans.get(i - 1);
+                while(r < lastList.size()) {
+                    current.add(lastList.get(l) + lastList.get(r));
+                    l++;
+                    r++;
+                }
+                current.add(1);
+            }
+            ans.add(current);
+        }
+        return ans;
+    }
+}
