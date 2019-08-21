@@ -1,0 +1,21 @@
+/*
+LC 371. Sum of Two Integers
+这道题很明显的是用到bit manipulation
+这里我用的方法是把a 和 b 用 arithmatic shift （int aBit = 1 & (a >> i);）
+的方法把每一位提取出来。 然后， 求出这一位的结果和carry
+然后把这一位的答案放在sum 对应的位置
+*/
+class Solution {
+    public int getSum(int a, int b) {
+        int cBit = 0;
+        int sum = 0;
+        for(int i = 0; i < 32; i++) {
+            int aBit = 1 & (a >> i);
+            int bBit = 1 & (b >> i);
+            int finalBit = aBit^ bBit ^ cBit;
+            cBit = aBit & bBit | bBit & cBit | aBit & cBit;
+            sum |= finalBit << i;
+        }
+        return sum;
+    }
+}

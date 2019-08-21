@@ -1,0 +1,51 @@
+/*
+LC 241. Different Ways to Add Parentheses
+这道题的难点在于理解加括号的本质是什么
+其实本质就是枚举string 的分割方法， 而不是
+枚举哪一个operator 先算，哪个后算
+举个例子 2*3-4*5 这里面有三个operator 1* 2- 3*
+这里枚举132 和312 是没有意义的。 因为就算 给4*5 加了括号，
+运算的时候也不会先算它。
+
+所以， 只要枚举在string的哪个地方进行分割， 在运算就行了
+*/
+class Solution {
+    Map<String, List<Integer>> memorization = new HashMap<>();
+    public List<Integer> diffWaysToCompute(String input) {
+        return dfs(input);
+    }
+
+    private List<Integer> dfs(String input) {
+        if(memorization.containsKey(input)) return memorization.get(input);
+        char[] inputChar= input.toCharArray();
+        boolean isNumeric = true;
+        List<Integer> resultList = new ArrayList<>();
+        for(int i = 0; i < inputChar.length; i++) {
+            char c = inputChar[i];
+            if(!Character.isDigit(c)) {
+                isNumeric = false;
+                List<Integer> lst1 = dfs(input.substring(0, i));
+                List<Integer> lst2 = dfs(input.substring(i + 1, input.length()));
+                for(int num1 : lst1) {
+                    for(int num2 : lst2) {
+                        int result = calculate(num1, num2, c);
+                        resultList.add(result);
+                    }
+                }
+            }
+        }
+        if(isNumeric) resultList.add(Integer.parseInt(input));
+        return resultList;
+    }
+
+    private int calculate(int a , int b, char operator) {
+        switch (operator) {
+            case '+' :
+                return a + b;
+            case '-' :
+                return a - b;
+            default:
+                return a * b;
+        }
+    }
+}

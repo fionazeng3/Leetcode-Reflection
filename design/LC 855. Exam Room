@@ -1,0 +1,65 @@
+/*
+LC 855. Exam Room
+这道题就通过题意做模拟
+用一个list 记录所有占上的座位， 然后根据
+题意做模拟。 注意处理边界情况，
+尤其是头和尾没有占上座位的时候。
+
+大概的算法是看每一段， 离旁边人最远的距离是
+（head + tail） / 2
+*/
+class ExamRoom {
+    List<Integer> seatsTaken;
+    int size;
+    public ExamRoom(int N) {
+        seatsTaken = new ArrayList<>();
+        size = N;
+    }
+
+    public int seat() {
+        //System.out.println(seatsTaken.toString());
+        if(seatsTaken.size() == 0) {
+            seatsTaken.add(0,0);
+            return 0;
+        }
+        int maxD = Integer.MIN_VALUE;
+        int ans = 0;
+        for(int i = 0; i < seatsTaken.size() - 1;i++) {
+            int d = (seatsTaken.get(i + 1) - seatsTaken.get(i)) / 2;
+            if(d > maxD) {
+                maxD = d;
+                ans =seatsTaken.get(i) + d;
+            }
+        }
+        int last = seatsTaken.get(seatsTaken.size() - 1);
+        int first = seatsTaken.get(0);
+
+        if(first != 0 && first - 0 >= maxD){
+            maxD = first - 0;
+            ans = 0;
+        }
+        if(last != size - 1 && size - 1 - last > maxD) {
+            ans = size - 1;
+        }
+        int index = 0;
+        while(index < seatsTaken.size() && seatsTaken.get(index) < ans) index++;
+        if(index == seatsTaken.size())  {
+            seatsTaken.add(ans);
+        } else {
+            seatsTaken.add(index, ans);
+        }
+        return ans;
+    }
+
+    public void leave(int p) {
+        int index = seatsTaken.indexOf(p);
+        seatsTaken.remove(index);
+    }
+}
+
+/**
+ * Your ExamRoom object will be instantiated and called as such:
+ * ExamRoom obj = new ExamRoom(N);
+ * int param_1 = obj.seat();
+ * obj.leave(p);
+ */
