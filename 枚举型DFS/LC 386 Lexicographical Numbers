@@ -1,0 +1,32 @@
+/*
+LC 386 Lexicographical Numbers
+这道题首先想一下这些数字是怎么生成的
+比如n = 100
+那么肯定就是
+1 10 100 11 12 13 14 15 16 。。
+这里能得出什么样的结论呢？
+首先， 肯定要枚举开头是什么。 可以是1-9
+在每次决定开头以后 先给原来的数字* 10
+然后扩展， 在后面+ 0-9
+每一个扩展的case 下面又可以深入 * 10
+
+这道题如果画出dfs 树以后会好想一些
+*/
+class Solution {
+    List<Integer> ans = new ArrayList<>();
+    public List<Integer> lexicalOrder(int n) {
+        for(int i = 1; i <= 9; i++) {
+            solve(i, n);
+        }
+        return ans;
+    }
+
+    private void solve(int start, int max) {
+        if(start > max) return;
+        ans.add(start);
+        for(int i = 0; i <= 9; i++) {
+            if(start * 10 + i > max) break;
+            solve(start * 10 + i, max);
+        }
+    }
+}

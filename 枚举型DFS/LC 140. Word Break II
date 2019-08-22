@@ -1,0 +1,37 @@
+/*
+LC 140. Word Break II
+word break II 的不同点在于：
+要 return所有的可能性。 这就会造成很多的重复操作
+比如说 “aaaaaa” [a, aa, aaa] ax2 会算三遍
+所以说， 我们可以用hashmap 来做一个memorization
+看到已经处理过的string， 就直接return 可能出现组合的list
+从现在看来， 有memorization 的都是要return 一个list 的
+*/
+class Solution {
+    Set<String> bank = new HashSet<>();
+    Map<String, List<String>> memo = new HashMap<>();
+    public List<String> wordBreak(String s, List<String> wordDict) {
+        for(String eachWord : wordDict) {
+            bank.add(eachWord);
+        }
+        return dfs(s);
+    }
+
+    private List<String> dfs(String currentString) {
+        if(memo.containsKey(currentString)) return memo.get(currentString);
+        int len = currentString.length();
+        List<String> ans = new ArrayList<>();
+        for(int i =len; i >= 0; i--) {
+            String left = currentString.substring(0, i);
+            if(!bank.contains(left)) continue;
+            String right = currentString.substring(i, len);
+            List<String> rightAns = dfs(right);
+            for(String eachWord : rightAns) {
+                ans.add(left + " " + eachWord);
+            }
+            if(rightAns.size() == 0 && i == len) ans.add(left);
+        }
+        memo.put(currentString, ans);
+        return ans;
+    }
+}

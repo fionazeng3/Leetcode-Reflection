@@ -1,0 +1,30 @@
+/*
+LC 938. Range Sum of BST
+很简单的分治型dfs。 注意淘汰没用的分支
+*/
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public int rangeSumBST(TreeNode root, int L, int R) {
+        if(root == null) return 0;
+        int value = root.val;
+        int sum = 0;
+        if(value >= L && value <= R) {
+            sum += value;
+        }
+        if(value <= R) {
+            sum += rangeSumBST(root.right, L, R);
+        }
+        if(value >= L){
+            sum += rangeSumBST(root.left, L, R);
+        }
+        return sum;
+    }
+}
