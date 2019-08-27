@@ -1,0 +1,19 @@
+/*
+LC 383. Ransom Note
+很简单的一道题直接做模拟就好
+*/
+class Solution {
+    public boolean canConstruct(String ransomNote, String magazine) {
+        int[] letters = new int[26];
+        char[] target = ransomNote.toCharArray();
+        char[] bank = magazine.toCharArray();
+        for(char c : bank) {
+            letters[c - 'a']++;
+        }
+        for(char c : target) {
+            letters[c - 'a']--;
+            if(letters[c - 'a'] < 0) return false;
+        }
+        return true;
+    }
+}

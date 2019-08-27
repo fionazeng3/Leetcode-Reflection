@@ -1,0 +1,45 @@
+/*
+LC 4. Median of Two Sorted Arrays
+这是一道非常难的binary search 题目
+这道题的思路是： 要想找到median，
+肯定要在大array 左边放 k 个元素 k = (n1 + n2) / 2
+那么肯题就在于： 这k个元素中， 有几个是从nums1 来的
+有几个是从nums2 来的。 这一部分就用到了二分法
+如果 从nums1 里面拿出m1， 那么就要从nums2 里面拿出 m2
+如果nums1[m1] < nums2[m2 - 1]， 那就说明从nums1 里面
+拿少了， 反之就是拿多了。
+最后  求c1 和c2  c1 = max{nums1[m1-1], nums2[m2 - 1]}
+c2 = min{nums1[m1], nums2[m2]}
+如果大数组有奇数个元素， 那么中位数是 c1
+如果大数组有偶数个元素， 那么中位数是（c1 + c2） / 2
+*/
+class Solution {
+    public double findMedianSortedArrays(int[] nums1, int[] nums2) {
+        int n1 = nums1.length;
+        int n2 = nums2.length;
+        if(n1 > n2) return findMedianSortedArrays(nums2, nums1);
+        int k = (n1 + n2 + 1) / 2;
+        int l = 0;
+        int r = n1;
+        while(l + 1 < r) {
+            int m1 = l + (r - l) / 2;
+            int m2 = k - m1;
+            if(nums1[m1] < nums2[m2 - 1]) {
+                l = m1;
+            } else {
+                r = m1;
+            }
+        }
+        int m1 = r;
+        if(l < nums1.length && nums1[l] > nums2[k - l - 1]) m1 = l;
+        int m2 = k - m1;
+        int c1 = Math.max(m1 <= 0 ? Integer.MIN_VALUE : nums1[m1-1],
+                          m2 <= 0 ? Integer.MIN_VALUE : nums2[m2 - 1]);
+        System.out.println(k-l);
+        if((n1 + n2) % 2 == 1) return c1;
+        int c2 = Math.min(m1 == n1 ? Integer.MAX_VALUE : nums1[m1],
+                          m2 == n2 ? Integer.MAX_VALUE : nums2[m2]);
+        return (double)(c1 + c2) / 2;
+
+    }
+}

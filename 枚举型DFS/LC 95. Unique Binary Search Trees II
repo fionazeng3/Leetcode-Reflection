@@ -1,0 +1,40 @@
+/*
+LC 95. Unique Binary Search Trees II
+这道题的难点在于建树。 因为一开始不知道有几棵树。
+所以树应该用一种buttom up 的方法来建立
+把从最底层的node List 层层递归传上来
+再建上一层的node
+*/
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public List<TreeNode> generateTrees(int n) {
+        if(n == 0) return new ArrayList<>();
+        return dfs(1, n);
+    }
+
+    private List<TreeNode> dfs(int start, int end) {
+        List<TreeNode> localResult = new ArrayList<>();
+        for(int i = start; i <= end; i++) {
+            List<TreeNode> left = dfs(start, i - 1);
+            List<TreeNode> right = dfs(i + 1, end);
+            for(TreeNode eachLeft : left) {
+                for(TreeNode eachRight: right) {
+                    TreeNode current = new TreeNode(i);
+                    current.left = eachLeft;
+                    current.right = eachRight;
+                    localResult.add(current);
+                }
+            }
+        }
+        if(start > end) localResult.add(null);
+        return localResult;
+    }
+}

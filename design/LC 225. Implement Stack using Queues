@@ -1,0 +1,52 @@
+/*
+LC 225. Implement Stack using Queues
+这道题跟implement queue using stack 有一个
+很重要的优化是可以只用一个queue。 pop 的时候
+把element 加到queue 的后面就好了
+*/
+class MyStack {
+    Queue<Integer> q;
+    int top;
+    /** Initialize your data structure here. */
+    public MyStack() {
+        q = new LinkedList<>();
+        top = 0;
+
+    }
+
+    /** Push element x onto stack. */
+    public void push(int x) {
+        q.offer(x);
+        top = x;
+    }
+
+    /** Removes the element on top of the stack and returns that element. */
+    public int pop() {
+        int n = q.size();
+        for(int i = 0; i < n - 1; i++) {
+            if(i == n - 2) top = q.peek();
+            q.offer(q.poll());
+        }
+        return q.poll();
+    }
+
+    /** Get the top element. */
+    public int top() {
+        return top;
+
+    }
+
+    /** Returns whether the stack is empty. */
+    public boolean empty() {
+        return q.isEmpty();
+    }
+}
+
+/**
+ * Your MyStack object will be instantiated and called as such:
+ * MyStack obj = new MyStack();
+ * obj.push(x);
+ * int param_2 = obj.pop();
+ * int param_3 = obj.top();
+ * boolean param_4 = obj.empty();
+ */

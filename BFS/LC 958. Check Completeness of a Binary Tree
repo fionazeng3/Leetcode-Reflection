@@ -1,0 +1,48 @@
+/*
+LC 958. Check Completeness of a Binary Tree
+查看树的完整性的题还是在找左树与右树之间的关系， 所以使用bfs
+基本思路是给每个node 编号， 看中间有没有空缺的编号
+*/
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+
+class Node {
+    TreeNode content;
+    int pos;
+    public Node(TreeNode content, int pos) {
+        this.content = content;
+        this.pos = pos;
+    }
+}
+class Solution {
+    boolean isEmpty = false;
+    public boolean isCompleteTree(TreeNode root) {
+        Deque<Node> dq = new ArrayDeque<>();
+        dq.addLast(new Node(root, 1));
+        int last = 1;
+        while(!dq.isEmpty()) {
+            Node current = dq.pollFirst();
+            last = current.pos;
+            if(current.content.left != null) {
+                Node newLeft = new Node(current.content.left, current.pos * 2 );
+                int lastElement = dq.isEmpty() ? last : dq.getLast().pos;
+                if(lastElement < newLeft.pos - 1) return false;
+                dq.addLast(newLeft);
+            }
+            if(current.content.right != null) {
+                Node newRight = new Node(current.content.right, current.pos * 2 + 1);
+                int lastElement = dq.isEmpty() ? last : dq.getLast().pos;
+                if(lastElement < newRight.pos - 1) return false;
+                dq.addLast(newRight);
+            }
+        }
+        return true;
+    }
+}

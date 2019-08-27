@@ -1,0 +1,15 @@
+/*
+LC 319. Bulb Switcher
+这道题很无聊了。 直接画出table
+观察
+1 - 3 bulbs: 1 left
+4 - 8 bulbs: 2 left
+9 - 15 bulbs: 3 left
+...
+所以观察出sqrt
+*/
+class Solution {
+    public int bulbSwitch(int n) {
+       return (int)Math.sqrt(n);
+    }
+}
