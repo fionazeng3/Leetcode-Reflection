@@ -9,21 +9,18 @@ LC 283. Move Zeroes
 */
 class Solution {
     public void moveZeroes(int[] nums) {
-        if(nums == null || nums.length < 2) return;
-        int low = 0;
-        int high = 1;
+        int emptyPos = 0;
+        int validNum = 0;
         int len = nums.length;
-        while(high < len) {
-            while(high < len && nums[high] == 0) high++;
-            if(high < len && nums[low] == 0) swap(nums, low, high);
-            low++;
-            if(low >= high) high = low + 1;
-        }
-    }
-
-    private void swap(int[] nums, int a, int b) {
-        int temp = nums[a];
-        nums[a] = nums[b];
-        nums[b] = temp;
+        while(emptyPos < len &&validNum < len) {
+            while(emptyPos < len && nums[emptyPos] != 0) emptyPos++;
+            while(validNum < len && (nums[validNum] == 0 || emptyPos > validNum)) validNum++;
+            if(emptyPos < len &&validNum < len && emptyPos < validNum) {
+                int temp = nums[emptyPos];
+                nums[emptyPos] = nums[validNum];
+                nums[validNum] = temp;
+            }
+            
+        } 
     }
 }

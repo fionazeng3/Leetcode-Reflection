@@ -11,20 +11,19 @@ array 长什么样？ 一根比较高的增长线， 和一条比较低的增长
 */
 class Solution {
     public int findMin(int[] nums) {
-        if(nums == null) return 0;
+        int l = 0;
         int len = nums.length;
-        int low = 0;
-        int high = len - 1;
-        while(low + 1 < high) {
-            int mid = (low + high) / 2;
-            if(nums[low] <= nums[mid]) {
-                low = mid;
+        int r = len - 1;
+        while(l + 1 < r) {
+            int mid = l + (r - l) / 2;
+            if(nums[mid] > nums[len - 1]) {
+                l = mid;
+            } else if(nums[mid] > nums[mid - 1]) {
+                r = mid;
             } else {
-                high = mid;
+                return nums[mid];
             }
         }
-        int ans = Math.min(nums[high], nums[low]);
-        ans = Math.min(nums[0], ans);
-        return ans;
+        return Math.min(nums[l], nums[r]);
     }
 }

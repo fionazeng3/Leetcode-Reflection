@@ -1,8 +1,8 @@
 /*
 LC 36. Valid Sudoku
-这道题column 建 9 个hashmap
-row 建9 个hashmap
-box 建9 个hashmap
+这道题column 建 9 个hashSet
+row 建9 个hashSet
+box 建9 个hashSet
 整个sudoku iterate 一次。
 每个位置计算出row， column， box 的index
 这里的难点是计算 box index
@@ -13,26 +13,22 @@ box 建9 个hashmap
 */
 class Solution {
     public boolean isValidSudoku(char[][] board) {
-        HashMap<Integer, Integer>[] row = new HashMap[9];
-        HashMap<Integer, Integer>[] column = new HashMap[9];
-        HashMap<Integer, Integer>[] box = new HashMap[9];
-        int y = board.length;
-        int x = board[0].length;
+        HashSet<Integer>[] columns = new HashSet[9];
+        HashSet<Integer>[] rows = new HashSet[9];
+        HashSet<Integer>[] blocks = new HashSet[9];
+        // column
         for(int i = 0; i < 9; i++) {
-            row[i] = new HashMap<>();
-            column[i] = new HashMap<>();
-            box[i] = new HashMap<>();
-        }
-        for(int i = 0; i < x; i++) {
-            for (int j = 0; j < y; j++) {
-                char target = board[j][i];
-                if(target == '.')continue;
-                int boxNum = (j / 3) * 3 + i / 3;
-                int digit = target - '0';
-                if(row[j].containsKey(digit) || column[i].containsKey(digit) || box[boxNum].containsKey(digit))return false;
-                row[j].put(digit, 1);
-                column[i].put(digit, 1);
-                box[boxNum].put(digit, 1);
+            for(int j = 0; j < 9; j++) {
+                if(columns[i] == null) columns[i] = new HashSet<>();
+                if(rows[j] == null) rows[j] = new HashSet<>();
+                if(!Character.isDigit(board[j][i])) continue;
+                int num = board[j][i] - '0';
+                int boxIndex = (j / 3) * 3 + i / 3;
+                if(blocks[boxIndex] == null) blocks[boxIndex] = new HashSet<>();
+                if(columns[i].contains(num) || rows[j].contains(num) || blocks[boxIndex].contains(num)) return false;
+                columns[i].add(num);
+                rows[j].add(num);
+                blocks[boxIndex].add(num);
             }
         }
         return true;

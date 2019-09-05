@@ -8,19 +8,15 @@ LC 523. Continuous Subarray Sum
 */
 class Solution {
     public boolean checkSubarraySum(int[] nums, int k) {
-        Map<Integer, Integer> sumToIndex = new HashMap<>();
+        Map<Integer, Integer> modToIndex = new HashMap<>();
+        int len = nums.length;
         int sum = 0;
-        sumToIndex.put(0, -1);
-        for(int i = 0; i < nums.length; i++) {
+        modToIndex.put(0, -1);
+        for(int i = 0; i < len; i++) {
             sum += nums[i];
-            if(k != 0) {
-                sum %= k;
-            }
-            if(sumToIndex.containsKey(sum)) {
-                if(i - sumToIndex.get(sum) > 1) return true;
-            } else {
-                sumToIndex.put(sum, i);
-            }
+            int mod = k == 0 ? sum : sum % k;
+            if(modToIndex.containsKey(mod) && i - modToIndex.get(mod) >=2) return true;
+            modToIndex.putIfAbsent(mod, i);
         }
         return false;
     }
