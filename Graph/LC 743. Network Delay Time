@@ -2,13 +2,12 @@
 LC 743. Network Delay Time
 这道题求最短路径是一道经典的Dijkstra's Algorithm 的题目。
 这道题为什么不是minimum spanning tree 呢？
-minimum spanning tree 解决的问题叫做
-is a subset of the edges of a connected, edge-weighted
+minimum spanning tree is a subset of the edges of a connected, edge-weighted
 undirected graph that connects all the vertices together,
 without any cycles and with the minimum possible total edge weight.
-MST 是没有方向的， 而且求的是所有edge 和的最小值
+MST 是没有方向的，（没有起点） 而且求的是所有edge 和的最小值
 
-而Dijkstra's Algorithm 解决的问题是最短路径， 符合这道题的
+而Dijkstra's Algorithm 解决的问题是从一个点到所有其它点的最短路径， 符合这道题的
 题意。 这道题的implementation 方法是一个和很经典的heap 的方法
 这个做法的time complexity 是 O(ElogE)因为每个edge 都会
 加到heap 里面一遍。 每加一遍又会sort 一下

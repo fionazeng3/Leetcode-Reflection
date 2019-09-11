@@ -21,38 +21,39 @@ order list 应该是倒着加入的。 用stack 可以实现。 注意
 edge 和vertex 都要访问
 */
 class Solution {
+    Set<Integer> visited = new HashSet<>();
+    Set<Integer> visiting = new HashSet<>();
+    HashMap<Integer, List<Integer>> map = new HashMap<>();
     public boolean canFinish(int numCourses, int[][] prerequisites) {
-        // build the graph
-        ArrayList<Integer>[] graph = new ArrayList[numCourses];
-        for(int i = 0; i < numCourses; i++) {
-            graph[i] = new ArrayList<>();
+        int len = prerequisites.length;
+        for(int i = 0; i < len; i++) {
+            int[] current = prerequisites[i];
+            map.putIfAbsent(current[0], new ArrayList<>());
+            map.get(current[0]).add(current[1]);
         }
-        for(int[] edge: prerequisites) {
-            graph[edge[0]].add(edge[1]);
-        }
-        boolean[] visited = new boolean[numCourses];
-        boolean[] visiting = new boolean[numCourses];
-        // visit each class
         for(int i = 0; i < numCourses; i++) {
-            if(!dfs(graph, visited, visiting, i)) {
-                return false;
+            if(!visited.contains(i)) {
+                boolean result = dfs(i);
+                if(!result) return false;
             }
         }
         return true;
     }
-
-    private boolean dfs(ArrayList[] graph, boolean[] visited, boolean[] visiting, int course) {
-        if(visited[course]) {
-            return true;
-        } else if(visiting[course]) {
-            return false;
+    
+    private boolean dfs(int newCourse) {
+        if(visiting.contains(newCourse)) return false;
+        visiting.add(newCourse);
+        if(map.containsKey(newCourse)) {
+            List<Integer> neighbors = map.get(newCourse);
+            for(int eachClass : neighbors) {
+                if(!visited.contains(eachClass)) {
+                    boolean result = dfs(eachClass);
+                    if(!result) return false;
+                }
+            }
         }
-        visiting[course] = true;
-        for(int i = 0; i < graph[course].size(); i++) {
-            int neighbor = (int) graph[course].get(i);
-            if(!dfs(graph, visited, visiting, neighbor)) return false;
-        }
-        visited[course] = true;
+        visiting.remove(newCourse);
+        visited.add(newCourse);
         return true;
     }
 }

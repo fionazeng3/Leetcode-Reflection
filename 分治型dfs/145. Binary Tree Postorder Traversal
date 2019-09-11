@@ -1,23 +1,6 @@
 /*
 LC 145. Binary Tree Postorder Traversal
-这道题用到了一个很巧妙的方法。 就是 post order
-是preorder 的反转。 preorder 是 
-root， left， right 
-而post order 是left right root
-用什么方法反转呢？ 就是用把答案从后往前加的
-方法。 同样外面是 root， stack里面是left， right
-反着加进ans 的结果是   left right root
-*/
-/**
- * Definition for a binary tree node.
- * public class TreeNode {
- *     int val;
- *     TreeNode left;
- *     TreeNode right;
- *     TreeNode(int x) { val = x; }
- * }
- */
-
+这道题直接按照post order 的顺序推就好了
 /**
  * Definition for a binary tree node.
  * public class TreeNode {
@@ -29,16 +12,21 @@ root， left， right
  */
 class Solution {
     public List<Integer> postorderTraversal(TreeNode root) {
+        Stack<TreeNode> stk = new Stack<>();
+        stk.push(root);
+        Set<TreeNode> ready = new HashSet<>();
         List<Integer> ans = new ArrayList<>();
         if(root == null) return ans;
-        Stack<TreeNode> s = new Stack<>();
-        TreeNode current = root;
-        s.push(current);
-        while(!s.isEmpty()) {
-            current = s.pop();
-            ans.add(0, current.val);
-            if(current.left != null) s.push(current.left);
-            if(current.right != null) s.push(current.right);
+        while(!stk.isEmpty()) {
+            TreeNode current = stk.peek();
+            if(current.left == null && current.right == null || ready.contains(current)) {
+                current = stk.pop();
+                ans.add(current.val);
+                continue;
+            }
+            if(current.right != null) stk.push(current.right);
+            if(current.left != null) stk.push(current.left);
+            ready.add(current);
         }
         return ans;
     }
