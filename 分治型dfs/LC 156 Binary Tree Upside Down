@@ -29,15 +29,8 @@ CEO 说： 如果我是最右下角的node， 我就完事了
  */
 class Solution {
     public TreeNode upsideDownBinaryTree(TreeNode root) {
-        if (root == null) {
-            return null;
-        }
-        return dfs(root);
-    }
-
-    private TreeNode dfs(TreeNode root) {
-        if (root.left == null) return root;
-        TreeNode newRoot = dfs(root.left);
+        if(root == null || root.left == null) return root;
+        TreeNode newRoot = upsideDownBinaryTree(root.left);
         root.left.right = root;
         root.left.left = root.right;
         root.left = null;

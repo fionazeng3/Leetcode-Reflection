@@ -1,9 +1,40 @@
 /*
 LC 114. Flatten Binary Tree to Linked List
-这道题很简单。 用recursion 看每一个node。 如果这个node 有左node，
-就把左 node放在右边， 然后把右node 放在左node 遍历到底的最后一个位置
-用recursion 看下一个node
-*/
+这道题很简单. 用一个global 的node， 指向当前node
+然后树的话先处理左边， 再处理右边
+
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    TreeNode lastNode;
+    public void flatten(TreeNode root) {
+        if(root == null) return;
+        lastNode = new TreeNode(-1);
+        dfs(root);
+    }
+    
+    private void dfs(TreeNode current) {
+        if(current == null) return;
+        lastNode.right = current;
+        lastNode = current;
+        TreeNode left = current.left;
+        TreeNode right = current.right;
+        current.left = null;
+        dfs(left);
+        dfs(right);
+    }
+}
+
+
+
+
 /**
  * Definition for a binary tree node.
  * public class TreeNode {
@@ -15,20 +46,15 @@ LC 114. Flatten Binary Tree to Linked List
  */
 class Solution {
     public void flatten(TreeNode root) {
-        helper(root);
-    }
-
-    private void helper(TreeNode current) {
-        if(current == null) return;
-        TreeNode left = current.left;
-        TreeNode right = current.right;
-        if(current.left != null) {
+        if(root == null) return;
+        Deque<TreeNode> dq = new ArrayDeque<>();
+        dq.addFirst(root);
+        while(!dq.isEmpty()) {
+            TreeNode current = dq.pollFirst();
+            if(current.right != null) dq.addFirst(current.right);
+            if(current.left != null) dq.addFirst(current.left);
             current.left = null;
-            current.right = left;
-            TreeNode temp = current;
-            while(temp.right != null) temp = temp.right;
-            temp.right = right;
-        }
-        helper(current.right);
+            current.right = dq.peekFirst();
+        } 
     }
 }

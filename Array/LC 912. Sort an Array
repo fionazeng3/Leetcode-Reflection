@@ -1,21 +1,49 @@
 /*
-Worst Case O(nlogn)
-Best Case O(nlogn)
-Average O(nlogn)
-Stable No
-Inplace: yes
-merge sort 讲究divide and conquer
-把array 分成小份， 然后再排序小数组
-注意分的时候一定要分成start, mid 和 mid + 1, end
-不然会出现不断call 一个数组的情况造成stack overflow
+LC 912. Sort an Array
+quick sort 和merge sort 解
 */
+class Solution {
+    public int[] sortArray(int[] nums) {
+        int len = nums.length;
+        quickSort(nums, 0, len - 1);
+        return nums;
+    }
+
+    private void quickSort(int[] nums, int start, int end) {
+        if(start > end) return;
+        int index = partition(nums, start, end);
+        quickSort(nums, start, index - 1);
+        quickSort(nums, index + 1, end);
+    }
+
+    private int partition(int[] nums, int low, int high) {
+        int lastLow = low - 1;
+        int pivot = nums[high];
+        for(int i = low; i < high; i++) {
+            if(nums[i] <= pivot) {
+                lastLow++;
+                swap(nums, lastLow, i);
+            }
+        }
+
+        swap(nums, high, lastLow + 1);
+        return lastLow + 1;
+    }
+
+    private void swap(int[] nums, int a, int b) {
+        int temp = nums[a];
+        nums[a] = nums[b];
+        nums[b] = temp;
+    }
+}
+
 class Solution {
     public int[] sortArray(int[] nums) {
         int len = nums.length;
         mergeSort(nums, 0, len - 1);
         return nums;
     }
-    
+
     private void mergeSort(int[] nums, int start, int end) {
         if(start >= end) return;
         int mid = start + (end - start) /2;
@@ -23,7 +51,7 @@ class Solution {
         mergeSort(nums, mid + 1, end);
         merge(nums, start, mid, end);
     }
-    
+
     private void merge(int[] nums, int start, int mid, int end) {
         int n1 = mid - start + 1;
         int n2 = end - mid;

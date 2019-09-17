@@ -1,7 +1,10 @@
 /*
 LC 257. Binary Tree Paths
-这道题很简单。 注意在dfs 里面如果每一回只是加上
-自己的话就不用做backtracking了
+这道题很简单
+注意一下string 的运算
+http://theopentutorials.com/tutorials/java/strings/passing-string-as-parameter-to-a-method/
+因为string 是immutable， 所以string 每次要变的时候都是建了一个新的object，reference 跟
+之前的不一样了。 所以不用backtracking 的时候剪枝
 时间复杂度O(n)
 */
 /**

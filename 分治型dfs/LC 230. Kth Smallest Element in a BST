@@ -1,11 +1,8 @@
 /*
 LC 230. Kth Smallest Element in a BST
-这道题我是用iterative 的做inorder traversal k 次
-还是模仿recursion left print right。 这个应该是最简单的
-一个模版了
+直接用inorder 的顺序来做。 List 里面加满
+k 个element 就直接断
 
-时间复杂度 O（H + k）
-*/
 /**
  * Definition for a binary tree node.
  * public class TreeNode {
@@ -16,21 +13,21 @@ LC 230. Kth Smallest Element in a BST
  * }
  */
 class Solution {
+    List<Integer> elements = new ArrayList<>();
     public int kthSmallest(TreeNode root, int k) {
-        Stack<TreeNode> stack = new Stack<>();
-        TreeNode current = root;
-        while(true) {
-            while(current != null) {
-                stack.push(current);
-                current = current.left;
-            }
-            current = stack.pop();
-            k--;
-            if(k == 0) {
-                return current.val;
-            }
-            current = current.right;
-
+        dfs(root, k);
+        return elements.get(k - 1);
+    }
+    
+    private void dfs(TreeNode current, int k) {
+        if(current == null) return;
+        dfs(current.left, k);
+        if(elements.size() == k) {
+           return; 
+        } else {
+            elements.add(current.val);
+            dfs(current.right, k);
         }
+        
     }
 }
