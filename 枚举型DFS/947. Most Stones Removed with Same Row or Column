@@ -1,5 +1,5 @@
 /*
-947. Most Stones Removed with Same Row or Column
+LC 947. Most Stones Removed with Same Row or Column
 首先要把题目理解对了stones 里面装的是石头的input。
 可以想像一下， n 个石头因为row 相同或者column 相同
 连在一起， 那我们可以拿走n-1 块石头。 所以说

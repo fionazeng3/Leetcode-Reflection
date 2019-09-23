@@ -1,21 +1,6 @@
 /*
 LC 285 Inorder Successor in BST
-这道题要求 in order 的下一个node
-我们来想一下这意味着什么呢？就是要找到比p
-大的node 里最小的一个。
-
-如果p 在root 左边， 那答案就应该是它的
-右子树或者它的parent
-
-如果p 在root 右边， 那答案一定
-是它的右子树
-
-模拟顺序是什么样的呢？
-先把root 移动到 p 上。 然后再往p
-的右下移动。 一旦 root 比 p 大了，
-就记录一下现在的root。 因为答案肯定
-是要比p 大的。 在第一次root 比p
-大的时候就记录 root 也比较合情合理
+直接按inorder 顺序模拟就好了
 */
 /**
  * Definition for a binary tree node.
@@ -27,21 +12,21 @@ LC 285 Inorder Successor in BST
  * }
  */
 class Solution {
-    TreeNode lastReference;
+    boolean found = false;
+    TreeNode ans = null;
     public TreeNode inorderSuccessor(TreeNode root, TreeNode p) {
-        lastReference = null;
-        dfs(root, p);
-        return lastReference;
+       dfs(root, p);
+        return ans;
     }
-
-    private void dfs(TreeNode root, TreeNode p) {
-        if(root != null && p != null) {
-            if(p.val >= root.val) {
-                dfs(root.right, p);
-            } else {
-                lastReference = root;
-                dfs(root.left, p);
-            }
+    
+    private void dfs(TreeNode current, TreeNode p) {
+        if(current == null) return;
+        dfs(current.left, p);
+        if(current == p) found = true;
+         if(found && ans == null && current != p) {
+            ans = current;
         }
+        dfs(current.right, p);
     }
 }
+

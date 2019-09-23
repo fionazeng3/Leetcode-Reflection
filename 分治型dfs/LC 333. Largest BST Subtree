@@ -4,7 +4,6 @@ LC 333. Largest BST Subtree
 首先考虑一下怎么样的树是一个合格的bst？ 左树最大值比自己小且右树最小值比自己大
 因为这道题问的是 Largest BST Subtree， 所以如果一个node 发现废掉了， 那它
 所有的祖先都废掉了
-*/
 /**
  * Definition for a binary tree node.
  * public class TreeNode {
@@ -15,26 +14,29 @@ LC 333. Largest BST Subtree
  * }
  */
 class Solution {
-    int maxNum = 0;
+    int maxCount = 0;
     public int largestBSTSubtree(TreeNode root) {
         dfs(root);
-        return maxNum;
+        return maxCount;
     }
-
+    // num, min, max
     private int[] dfs(TreeNode current) {
         if(current == null) return new int[]{0, 0, 0};
-        int[] left = dfs(current.left);
-        int[] right = dfs(current.right);
-        if(current.left != null && current.left.val >= current.val ||
-          current.right != null && current.right.val <= current.val ||
-          left[0] == -1 || right[0] == -1 || left[0] != 0 &&left[2] >= current.val
-          || right[0] != 0 && right[1] <= current.val ) return new int[]{-1, 0, 0};
-        int nodeCount = left[0] + right[0] + 1;
-        maxNum = Math.max(nodeCount, maxNum);
-        int min = current.val;
-        int max = current.val;
-        if(left[0] != 0) min = left[1];
-        if(right[0] != 0) max = right[2];
-        return new int[] {nodeCount, min, max};
+        int[] leftStat = dfs(current.left);
+        int[] rightStat = dfs(current.right);
+        int[] result;
+        if(leftStat[0] == -1 || rightStat[0] == -1 ||
+           (leftStat[0] != 0 && leftStat[2] >= current.val) ||
+           (rightStat[0] != 0 && rightStat[1] <= current.val)) {
+            result = new int[]{-1, 0, 0};
+        } else{
+            int count = leftStat[0] + rightStat[0] + 1;
+            maxCount = Math.max(count, maxCount);
+            int min = leftStat[0] == 0 ? current.val : leftStat[1];
+            int max = rightStat[0] == 0 ? current.val : rightStat[2];
+            result = new int[]{count, min, max};
+        }
+        
+        return result;
     }
 }
