@@ -5,37 +5,22 @@ LC 22. Generate Parentheses
 */
 class Solution {
     List<String> ans = new ArrayList<>();
-    int[] bank = new int[2];
-    int size;
     public List<String> generateParenthesis(int n) {
-        size = n * 2;
-        bank[0] = n;
-        bank[1] = n;
-        String currentAns = "";
-        dfs(currentAns, 0);
+        dfs(0, n * 2, "");
         return ans;
     }
-
-    private void dfs(String currentAns, int index) {
-        if(index == size) {
-            ans.add(currentAns);
+    
+    private void dfs(int forwardCount, int remainCount, String currentAns) {
+        if(remainCount == 0) {
+            if(forwardCount == 0) ans.add(currentAns);
             return;
+        } 
+        if(forwardCount > 0) {
+            dfs(forwardCount - 1, remainCount - 1, currentAns + ")");
         }
-        for(int i = 0; i < 2; i++) {
-            String element = "";
-            if(bank[i] > 0) {
-                if(i == 0) {
-                    element = "(";
-                } else {
-                    element = ")";
-                }
-                if(bank[0] > bank[1]) continue;
-                currentAns += element;
-                bank[i]--;
-                dfs(currentAns, index + 1);
-                currentAns = currentAns.substring(0, currentAns.length() - 1);
-                bank[i] ++;
-            }
+        if(forwardCount < remainCount){
+            dfs(forwardCount + 1, remainCount - 1, currentAns + "(");
         }
+        
     }
 }
