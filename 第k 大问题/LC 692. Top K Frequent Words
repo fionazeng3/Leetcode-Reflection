@@ -3,37 +3,46 @@ LC 692. Top K Frequent Words
 这道题很简单。用hashmap 记录frequency
 然后用priority queue 和一个customize
 的comparator 就解决了
-*/
-class WordFrequency {
-    String word;
-    int frequency;
-    public WordFrequency(String word, int frequency) {
-        this.word = word;
-        this.frequency = frequency;
-    }
-}
 
+注意把array 转换成list 的时候要用Arrays.asList(arr) 这个array type
+必须是一个object， 不能是Primitive type。 也就是说 Integer【】 可以转化成list
+int【】 不能转化成List。 
+怎么把int 转化成Integer 呢？
+Integer intObj = new Integer(i); 
+怎么把Integer 转化成int 呢？
+int i = intobject.intValue();
+
+怎样把List 转化成array 呢
+Integer[] temp = listResult.toArray(new Integer[size]);
+only works for objects
+注意括号里的这个new Integer[size] 是必须的， 不然会有incompatible type exception
+*/
 class Solution {
     public List<String> topKFrequent(String[] words, int k) {
         Map<String, Integer> map = new HashMap<>();
-        for(String word: words) {
+        for(String word : words) {
             map.put(word, map.getOrDefault(word, 0) + 1);
         }
-        PriorityQueue<WordFrequency> pq = new PriorityQueue<>((wf1, wf2) -> {
-           if(wf1.frequency != wf2.frequency) {
-               return wf2.frequency - wf1.frequency;
-           } else {
-               return wf1.word.compareTo(wf2.word);
-           }
+        PriorityQueue<String> pq = new PriorityQueue<>((w1, w2) -> {
+            if(map.get(w1) != map.get(w2)) return map.get(w1) - map.get(w2);
+            return w2.compareTo(w1);
         });
-        for(String key: map.keySet()) {
-            WordFrequency current = new WordFrequency(key, map.get(key));
-            pq.add(current);
+        for(String word : map.keySet()) {
+            if(pq.size() < k) {
+                pq.add(word);
+                continue;
+            } 
+            if(map.get(word) > map.get(pq.peek()) || map.get(word) == map.get(pq.peek()) && 
+              word.compareTo(pq.peek()) < 0) {
+                pq.poll();
+                pq.offer(word);
+            }
         }
-        List<String> ans = new ArrayList<>();
-        for(int i = 0; i < k; i++) {
-            ans.add(pq.poll().word);
+        String[] ans = new String[pq.size()];
+        for(int i = pq.size() - 1; i >=0; i--) {
+            ans[i] = pq.poll();
         }
-        return ans;
+        return Arrays.asList(ans);
+        
     }
 }
