@@ -1,0 +1,46 @@
+/*
+LC 980. Unique Paths III
+这道题暴力解要比dp 快
+直接从起点出发， 用 dfs走到终点
+如果踩的方块数是正确的， 总路径数+1
+*/
+class Solution {
+    public int uniquePathsIII(int[][] grid) {
+        int startX = -1;
+        int startY = -1;
+        int squareCount = 0;
+        int y = grid.length;
+        int x = grid[0].length;
+        for(int i = 0; i < x; i++) {
+            for(int j = 0; j < y; j++) {
+                if(grid[j][i] == 1) {
+                    startX = i;
+                    startY = j;
+                }
+                if(grid[j][i] == 0) squareCount++;
+            }
+        }
+        int[] dx = {-1, 1, 0, 0};
+        int[] dy = {0, 0, -1, 1};
+        boolean[][] visited = new boolean[y][x];
+        visited[startY][startX] = true;
+        return dfs(grid,startX, startY, dx, dy, squareCount, x, y, visited);
+    }
+
+    private int dfs(int[][] grid, int cx, int cy, int[] dx, int[] dy,
+                int squareCount, int x, int y, boolean[][] visited) {
+        if(grid[cy][cx] == 2 && squareCount < 0) {
+            return 1;
+        }
+        int result = 0;
+        for(int i = 0; i < 4; i++) {
+            int nx = cx + dx[i];
+            int ny = cy + dy[i];
+            if(nx < 0 || nx >= x || ny < 0 || ny >= y || visited[ny][nx] || grid[ny][nx] == -1) continue;
+            visited[ny][nx] = true;
+            result += dfs(grid, nx, ny, dx, dy, squareCount - 1, x, y, visited);
+            visited[ny][nx] = false;
+        }
+        return result;
+    }
+}

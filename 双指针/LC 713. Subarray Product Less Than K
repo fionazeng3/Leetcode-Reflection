@@ -6,33 +6,27 @@ LC 713. Subarray Product Less Than K
 只能往后动， 不能往回动。 而contiguous Subarray 问题往往是问是否等于一个数
 这样很容易用hashmap 或者hashset 来做。
 
-以这道题而言， 我们需要枚举以每个元素为最右元素的时候都有
+以这道题而言， 我们需要枚举以每个元素为最左元素的时候都有
 哪些合格的subarray。 设置两个pointer。 r 向右移动。如果当前的总乘机太大了， 就让l 往右移动
-r 每动一次就求一下以nums【r】为最右的合格subarray 一共有多少。 算法是 r- l + 1
-为什么呢？ 举个例子。如果当前的subarray 是12345
-那么包含5 的subarray 还都没有算过。 这样的subarray 有
-5
-45
-345
-2345
-12345
-一共是4 - 0 + 1 = 5 个
+r 每动一次就求一下以nums【l】为最左的合格subarray 一共有多少。 算法是 r- l
+
 */
+
 class Solution {
     public int numSubarrayProductLessThanK(int[] nums, int k) {
-        if(k <= 1) return 0;
-        int l = 0;
-        int product = 1;
         int len = nums.length;
-        int ans = 0;
-        for(int r = 0; r < len; r++) {
-            product *= nums[r];
-            while(product >= k) {
-                product /= nums[l];
-                l++;
+        int j = 0;
+        int result = 1;
+        int counter = 0;
+        for(int i = 0; i < len; i++) {
+            if(i > j) j = i;
+            while(j < len && result * nums[j] < k) {
+                result*= nums[j];
+                j++;
             }
-            ans += (r - l) + 1;
+            counter += j - i;
+            if(j > i) result /= nums[i];
         }
-        return ans;
+        return counter;
     }
 }

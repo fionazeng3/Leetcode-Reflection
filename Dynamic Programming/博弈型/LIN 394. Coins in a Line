@@ -22,28 +22,12 @@ public class Solution {
      * @return: A boolean which equals to true if the first player will win
      */
     public boolean firstWillWin(int n) {
-        boolean[] helper = new boolean[3];
-        helper[0] = false;
-        helper[1] = true;
-        helper[2] = true;
-        if(n < 3) return helper[n];
-        boolean ans= false;;
-        int counter = 3;
-        int left = 1;
-        int right = 2;
-        while(counter <= n) {
-            int now = calculatePosition(right);
-            helper[now] = ((!helper[left]) || (!helper[right]));
-            if(counter == n) ans = helper[now];
-            right = calculatePosition(right);
-            left = calculatePosition(left);
-            counter++;
+        // write your code here
+        boolean[] f = new boolean[n + 1];
+        for(int i = 1; i <= n; i++) {
+            if(i - 1 >= 0) f[i] |= !f[i - 1];
+            if(i - 2 >= 0) f[i] |= !f[i - 2];
         }
-        return ans;
+        return f[n];
     }
-
-   private int calculatePosition(int now) {
-       if(now == 2) return 0;
-       return now + 1;
-   }
 }

@@ -4,34 +4,35 @@ LC 251. Flatten 2D Vector
 注意讨论corner case
 */
 class Vector2D {
-    int bigIndex;
-    int smallIndex;
-    int[][] v;
+    int[][] board;
+    int cx;
+    int cy;
 
     public Vector2D(int[][] v) {
-        bigIndex = 0;
-        smallIndex = 0;
-        while(bigIndex < v.length && v[bigIndex].length == 0) {
-            bigIndex++;
-        }
-        this.v = v;
+        board = v;
+        cx = 0;
+        cy = 0;
     }
-
+    
     public int next() {
-        int result = v[bigIndex][smallIndex];
-        smallIndex++;
-        if(smallIndex >= v[bigIndex].length) {
-            bigIndex++;
-             while(bigIndex < v.length && v[bigIndex].length == 0) {
-                 bigIndex++;
-             }
-            smallIndex = 0;
+        hasNext();
+        int result = board[cy][cx];
+        int x = board[cy].length;
+        if(cx < x - 1) {
+            cx++;
+        } else {
+            cy++;
+            cx = 0;
         }
         return result;
     }
-
+    
     public boolean hasNext() {
-        return bigIndex < v.length && smallIndex < v[bigIndex].length;
+        while(cy < board.length && cx >= board[cy].length) {
+            cy++;
+            cx = 0;
+        }
+        return cy < board.length;
     }
 }
 

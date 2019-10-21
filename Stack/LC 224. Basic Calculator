@@ -1,0 +1,56 @@
+/*
+LC 224. Basic Calculator
+首先因为有括号， 要延迟计算， 所以选择用stack
+看到 ）就处理stack 里面的元素直到看到（
+
+其次， 如果用stack 的话， 其实计算顺序是从后往前的
+所以指针也要从后往前指。 这样的计算顺序就是从前
+往后的
+*/
+
+class Solution {
+    public int calculate(String s) {
+        char[] input = s.toCharArray();
+        Deque<Integer> number = new ArrayDeque<>();
+        number.offerLast(0); // 注意一开始的时候要在number 里加一下0， 这样以后number 好处理
+        Deque<Character> operator = new ArrayDeque<>();
+        int len = input.length;
+        int power = 0;
+        for(int i = len - 1; i >= 0; i--) {
+            char c = input[i];
+            if(c == ' ') continue;
+            if(Character.isDigit(c)) {
+                int currentNumber = number.pollLast() + (int) Math.pow(10, power) * (c - '0');
+                power++;
+                number.offerLast(currentNumber);
+            } else if(c == '(') {
+                evaluate(number, operator);
+                power = 0;
+            } else {  // +， -， ）
+                operator.offerLast(c);
+                if(c == '+' || c == '-') number.offerLast(0); // 要开始一个新的数字
+                power = 0;
+            }
+        }
+        evaluate(number, operator);
+        return number.getLast();
+    }
+
+    private void evaluate(Deque<Integer> number, Deque<Character> operator) {
+        int result = 0;
+        boolean pollNumber = true;
+        boolean isPositive = true;
+        // 当在选数字或者operator 或 operator 当前不为空且当前不是 ）
+        while(pollNumber || !operator.isEmpty() && operator.peekLast() != ')') {
+            if(pollNumber) {
+                int topNumber = number.pollLast();
+                result += isPositive ? topNumber : -topNumber;
+            } else {
+                isPositive = operator.pollLast() == '+';
+            }
+            pollNumber = !pollNumber;
+        }
+        if(!operator.isEmpty() && operator.getLast() == ')') operator.pollLast();
+        number.offerLast(result);
+    }
+}

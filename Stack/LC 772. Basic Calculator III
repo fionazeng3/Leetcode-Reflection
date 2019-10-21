@@ -1,0 +1,77 @@
+/*
+LC 772. Basic Calculator III
+这道题结合calculator I 和calculator II 的解法做就可以了
+*/
+
+class Solution {
+    public int calculate(String s) {
+        Deque<Integer> numbers = new ArrayDeque<>();
+        Deque<Character> operators = new ArrayDeque<>();
+        numbers.offerLast(0);
+        char[] input = s.toCharArray();
+        int power = 0;
+        int len = input.length;
+        for(int i = len - 1; i >= 0; i--) {
+            char c = input[i];
+            if(c == ' ') continue;
+            if(Character.isDigit(c)) {
+                int currentNumber = numbers.pollLast() + (int)Math.pow(10, power) * (c - '0');
+                power++;
+                numbers.offerLast(currentNumber);
+            } else if(c == '(') {
+                evaluate(numbers, operators);
+            } else {
+                operators.offerLast(c);
+                power = 0;
+                if(c != ')') numbers.offerLast(0);
+            }
+        }
+        evaluate(numbers, operators);
+        return numbers.getLast();
+    }
+
+    private void evaluate(Deque<Integer> numbers, Deque<Character> operators) {
+        char operator = '+';
+        boolean isChooseNum = true;
+        Deque<Integer> ans = new ArrayDeque<>();
+        while(isChooseNum || !operators.isEmpty() && operators.getLast() != ')') {
+            if(isChooseNum) {
+                int currentNumber = numbers.pollLast();
+                pushNum(operator,currentNumber, ans);
+            } else {
+                operator = operators.pollLast();
+            }
+            isChooseNum = !isChooseNum;
+        }
+        if(!operators.isEmpty() && operators.getLast() == ')') operators.pollLast();
+        int result = 0;
+        while(!ans.isEmpty())  {
+            result += ans.pollLast();
+        }
+        numbers.offerLast(result);
+    }
+
+    private void pushNum(char operator, int currentNumber, Deque<Integer> ans) {
+        if(operator == '+') {
+            ans.offerLast(currentNumber);
+            return;
+        }
+
+        if(operator == '-') {
+            ans.offerLast(-currentNumber);
+            return;
+        }
+
+        if(operator == '*') {
+            int lastNum = ans.pollLast();
+            ans.offerLast(lastNum * currentNumber);
+            return;
+        }
+
+        if(operator == '/') {
+            int lastNum = ans.pollLast();
+            ans.offerLast(lastNum / currentNumber);
+            return;
+        }
+    }
+}

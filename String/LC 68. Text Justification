@@ -1,0 +1,69 @@
+/*
+LC 68. Text Justification
+纯模拟题
+*/
+
+class Solution {
+    public List<String> fullJustify(String[] words, int maxWidth) {
+        List<String> ans = new ArrayList<>();
+        int index = 0;
+        int size = words.length;
+        int currentLen = 0;
+        StringBuffer currentAns = new StringBuffer();
+        int currentPos = 0;
+        List<Integer> endPos = new ArrayList<>();
+        while(index <= size) {
+            if(index == size ||
+               currentLen == 0 && currentLen + words[index].length() > maxWidth ||
+               currentLen != 0 && currentLen + words[index].length() + 1 > maxWidth) {
+                int spaceCount = maxWidth - currentLen;
+                int eachSpace = endPos.size() <= 1 ? 0 : spaceCount / (endPos.size() - 1);
+                int extraSpace = endPos.size() <= 1 ? 0 : spaceCount % (endPos.size() - 1);
+                String result = appendSpace(currentAns, endPos, eachSpace, extraSpace, spaceCount, index == size);
+                ans.add(result);
+                currentAns = new StringBuffer();
+                currentPos = 0;
+                endPos = new ArrayList<>();
+                currentLen = 0;
+                if(index == size) index++;
+            } else {
+                String word = words[index];
+                int wordLen = word.length();
+                if(currentLen == 0) {
+                    currentLen += wordLen;
+                    currentAns.append(word);
+                    currentPos += wordLen;
+
+                } else {
+                    currentLen += wordLen + 1;
+                    currentAns.append(" " + word);
+                    currentPos += wordLen + 1;
+                }
+                endPos.add(currentPos);
+                index++;
+            }
+        }
+        return ans;
+    }
+
+    private String appendSpace(StringBuffer currentAns, List<Integer> endPos, int eachSpace, int extraSpace,
+                              int spaceCount, boolean isLastLine) {
+        int len = endPos.size();
+        if(len == 1 || isLastLine) {
+            for(int i = 0; i < spaceCount; i++) {
+                currentAns.append(" ");
+            }
+            return currentAns.toString();
+        }
+        for(int i = len - 2; i >= 0; i--) {
+            int pos = endPos.get(i);
+            for(int j = 0; j < eachSpace; j++) {
+                currentAns.insert(pos, " ");
+            }
+            if(i < extraSpace) {
+                currentAns.insert(pos, " ");
+            }
+        }
+        return currentAns.toString();
+    }
+}

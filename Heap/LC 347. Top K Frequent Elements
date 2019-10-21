@@ -10,22 +10,28 @@ Returns the value to which the specified key is mapped, or defaultValue if this 
 3. 写comparator 的时候思路不要仅限于object 本身。 也可以借助
 其它可以access 到的元素
 
-这个答案的time comprexity O(nlogn) 主要来自于把每个元素放进heap
+这个答案的time complexity O(klogk) 主要来自于把每个元素放进heap
 */
 class Solution {
     public List<Integer> topKFrequent(int[] nums, int k) {
-        Map<Integer, Integer> map = new HashMap<>();
-        for(int num: nums) {
-            map.put(num, map.getOrDefault(num, 0) + 1);
+        Map<Integer, Integer> frequency = new HashMap<>();
+        for(int num : nums) {
+            frequency.put(num, frequency.getOrDefault(num, 0) + 1);
         }
-        PriorityQueue<Integer> pq = new PriorityQueue<>((n1, n2) -> {return map.get(n2) - map.get(n1);});
-        for(int num: map.keySet()) {
-            pq.offer(num);
+        PriorityQueue<Integer> pq = new PriorityQueue<>((a, b) -> {
+            return frequency.get(a) - frequency.get(b);
+        });
+        for(int num : frequency.keySet()) {
+            if(pq.size() < k) {
+                pq.offer(num);
+                continue;
+            } 
+            if(frequency.get(pq.peek()) < frequency.get(num)) {
+                pq.poll();
+                pq.offer(num);
+            }      
         }
-        List<Integer> ans = new ArrayList<>();
-        for(int i = 0; i < k; i++) {
-            ans.add(pq.poll());
-        }
+        List<Integer> ans = new ArrayList<>(pq);
         return ans;
     }
 }
