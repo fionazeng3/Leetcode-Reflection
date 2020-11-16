@@ -1,0 +1,50 @@
+/**
+LC 272. Closest Binary Search Tree Value II
+因为这是一个BST， 所以 inorder traversal 就等于把所有的value 从小往大看
+建立一个queue。 把tree 中的val 依次放入queue 中。
+如果queue的大小超过了k 就要替代。 但是替代哪一个element呢？
+设想以下三种情况
+1. target 比目前queue 中所有元素都要小。 比如说 1    2 3 4 5  8这个时候不替换
+2. target 比目前queue 中一些元素要小， 比另外一些元素要大 比如说   3  1 2 11 12  13
+这时候肯定不会去换比3 大的元素12， 因为13 比12 还大， 肯定没有12 离3 近。 所以这个时候就只能
+从最小的1入手比较一下 13 离3 近还是 1 离3 近
+3. target 比目前queue 中所有元素都要大 比如说  7    1 2 3   4这个时候肯定是要把最小的元素
+替换下去。
+所以总结出来， 就是要判断最小的元素离target 近还是现在的元素离target 近
+**/
+
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode() {}
+ *     TreeNode(int val) { this.val = val; }
+ *     TreeNode(int val, TreeNode left, TreeNode right) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+class Solution {
+    public List<Integer> closestKValues(TreeNode root, double target, int k) {
+        LinkedList<Integer> res = new LinkedList<>();
+        helper(root, target, k, res);
+        return res;
+    }
+    private void helper(TreeNode current, double target, int k, LinkedList<Integer> res) {
+        if(current == null) return;
+        helper(current.left, target, k, res);
+        if(res.size() < k) {
+            res.add(current.val);
+        } else {
+            if(Math.abs(current.val - target) < Math.abs(res.peekFirst() - target)) {
+                res.pollFirst();
+                res.add(current.val);
+            }
+        }
+        helper(current.right, target, k, res);
+    }
+}

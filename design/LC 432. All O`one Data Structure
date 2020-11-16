@@ -1,0 +1,133 @@
+/**
+LC432. All O`one Data Structure
+这道题用到的datastructure 是长这样
+https://zxi.mytechroad.com/blog/list/leetcode-432-all-oone-data-structure/
+因为这个数据结构需要一个key -> frequency 的查询， 所以设计一个hashmap
+因为设计min， max， 所以设计一个排序好的双指针序列， 并且每个node 设计一个set 来记录当前的
+所有key， 以方便添加删除。
+**/
+class AllOne {
+
+    class Node {
+        int val;
+        Set<String> keys;
+        Node next;
+        Node prev;
+        public Node(int val) {
+            this.val = val;
+            this.keys = new HashSet<>();
+        }
+
+    }
+    Map<String, Node> keyToNode;
+    Node dummyHead;
+    Node dummyTail;
+    /** Initialize your data structure here. */
+    public AllOne() {
+        keyToNode = new HashMap<>();
+        dummyHead = new Node(-1);
+        dummyTail = new Node(-1);
+        dummyHead.next = dummyTail;
+        dummyTail.prev = dummyHead;
+    }
+
+    /** Inserts a new key <Key> with value 1. Or increments an existing key by 1. */
+    public void inc(String key) {
+
+
+
+        // insert a new key
+        if(!keyToNode.containsKey(key)) {
+            // there is no node1
+            Node nextNode = dummyHead.next;
+            if(nextNode.val != 1) {
+                Node node1 = new Node(1);
+                insert(dummyHead, nextNode, node1);
+            }
+            keyToNode.put(key, dummyHead.next);
+            dummyHead.next.keys.add(key);
+        // inscrements an existing key by 1
+        } else {
+            Node targetNode = keyToNode.get(key);
+            Node nextNode = targetNode.next;
+            int currentVal = targetNode.val;
+            // if there is no bigger-valued node
+            if(nextNode.val != currentVal +1) {
+                Node newBiggerNode = new Node(currentVal + 1);
+                insert(targetNode, nextNode, newBiggerNode);
+            }
+            targetNode.next.keys.add(key);
+            targetNode.keys.remove(key);
+            keyToNode.put(key, targetNode.next);
+            if(targetNode.keys.isEmpty()) {
+                remove(targetNode);
+            }
+        }
+    }
+
+    /** Decrements an existing key by 1. If Key's value is 1, remove it from the data structure. */
+    public void dec(String key) {
+        if(!keyToNode.containsKey(key)) return;
+        Node targetNode = keyToNode.get(key);
+        targetNode.keys.remove(key);
+        if(targetNode.val != 1) {
+            Node prevNode = targetNode.prev;
+            // if there is no smaller node
+            if(prevNode.val != targetNode.val -1 ) {
+                Node newSmallerNode = new Node(targetNode.val - 1);
+                insert(prevNode, targetNode, newSmallerNode);
+            }
+            targetNode.prev.keys.add(key);
+            keyToNode.put(key, targetNode.prev);
+        } else {
+            keyToNode.remove(key);
+        }
+        if(targetNode.keys.isEmpty()) {
+            remove(targetNode);
+        }
+        System.out.println("dec" + key);
+        Node current = dummyHead;
+    }
+
+    /** Returns one of the keys with maximal value. */
+    public String getMaxKey() {
+        Node maxNode = dummyTail.prev;
+        if(maxNode == dummyHead) {
+            return "";
+        }
+        Node current = dummyHead;
+        return maxNode.keys.iterator().next();
+
+    }
+
+    /** Returns one of the keys with Minimal value. */
+    public String getMinKey() {
+        Node minNode = dummyHead.next;
+        if(minNode == dummyTail) {
+            return "";
+        }
+         return minNode.keys.iterator().next();
+
+    }
+
+    private void insert(Node before, Node after, Node current) {
+        before.next = current;
+        current.prev = before;
+        after.prev = current;
+        current.next = after;
+    }
+
+    private void remove(Node target) {
+        target.prev.next = target.next;
+        target.next.prev = target.prev;
+    }
+}
+
+/**
+ * Your AllOne object will be instantiated and called as such:
+ * AllOne obj = new AllOne();
+ * obj.inc(key);
+ * obj.dec(key);
+ * String param_3 = obj.getMaxKey();
+ * String param_4 = obj.getMinKey();
+ */

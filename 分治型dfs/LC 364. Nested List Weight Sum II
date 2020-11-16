@@ -37,28 +37,29 @@ list 里面， 最后再一起算
  *     public List<NestedInteger> getList();
  * }
  */
-class Solution {
-    int maxDepth = 1;
-    List<Integer> numbers = new ArrayList<>();
-    List<Integer> depth = new ArrayList<>();
-    public int depthSumInverse(List<NestedInteger> nestedList) {
-        int ans = 0;
-        dfs(nestedList, 1);
-        for(int i = 0; i < numbers.size(); i++) {
-            ans += numbers.get(i) * (maxDepth - depth.get(i) + 1);
-        }
-        return ans;
-    }
-    private void dfs(List<NestedInteger>nestedList, int currentDepth) {
-        for(NestedInteger eachElement : nestedList) {
-            if(eachElement.isInteger()) {
-                numbers.add(eachElement.getInteger());
-                depth.add(currentDepth);
-                maxDepth = Math.max(maxDepth, currentDepth);
-            } else {
-                List<NestedInteger> nextList = eachElement.getList();
-                dfs(nextList, currentDepth + 1);
-            }
-        }
-    }
-}
+ class Solution {
+     public int depthSumInverse(List<NestedInteger> nestedList) {
+         if(nestedList.isEmpty()) return 0;
+         List<Integer> nums = new ArrayList<>();
+         List<Integer> weights = new ArrayList<>();
+         int maxDepth = resolveList(nestedList, nums, weights, 1);
+         int sum = 0;
+         for(int i = 0; i < nums.size(); i++) {
+             sum += nums.get(i) * (maxDepth - weights.get(i) + 1);
+         }
+         return sum;
+     }
+     
+     private int resolveList(List<NestedInteger> nestedList, List<Integer> nums, List<Integer> weights, int currentWeight) {
+         int maxDepth = currentWeight;
+         for(NestedInteger eachInteger: nestedList) {
+             if(eachInteger.isInteger()) {
+             nums.add(eachInteger.getInteger());
+             weights.add(currentWeight);
+         } else {
+                 maxDepth = Math.max(maxDepth, resolveList(eachInteger.getList(), nums, weights, currentWeight + 1));
+             }
+         }
+         return maxDepth;
+     }
+ }
